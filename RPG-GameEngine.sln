@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPG.Engine", "RPG.Engine\RPG.Engine.csproj", "{B58E900E-6D75-4932-9C90-533E63672CD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPG.Desktop", "RPG.Desktop\RPG.Desktop.csproj", "{24EFB7D7-584A-4825-9428-7377F2F48DC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{D1F065B5-17C4-4266-99E7-632FD79F65E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{0F416AD7-BD09-4D9C-B49E-8D4452968305}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Editor", "Editor", "{5BDBAB38-3CC6-4422-8A0D-AE5DDE99F647}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPG.Android", "RPG.Android\RPG.Android.csproj", "{8567C9D4-4A7D-49D5-AC9C-835612E7FD8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B58E900E-6D75-4932-9C90-533E63672CD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B58E900E-6D75-4932-9C90-533E63672CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B58E900E-6D75-4932-9C90-533E63672CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B58E900E-6D75-4932-9C90-533E63672CD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24EFB7D7-584A-4825-9428-7377F2F48DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24EFB7D7-584A-4825-9428-7377F2F48DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24EFB7D7-584A-4825-9428-7377F2F48DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24EFB7D7-584A-4825-9428-7377F2F48DC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8567C9D4-4A7D-49D5-AC9C-835612E7FD8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8567C9D4-4A7D-49D5-AC9C-835612E7FD8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8567C9D4-4A7D-49D5-AC9C-835612E7FD8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8567C9D4-4A7D-49D5-AC9C-835612E7FD8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{24EFB7D7-584A-4825-9428-7377F2F48DC9} = {D1F065B5-17C4-4266-99E7-632FD79F65E8}
+		{B58E900E-6D75-4932-9C90-533E63672CD3} = {0F416AD7-BD09-4D9C-B49E-8D4452968305}
+		{8567C9D4-4A7D-49D5-AC9C-835612E7FD8C} = {D1F065B5-17C4-4266-99E7-632FD79F65E8}
+	EndGlobalSection
+EndGlobal
