@@ -7,4 +7,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OpenGL\OpenGL.csproj" />
+      <ProjectReference Include="..\SampleGame\SampleGame.csproj" />
+      <ProjectReference Include="..\SDL2\SDL2.csproj" />
+    </ItemGroup>
+
 </Project>
