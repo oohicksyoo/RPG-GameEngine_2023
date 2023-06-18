@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>RPG.Desktop_Editor</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Module.OpenGL\Module.OpenGL.csproj" />
+      <ProjectReference Include="..\Module.SDL2\Module.SDL2.csproj" />
+      <ProjectReference Include="..\RPG.Editor\RPG.Editor.csproj" />
+      <ProjectReference Include="..\RPG.Engine\RPG.Engine.csproj" />
+      <ProjectReference Include="..\SampleGame\SampleGame.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="SDL2.dll">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>
