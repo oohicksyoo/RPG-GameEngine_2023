@@ -5,12 +5,32 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <SignAssembly>true</SignAssembly>
+        <PublicSign>false</PublicSign>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+      <DefineConstants>TRACE;RPG_DESKTOP;RPG_DEBUG;</DefineConstants>
+      <DebugType>none</DebugType>
+      <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+      <DefineConstants>TRACE;RPG_DESKTOP;</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OpenGL\OpenGL.csproj" />
+      <ProjectReference Include="..\Module.OpenGL\Module.OpenGL.csproj" />
       <ProjectReference Include="..\SampleGame\SampleGame.csproj" />
-      <ProjectReference Include="..\SDL2\SDL2.csproj" />
+      <ProjectReference Include="..\Module.SDL2\Module.SDL2.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="SDL2.dll">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

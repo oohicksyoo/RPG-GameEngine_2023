@@ -9,6 +9,10 @@
 			get;
 		}
 
+		public Version Version {
+			get;
+		}
+
 		public int WindowWidth {
 			get;
 		}

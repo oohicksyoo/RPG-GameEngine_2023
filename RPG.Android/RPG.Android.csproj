@@ -9,4 +9,46 @@
         <ApplicationVersion>1</ApplicationVersion>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DefineConstants>TRACE;RPG_ANDROID</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DefineConstants>TRACE;RPG_ANDROID</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Module.OpenGL\Module.OpenGL.csproj" />
+      <ProjectReference Include="..\Module.SDL2\Module.SDL2.csproj" />
+      <ProjectReference Include="..\RPG.Engine\RPG.Engine.csproj" />
+      <ProjectReference Include="..\SampleGame\SampleGame.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Jars\" />
+      <Folder Include="Lib\" />
+    </ItemGroup>
+    <ItemGroup>
+      <AndroidNativeLibrary Update="Lib\arm64-v8a\libmain.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+      <AndroidNativeLibrary Update="Lib\arm64-v8a\libSDL2.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+      <AndroidNativeLibrary Update="Lib\armeabi-v7a\libmain.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+      <AndroidNativeLibrary Update="Lib\armeabi-v7a\libSDL2.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+      <AndroidNativeLibrary Update="Lib\x86\libmain.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+      <AndroidNativeLibrary Update="Lib\x86\libSDL2.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+      <AndroidNativeLibrary Update="Lib\x86_64\libmain.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+      <AndroidNativeLibrary Update="Lib\x86_64\libSDL2.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AndroidNativeLibrary>
+    </ItemGroup>
 </Project>
