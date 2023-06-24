@@ -43,6 +43,11 @@ namespace RPG.Engine.Core {
 			private set;
 		}
 
+		public bool IsRunning {
+			get;
+			private set;
+		}
+
 		#endregion
 		
 		
@@ -79,6 +84,10 @@ namespace RPG.Engine.Core {
 			ModulesStartup();
 
 			RunGameLoop();
+		}
+
+		public void RequestShutdown() {
+			this.IsRunning = false;
 		}
 		
 		public void Register<T>() where T : IModule {
@@ -118,9 +127,9 @@ namespace RPG.Engine.Core {
 		#region Private Methods
 
 		private void RunGameLoop() {
-			bool isRunning = !(this.SystemModule == null || this.GraphicsModule == null || this.InputModule == null);
+			this.IsRunning = !(this.SystemModule == null || this.GraphicsModule == null || this.InputModule == null);
 
-			while (isRunning) {
+			while (this.IsRunning) {
 				this.SystemModule.TimeStep();
 				
 				if (this.InputModule.Poll()) {
@@ -139,7 +148,7 @@ namespace RPG.Engine.Core {
 					this.GraphicsModule.PostRender();
 					this.SystemModule.Present();
 				} else {
-					isRunning = false;
+					this.IsRunning = false;
 				}
 			}
 			
