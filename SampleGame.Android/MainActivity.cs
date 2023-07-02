@@ -7,7 +7,7 @@ using Module.SDL2;
 using Module.OpenGL;
 using Org.Libsdl.App;
 
-namespace RPG.Android {
+namespace SampleGame.Android {
 	[Activity(
 		Label = "@string/app_name", 
 		MainLauncher = true, 

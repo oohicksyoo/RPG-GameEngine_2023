@@ -1,20 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <TargetFramework>net7.0-ios</TargetFramework>
         <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>SampleGame.Desktop_Editor</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <ImplicitUsings>true</ImplicitUsings>
-        <SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
     </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\Module.OpenGL\Module.OpenGL.csproj" />
       <ProjectReference Include="..\Module.SDL2\Module.SDL2.csproj" />
+      <ProjectReference Include="..\RPG.Editor\RPG.Editor.csproj" />
       <ProjectReference Include="..\RPG.Engine\RPG.Engine.csproj" />
-      <ProjectReference Include="..\SampleGame\SampleGame.csproj" />
+      <ProjectReference Include="..\SampleGame.Project\SampleGame.Project.csproj" />
     </ItemGroup>
+
     <ItemGroup>
-      <None Update="libSDL2.dylib">
+      <None Update="SDL2.dll">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
 </Project>

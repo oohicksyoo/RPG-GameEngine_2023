@@ -1,4 +1,4 @@
-namespace RPG.IOSAndMacCatalyst;
+namespace SampleGame.IOSAndMacCatalyst;
 
 [Register("SceneDelegate")]
 public class SceneDelegate : UIResponder, IUIWindowSceneDelegate {

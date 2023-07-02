@@ -7,6 +7,7 @@
         <Nullable>enable</Nullable>
         <SignAssembly>true</SignAssembly>
         <PublicSign>false</PublicSign>
+        <RootNamespace>SampleGame.Desktop</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -23,7 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Module.OpenGL\Module.OpenGL.csproj" />
-      <ProjectReference Include="..\SampleGame\SampleGame.csproj" />
+      <ProjectReference Include="..\SampleGame.Project\SampleGame.Project.csproj" />
       <ProjectReference Include="..\Module.SDL2\Module.SDL2.csproj" />
     </ItemGroup>
 

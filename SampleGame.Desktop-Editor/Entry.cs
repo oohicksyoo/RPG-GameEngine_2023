@@ -4,7 +4,7 @@ using Module.SDL2;
 using Module.OpenGL;
 
 
-namespace RPG.DesktopEditor {
+namespace SampleGame.DesktopEditor {
 	public class Entry {
 		
 		static void Main(string[] args) {

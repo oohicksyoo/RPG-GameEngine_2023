@@ -1,4 +1,4 @@
-namespace RPG.IOSAndMacCatalyst;
+namespace SampleGame.IOSAndMacCatalyst;
 
 [Register("AppDelegate")]
 public class AppDelegate : UIApplicationDelegate {

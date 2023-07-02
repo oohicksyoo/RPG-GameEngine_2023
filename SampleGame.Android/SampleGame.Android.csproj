@@ -5,9 +5,10 @@
         <OutputType>Exe</OutputType>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <ApplicationId>com.RedPandaGames.Sample.Android</ApplicationId>
+        <ApplicationId>com.RedPandaGames.SampleGame.Android</ApplicationId>
         <ApplicationVersion>1</ApplicationVersion>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <RootNamespace>SampleGame.Android</RootNamespace>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DefineConstants>TRACE;RPG_ANDROID</DefineConstants>
@@ -19,7 +20,7 @@
       <ProjectReference Include="..\Module.OpenGL\Module.OpenGL.csproj" />
       <ProjectReference Include="..\Module.SDL2\Module.SDL2.csproj" />
       <ProjectReference Include="..\RPG.Engine\RPG.Engine.csproj" />
-      <ProjectReference Include="..\SampleGame\SampleGame.csproj" />
+      <ProjectReference Include="..\SampleGame.Project\SampleGame.Project.csproj" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Jars\" />
