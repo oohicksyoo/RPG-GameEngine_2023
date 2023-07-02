@@ -17,7 +17,6 @@ namespace SampleGame.DesktopEditor {
 			//Graphics Module
 			Application.Instance.Register<OpenGLModule>();
 			
-			//TODO: Find a way to make this project agnostic
 			Application.Instance.Start(Project.Instance);
 		}
 	}
