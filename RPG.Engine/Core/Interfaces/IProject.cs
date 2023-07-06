@@ -20,5 +20,7 @@
 		public int WindowHeight {
 			get;
 		}
+
+		public void InitializeBasicModules();
 	}
 }

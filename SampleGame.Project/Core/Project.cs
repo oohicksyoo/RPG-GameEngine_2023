@@ -15,6 +15,10 @@ namespace SampleGame.Core {
 
 		public int WindowHeight => 720;
 
+		public void InitializeBasicModules() {
+			
+		}
+
 		#endregion
 
 	}
