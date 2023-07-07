@@ -1,6 +1,8 @@
 ﻿namespace RPG.Engine.Core {
+	using Attributes;
 	using Components;
 	using Components.Interfaces;
+	using Utility;
 
 	/// <summary>
 	/// Nodes are the base building block, nodes can contain components and have other children nodes under them.
@@ -83,9 +85,14 @@
 		}
 
 		public void AddComponent<T>() where T : IComponent {
-			IComponent component = Activator.CreateInstance<T>();
-			component.Node = this;
-			this.Components.Add(component);
+			bool isSingular = typeof(T).IsDefined(typeof(Singular), true);
+			if (!isSingular || (isSingular && !HasComponent<T>())) {
+				IComponent component = Activator.CreateInstance<T>();
+				component.Node = this;
+				this.Components.Add(component);
+			} else if (isSingular) {
+				Debug.Error(GetType().Name, $"Node ({this.Name}) already contains the component ({typeof(T).Name}) and it was marked as singular.");
+			}
 		}
 
 		#endregion

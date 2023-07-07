@@ -2,6 +2,7 @@
 using RPG.Engine.Utility;
 
 namespace Module.SDL2 {
+	
 	public class SDL2InputModule : IModule, IInputModule {
 		
 		
@@ -40,6 +41,8 @@ namespace Module.SDL2 {
 			get;
 			private set;
 		} = new Version();
+		
+		public int Priority => int.MaxValue - 2;
 
 		public void Awake() {
 			

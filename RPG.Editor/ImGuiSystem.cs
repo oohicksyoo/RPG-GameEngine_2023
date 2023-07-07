@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
@@ -6,10 +6,15 @@ using System.Runtime.InteropServices;
 using System.Text;
 using ImGuiNET;
 
-namespace RPG.Editor {
+namespace RPG.DearImGUI {
+	using Engine.Core;
+	using Engine.Graphics;
+	using Module.OpenGL;
+	using Module.SDL2;
+
 	public static class ImGUISystem {
 		
-		/*public static Shader Shader {
+		public static Shader Shader {
 			get;
 			set;
 		}
@@ -54,16 +59,22 @@ namespace RPG.Editor {
 			private set;
 		}
 		
-		public static FrameBuffer FrameBuffer {
+		public static Framebuffer Framebuffer {
+			get;
+			set;
+		}
+
+		private static Vector2 DisplaySize {
 			get;
 			set;
 		}
 
 		public static void Initialize() {
+			DisplaySize = new Vector2(Application.Instance.Project.WindowWidth, Application.Instance.Project.WindowHeight);
 			Context = ImGui.CreateContext();
 			ImGui.SetCurrentContext(Context);
 			ImGui.GetIO().Fonts.AddFontDefault();
-			ImGui.GetIO().DisplaySize = Application.Size;
+			ImGui.GetIO().DisplaySize = DisplaySize;
 			ImGui.GetIO().ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 			
 			CreateDeviceResources();
@@ -149,7 +160,7 @@ namespace RPG.Editor {
 
 		private static void SetPerFrameImGuiData() {
 			ImGuiIOPtr io = ImGui.GetIO();
-			io.DisplaySize = Application.Size;
+			io.DisplaySize = DisplaySize;
 			io.DeltaTime = Time.Delta;
 		}
 
@@ -157,8 +168,8 @@ namespace RPG.Editor {
 			ImGuiIOPtr io = ImGui.GetIO();
 
 			//Grab current state of inputs
-			Mouse mouse = Application.SystemModule.InputModule.Mouse;
-			Keyboard keyboard = Application.SystemModule.InputModule.Keyboard;
+			/*Mouse mouse = Application.Instance.InputModule.Mouse;
+			Keyboard keyboard = Application.Instance.InputModule.Keyboard;
 
 			io.MouseDown[0] = mouse.IsDown(MouseButtons.Left);
 			io.MouseDown[1] = mouse.IsDown(MouseButtons.Right);
@@ -181,7 +192,7 @@ namespace RPG.Editor {
 			io.KeyCtrl = keyboard.IsDown(KeyboardKeys.Control);
 			io.KeyAlt = keyboard.IsDown(KeyboardKeys.Alt);
 			io.KeyShift = keyboard.IsDown(KeyboardKeys.Shift);
-			io.KeySuper = keyboard.IsDown(KeyboardKeys.LeftSuper) || keyboard.IsDown(KeyboardKeys.RightSuper);
+			io.KeySuper = keyboard.IsDown(KeyboardKeys.LeftSuper) || keyboard.IsDown(KeyboardKeys.RightSuper);*/
 		}
 
 		public static void RenderImDrawData(ImDrawDataPtr drawDataPtr) {
@@ -189,12 +200,12 @@ namespace RPG.Editor {
 				return;
 			}
 
-			if (FrameBuffer == null) {
+			if (Framebuffer == null) {
 				return;
 			}
 			
 			//Bind Framebuffer for usage
-			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, FrameBuffer.FrameBufferID);
+			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, Framebuffer.FramebufferID);
 			GL.Enable(GLEnum.DEPTH_TEST);
 			
 			//Clear Framebuffer
@@ -281,7 +292,7 @@ namespace RPG.Editor {
 
 					// We do _windowHeight - (int)clip.W instead of (int)clip.Y because gl has flipped Y when it comes to these coordinates
 					var clip = pcmd.ClipRect;
-					GL.Scissor((int)clip.X, Application.Height - (int)clip.W, (int)(clip.Z - clip.X), (int)(clip.W - clip.Y));
+					GL.Scissor((int)clip.X, Application.Instance.Project.WindowHeight - (int)clip.W, (int)(clip.Z - clip.X), (int)(clip.W - clip.Y));
 
 					GL.DrawElementsBaseVertex(GLEnum.TRIANGLES, (int)pcmd.ElemCount, GLEnum.UNSIGNED_SHORT, (IntPtr)(idx_offset * sizeof(ushort)), vtx_offset);
 
@@ -388,5 +399,5 @@ namespace RPG.Editor {
 
 		#endregion
 		
-	*/}
+	}
 }

@@ -121,6 +121,10 @@ namespace RPG.Engine.Core {
 			}
 		}
 
+		public T? Get<T>() {
+			return this.ModuleList.Get<T>();
+		}
+
 		#endregion
 
 
@@ -143,7 +147,7 @@ namespace RPG.Engine.Core {
 					this.SystemModule.BeginPresent();
 					this.GraphicsModule.PreRender();
 					this.ModuleList.PreRender();
-					this.GraphicsModule.Render();
+					this.ModuleList.Render();
 					this.ModuleList.PostRender();
 					this.GraphicsModule.PostRender();
 					this.SystemModule.Present();

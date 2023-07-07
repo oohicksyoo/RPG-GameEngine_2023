@@ -1,5 +1,9 @@
 ﻿namespace RPG.Engine.Modules.Interfaces {
 	public interface ISystemModule : IApplicationModule {
+
+		public float Delta {
+			get;
+		}
 		
 		/// <summary>
 		/// Called before other shutdowns happen so we can off load specific actions to other IApplicationModules if needed

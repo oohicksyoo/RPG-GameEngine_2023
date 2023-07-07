@@ -1,13 +1,13 @@
 ﻿namespace RPG.Engine.Modules {
 
+	using System.Drawing;
 	using System.Text;
 	using Components.Interfaces;
 	using Core;
 	using Interfaces;
 	using Utility;
 
-
-	public class SceneModule : IModule {
+	public class SceneGraphModule : IModule, IGraphicsClear, IRender {
 
 
 		#region Property
@@ -15,18 +15,20 @@
 		public Node RootNode {
 			get;
 			private set;
-		} 
+		}
 
 		#endregion
 		
 		
 		#region IModule
 
-		public string ModuleName => "Scene Module";
+		public string ModuleName => GetType().Name;
 
-		public string Name => "Scene Module";
+		public string Name => "SceneGraph";
 
 		public Version Version => new Version(0, 1, 0);
+		
+		public int Priority => int.MaxValue - 5;
 
 		public void Awake() {
 			RootNode = new Node("Root");
@@ -44,6 +46,30 @@
 		}
 
 		public void Shutdown() {
+			
+		}
+
+		#endregion
+
+
+		#region IGraphicsClear
+
+		public Color ClearColor => Color.Black;
+
+		#endregion
+
+
+		#region IRender
+
+		public void PreRender() {
+			
+		}
+
+		public void Render() {
+			
+		}
+
+		public void PostRender() {
 			
 		}
 

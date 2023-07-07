@@ -3,6 +3,8 @@
 		
 		public void PreRender();
 		
+		public void Render();
+		
 		public void PostRender();
 		
 	}

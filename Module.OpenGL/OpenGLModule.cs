@@ -4,6 +4,8 @@ using RPG.Engine.Modules.Interfaces;
 using RPG.Engine.Utility;
 
 namespace Module.OpenGL {
+	using System.Drawing;
+	using RPG.Engine.Modules;
 
 	public class OpenGLModule : IModule, IGraphicsModule {
 
@@ -39,14 +41,20 @@ namespace Module.OpenGL {
 		}
 
 		public void PreRender() {
-			GL.ClearColor(1,0,0,1);
+			Color color = Color.White;
+			IGraphicsClear graphicsClear = Application.Instance.Get<IGraphicsClear>();
+			if (graphicsClear != null) {
+				color = graphicsClear.ClearColor;
+			}
+			
+			GL.ClearColor(color.R / 255,color.G / 255,color.B / 255,color.A / 255);
 			GL.Clear(GLEnum.COLOR_BUFFER_BIT);
 			
 			//Enables
 		}
 
 		public void Render() {
-			//TODO: Find everyone that wants to use like IRender and have them render now
+			//Not Needed
 		}
 
 		public void PostRender() {
@@ -66,6 +74,8 @@ namespace Module.OpenGL {
 			get;
 			private set;
 		} = new Version();
+		
+		public int Priority => int.MaxValue - 2;
 
 		public void Awake() {
 			

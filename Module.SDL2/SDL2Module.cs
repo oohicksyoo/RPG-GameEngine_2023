@@ -4,6 +4,7 @@ using RPG.Engine.Modules.Interfaces;
 using RPG.Engine.Utility;
 
 namespace Module.SDL2 {
+
 	//TODO: SDL2.dll and the libSDL2.dylib get built to Desktop everytime and only the specific library file should move depending on the platform
 	//TODO: Abstract base with implementation based on the graphics we want to use
 	public class SDL2Module : IModule, ISystemModule {
@@ -40,6 +41,8 @@ namespace Module.SDL2 {
 		
 		
 		#region ISystemModule
+
+		public float Delta => this.CurrentDeltaTime;
 
 		public void Initialize() {
 			this.Version = new Version(SDL.SDL_MAJOR_VERSION, SDL.SDL_MINOR_VERSION);
@@ -127,6 +130,8 @@ namespace Module.SDL2 {
 			get;
 			private set;
 		} = new Version();
+		
+		public int Priority => int.MaxValue;
 
 		public void Awake() {
 			

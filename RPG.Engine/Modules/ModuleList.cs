@@ -2,6 +2,10 @@
 using RPG.Engine.Modules.Interfaces;
 
 namespace RPG.Engine.Modules {
+	using System.Diagnostics;
+	using Attributes;
+	using Debug = Utility.Debug;
+
 	public class ModuleList : IEnumerable<IModule> {
 
 
@@ -17,6 +21,9 @@ namespace RPG.Engine.Modules {
 		private List<IModule> Modules {
 			get {
 				return modules ??= new List<IModule>();
+			}
+			set {
+				modules = value;
 			}
 		}
 
@@ -49,6 +56,7 @@ namespace RPG.Engine.Modules {
 		public IModule Register<T>() where T : IModule {
 			T module = Activator.CreateInstance<T>();
 			this.Modules.Add(module);
+			this.Modules = this.Modules.OrderByDescending(x => x.Priority).ToList();
 			return module;
 		}
 
@@ -71,14 +79,14 @@ namespace RPG.Engine.Modules {
 			return false;
 		}
 		
-		public IModule? Get<T>() where T : IModule {
+		public T? Get<T>() {
 			foreach (var module in this.Modules) {
 				if (module is T returnModule) {
 					return returnModule;
 				}
 			}
 
-			return null;
+			return default;
 		}
 
 		public void Awake() {
@@ -103,8 +111,16 @@ namespace RPG.Engine.Modules {
 
 		public void PreRender() {
 			foreach (var module in this.Modules) {
-				if (module is IRender renderModule) {
+				if (!(module is IApplicationModule) && module is IRender renderModule) {
 					renderModule.PreRender();
+				}
+			}
+		}
+
+		public void Render() {
+			foreach (var module in this.Modules) {
+				if (!(module is IApplicationModule) && module is IRender renderModule) {
+					renderModule.Render();
 				}
 			}
 		}
@@ -115,7 +131,7 @@ namespace RPG.Engine.Modules {
 		/// </summary>
 		public void PostRender() {
 			foreach (var module in this.Modules) {
-				if (module is IRender renderModule) {
+				if (!(module is IApplicationModule) && module is IRender renderModule) {
 					renderModule.PostRender();
 				}
 			}
