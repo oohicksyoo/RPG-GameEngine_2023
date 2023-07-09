@@ -5,6 +5,8 @@ using RPG.Engine.Modules.Interfaces;
 using RPG.Engine.Utility;
 
 namespace RPG.Engine.Core {
+	using Graphics;
+
 	public class Application : Singleton<Application> {
 
 
@@ -47,13 +49,44 @@ namespace RPG.Engine.Core {
 			get;
 			private set;
 		}
+		
+		/// <summary>
+		/// Framebuffer containing the game scene rendering
+		/// </summary>
+		public Framebuffer GameFramebuffer {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Framebuffer containing all the results from ImGui's rendered Framebuffer
+		/// </summary>
+		public Framebuffer EditorFramebuffer {
+			get;
+			set;
+		}
+
+		public Framebuffer FinalFramebuffer {
+			get {
+				if (this.IsEditor) {
+					return this.EditorFramebuffer;
+				}
+
+				return this.GameFramebuffer;
+			}
+		}
+
+		private bool IsEditor {
+			get;
+			set;
+		}
 
 		#endregion
 		
 		
 		#region Public Methods
 
-		public void Start(IProject project) {
+		public void Start(IProject project, bool isEditor = false) {
 			if (this.SystemModule == null) {
 				throw new Exception("Missing SystemModule which is needed to run");
 			}
@@ -65,7 +98,8 @@ namespace RPG.Engine.Core {
 			if (this.GraphicsModule == null) {
 				throw new Exception("Missing GraphicsModule which is needed to run");
 			}
-			
+
+			this.IsEditor = isEditor;
 			this.Project = project;
 			
 			//Platform Starting Information
@@ -79,6 +113,10 @@ namespace RPG.Engine.Core {
 			this.SystemModule.Initialize();
 			this.InputModule.Initialize();
 			this.GraphicsModule.Initialize();
+			
+			//Create Rendering Framebuffer
+			this.GameFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
+			this.EditorFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
 			
 			//General IModule Startup
 			ModulesStartup();
@@ -146,9 +184,8 @@ namespace RPG.Engine.Core {
 					//Rendering Phase
 					this.SystemModule.BeginPresent();
 					this.GraphicsModule.PreRender();
-					this.ModuleList.PreRender();
 					this.ModuleList.Render();
-					this.ModuleList.PostRender();
+					this.ModuleList.PostProcess();
 					this.GraphicsModule.PostRender();
 					this.SystemModule.Present();
 				} else {

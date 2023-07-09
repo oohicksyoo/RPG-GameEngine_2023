@@ -3,7 +3,7 @@
 #nullable disable
 
 namespace Module.SDL2 {
-	public static class SDL {
+    public static class SDL {
         
         #region SDL2# Variables
 

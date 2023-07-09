@@ -4,6 +4,7 @@
 	using System.Text;
 	using Components.Interfaces;
 	using Core;
+	using Graphics;
 	using Interfaces;
 	using Utility;
 
@@ -61,15 +62,7 @@
 
 		#region IRender
 
-		public void PreRender() {
-			
-		}
-
 		public void Render() {
-			
-		}
-
-		public void PostRender() {
 			
 		}
 

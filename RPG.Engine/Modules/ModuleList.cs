@@ -4,6 +4,7 @@ using RPG.Engine.Modules.Interfaces;
 namespace RPG.Engine.Modules {
 	using System.Diagnostics;
 	using Attributes;
+	using Graphics;
 	using Debug = Utility.Debug;
 
 	public class ModuleList : IEnumerable<IModule> {
@@ -109,14 +110,6 @@ namespace RPG.Engine.Modules {
 			}
 		}
 
-		public void PreRender() {
-			foreach (var module in this.Modules) {
-				if (!(module is IApplicationModule) && module is IRender renderModule) {
-					renderModule.PreRender();
-				}
-			}
-		}
-
 		public void Render() {
 			foreach (var module in this.Modules) {
 				if (!(module is IApplicationModule) && module is IRender renderModule) {
@@ -124,15 +117,11 @@ namespace RPG.Engine.Modules {
 				}
 			}
 		}
-
-		/// <summary>
-		/// See if any Modules using IRender want to PostRender anything
-		/// Example: Clear Debug Data, Post Processing on the frame
-		/// </summary>
-		public void PostRender() {
+		
+		public void PostProcess() {
 			foreach (var module in this.Modules) {
-				if (!(module is IApplicationModule) && module is IRender renderModule) {
-					renderModule.PostRender();
+				if (!(module is IApplicationModule) && module is IPostProcess postProcess) {
+					postProcess.PostProcess();
 				}
 			}
 		}

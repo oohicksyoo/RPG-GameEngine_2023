@@ -1,7 +1,13 @@
 ﻿namespace RPG.Engine.Modules.Interfaces {
+	using Graphics;
+
 	public interface ISystemModule : IApplicationModule {
 
 		public float Delta {
+			get;
+		}
+		
+		public ulong ElapsedDuration {
 			get;
 		}
 		

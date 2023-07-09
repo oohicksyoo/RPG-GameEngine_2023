@@ -46,10 +46,7 @@
 		#region Private Methods
 
 		private void CreateTexture(byte[] data, uint width, uint height, ColorType colorType, WrapModeType wrapModeType) {
-			Debug.Log(GetType().Name, $"Creating Texture: {this.FilePath}");
-			if (Application.Instance.GraphicsModule is IGLGraphicsModule) {
-				this.ID = ((IGLGraphicsModule) Application.Instance.GraphicsModule).CompileTexture(data, width, height, colorType, wrapModeType);
-			}
+			this.ID = Application.Instance.GraphicsModule.CompileTexture(data, width, height, colorType, wrapModeType);
 		}
 
 		#endregion
