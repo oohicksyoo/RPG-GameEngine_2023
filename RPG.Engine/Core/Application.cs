@@ -5,6 +5,7 @@ using RPG.Engine.Modules.Interfaces;
 using RPG.Engine.Utility;
 
 namespace RPG.Engine.Core {
+	using System.Drawing;
 	using Graphics;
 
 	public class Application : Singleton<Application> {
@@ -54,6 +55,11 @@ namespace RPG.Engine.Core {
 		/// Framebuffer containing the game scene rendering
 		/// </summary>
 		public Framebuffer GameFramebuffer {
+			get;
+			private set;
+		}
+
+		public Framebuffer SceneFramebuffer {
 			get;
 			private set;
 		}
@@ -116,6 +122,7 @@ namespace RPG.Engine.Core {
 			
 			//Create Rendering Framebuffer
 			this.GameFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
+			this.SceneFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
 			this.EditorFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
 			
 			//General IModule Startup
@@ -183,10 +190,24 @@ namespace RPG.Engine.Core {
 
 					//Rendering Phase
 					this.SystemModule.BeginPresent();
-					this.GraphicsModule.PreRender();
-					this.ModuleList.Render();
-					this.ModuleList.PostProcess();
-					this.GraphicsModule.PostRender();
+
+					//Editor Scene Rendering
+					if (this.IsEditor) {
+						this.GraphicsModule.PreRender(this.SceneFramebuffer.Id, Color.Blue);
+						this.ModuleList.Render();
+						this.ModuleList.PostProcess();
+						this.GraphicsModule.PostRender();
+					}
+
+					//Game Scene Rendering
+					{
+						this.GraphicsModule.PreRender(this.GameFramebuffer.Id, Color.Aqua);
+						this.ModuleList.Render();
+						this.ModuleList.PostProcess();
+						this.GraphicsModule.PostRender();
+					}
+					
+					//Scene Presenting
 					this.SystemModule.Present();
 				} else {
 					this.IsRunning = false;

@@ -1,4 +1,5 @@
 ﻿namespace RPG.Engine.Modules.Interfaces {
+	using System.Drawing;
 	using System.Numerics;
 	using Graphics;
 
@@ -8,7 +9,7 @@
 			get;
 		}
 		
-		public void PreRender();
+		public void PreRender(uint framebufferId, Color clearColor);
 		
 		public void PostRender();
 

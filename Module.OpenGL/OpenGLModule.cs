@@ -71,15 +71,15 @@ namespace Module.OpenGL {
 			//TODO: Setup window resizing
 		}
 
-		public void PreRender() {
-			Color color = Color.White;
-			IGraphicsClear graphicsClear = Application.Instance.Get<IGraphicsClear>();
+		public void PreRender(uint framebufferId, Color clearColor) {
+			Color color = clearColor;
+			/*IGraphicsClear graphicsClear = Application.Instance.Get<IGraphicsClear>();
 			if (graphicsClear != null) {
 				color = Color.Aqua;// graphicsClear.ClearColor;
-			}
+			}*/
 			
 			GL.Enable(GLEnum.DEPTH_TEST);
-			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, Application.Instance.GameFramebuffer.Id);
+			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, framebufferId);
 			
 			GL.ClearColor(color.R / 255,color.G / 255,color.B / 255,color.A / 255);
 			GL.Clear(GLEnum.COLOR_BUFFER_BIT | GLEnum.DEPTH_BUFFER_BIT);
