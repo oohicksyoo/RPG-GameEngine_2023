@@ -32,10 +32,10 @@
 		public int Priority => int.MaxValue - 5;
 
 		public void Awake() {
-			RootNode = new Node("Root");
-			RootNode.Add(new Node("Sample 1"));
-			RootNode.Add(new Node("Sample 2"));
-			RootNode.Add(new Node("Sample 3"));
+			this.RootNode = new Node("Root");
+			this.RootNode.Add(new Node("Sample 1"));
+			this.RootNode.Add(new Node("Sample 2"));
+			this.RootNode.Add(new Node("Sample 3"));
 		}
 
 		public void Start() {

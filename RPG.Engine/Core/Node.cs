@@ -15,6 +15,9 @@
 
 		public Node(string name = "") {
 			this.Name = name;
+			this.Guid = Guid.NewGuid();
+			this.IsEnabled = true;
+			this.Tag = String.Empty;
 			AddComponent<Transform>();
 		}
 
@@ -36,7 +39,22 @@
 
 		public string Name {
 			get;
+			set;
+		}
+
+		public Guid Guid {
+			get;
 			private set;
+		}
+
+		public bool IsEnabled {
+			get;
+			set;
+		}
+
+		public string Tag {
+			get;
+			set;
 		}
 
 		public List<IComponent> Components {

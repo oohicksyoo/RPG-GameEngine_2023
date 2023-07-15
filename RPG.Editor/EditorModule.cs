@@ -3,6 +3,7 @@
 	using Windows;
 	using Engine.Core;
 	using Engine.Graphics;
+	using Engine.Modules;
 	using Engine.Modules.Interfaces;
 	using Engine.Utility;
 	using ImGuiNET;
@@ -26,6 +27,11 @@
 			}
 		}
 
+		public Node SelectedNode {
+			get;
+			set;
+		}
+
 		#endregion
 		
 		
@@ -41,15 +47,22 @@
 
 		public void Awake() {
 			ImGUISystem.Initialize();
-			
-			this.Windows.Add(new SimpleWindow("1"));
-			this.Windows.Add(new SimpleWindow("2"));
-			this.Windows.Add(new SimpleWindow("3"));
-			this.Windows.Add(new RenderTargetWindow("Game", Application.Instance.GameFramebuffer.RenderTextureId));
 		}
 
 		public void Start() {
+			//Configure main node for HierarchyWindow, double check if SceneGraphModule is in fact being used
+			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
+			Node node = new Node("Empty");
+			if (sceneGraphModule != null) {
+				node = sceneGraphModule.RootNode;
+			}
 			
+			this.Windows.Add(new MenuBarWindow());
+			this.Windows.Add(new HierarchyWindow(node));
+			this.Windows.Add(new ConsoleWindow());
+			this.Windows.Add(new RenderTargetWindow("Game", Application.Instance.GameFramebuffer.RenderTextureId));
+			this.Windows.Add(new InspectorWindow());
+			this.Windows.Add(new AsepriteWindow(true));
 		}
 
 		public void Update() {
