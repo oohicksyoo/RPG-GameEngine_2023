@@ -121,10 +121,14 @@
 			if (InspectorTypeRendering.ContainsKey(type)) {
 				return InspectorTypeRendering[type];
 			}
+
+			if (typeof(IComponent).IsAssignableFrom(type)) {
+				return InspectorTypeRendering[typeof(IComponent)];
+			}
 			
 			//Default return should be like GUID storing?
 			return (component, propertyInfo) => {
-				ImGui.Text($"Missing inspector rendering action for type({propertyInfo.PropertyType.Name})");
+				ImGui.Text($"Missing inspector rendering action for type({type} | {propertyInfo.PropertyType.Name})");
 			};
 		}
 
@@ -194,11 +198,32 @@
 		}
 		
 		private void InspectorRenderIComponent(object component, PropertyInfo propertyInfo) {
-			Guid value = ((IComponent)propertyInfo.GetValue(component)).Guid;
-			ImGui.TextDisabled(value.ToString());
+			object obj = propertyInfo.GetValue(component);
+			string value = string.Empty;
+			bool isMissing = obj == null;
+			if (obj != null) {
+				value = ((IComponent)propertyInfo.GetValue(component)).Guid.ToString();
+			} else {
+				value = Guid.Empty.ToString();
+			}
+
+			
+			
+			if (isMissing) {
+				Color color = Color.DarkRed;
+				Vector4 chosenColor = new Vector4(color.R, color.G, color.B, color.A);
+				ImGui.PushStyleColor(ImGuiCol.Text, chosenColor);
+			}
+			
+			ImGui.Text(value);
+			
+			if (isMissing) {
+				ImGui.PopStyleColor();
+			}
+			
 			ImGui.SameLine();
 			ImGui.Text("Guid");
-			
+
 			//TODO: Add drag and drop support of IComponent onto this field
 			
 			//TODO: Do we find that IComponent that was set and set it for them now?
