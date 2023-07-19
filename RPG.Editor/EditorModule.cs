@@ -1,6 +1,9 @@
 ﻿namespace RPG.DearImGUI {
+	using System.Drawing;
 	using System.Numerics;
+	using System.Reflection;
 	using Windows;
+	using Engine.Components.Interfaces;
 	using Engine.Core;
 	using Engine.Graphics;
 	using Engine.Modules;
@@ -15,6 +18,9 @@
 
 		[NonSerialized]
 		private List<AbstractWindow> windows;
+
+		[NonSerialized]
+		private static Dictionary<Type, Action<object, PropertyInfo>> inspectorTypeRendering;
 
 		#endregion
 
@@ -32,6 +38,12 @@
 			set;
 		}
 
+		private static Dictionary<Type, Action<object, PropertyInfo>> InspectorTypeRendering {
+			get {
+				return inspectorTypeRendering ??= new Dictionary<Type, Action<object, PropertyInfo>>();
+			}
+		}
+
 		#endregion
 		
 		
@@ -46,6 +58,8 @@
 		public int Priority => int.MaxValue - 4;
 
 		public void Awake() {
+			Initialize();
+			
 			ImGUISystem.Initialize();
 		}
 
@@ -86,6 +100,109 @@
 			}
 			
 			ImGUISystem.Render();
+		}
+
+		#endregion
+
+
+		#region Public Static Methods
+
+		/// <summary>
+		/// Adds type to Dictionary so it can be rendered, if you add a type that already exists by default you will override all use cases
+		/// </summary>
+		public static void Register<T>(Action<object, PropertyInfo> inspectorRenderingAction) {
+			//Only add if doesnt exist; Project specific entries are added before the default fallbacks
+			if (!InspectorTypeRendering.ContainsKey(typeof(T))) {
+				InspectorTypeRendering.Add(typeof(T), inspectorRenderingAction);
+			}
+		}
+
+		public static Action<object, PropertyInfo> Get(Type type) {
+			if (InspectorTypeRendering.ContainsKey(type)) {
+				return InspectorTypeRendering[type];
+			}
+			
+			//Default return should be like GUID storing?
+			return (component, propertyInfo) => {
+				ImGui.Text($"Missing inspector rendering action for type({propertyInfo.PropertyType.Name})");
+			};
+		}
+
+		#endregion
+
+
+		#region Private Methods
+
+		private void Initialize() {
+			Register<int>(InspectorRenderInt);
+			Register<float>(InspectorRenderFloat);
+			Register<Vector2>(InspectorRenderVector2);
+			Register<Vector3>(InspectorRenderVector3);
+			Register<Vector4>(InspectorRenderVector4);
+			Register<Color>(InspectorRenderColor);
+			Register<bool>(InspectorRenderBool);
+			Register<string>(InspectorRenderString);
+			Register<IComponent>(InspectorRenderIComponent);
+		}
+		
+		private void InspectorRenderInt(object component, PropertyInfo propertyInfo) {
+			int value = (int)propertyInfo.GetValue(component);
+			ImGui.DragInt($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value);
+			propertyInfo.SetValue(component, value);
+		}
+		
+		private void InspectorRenderFloat(object component, PropertyInfo propertyInfo) {
+			float value = (float)propertyInfo.GetValue(component);
+			ImGui.DragFloat($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value);
+			propertyInfo.SetValue(component, value);
+		}
+
+		private void InspectorRenderVector2(object component, PropertyInfo propertyInfo) {
+			Vector2 value = (Vector2)propertyInfo.GetValue(component);
+			ImGui.DragFloat2($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value);
+			propertyInfo.SetValue(component, value);
+		}
+		
+		private void InspectorRenderVector3(object component, PropertyInfo propertyInfo) {
+			Vector3 value = (Vector3)propertyInfo.GetValue(component);
+			ImGui.DragFloat3($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value);
+			propertyInfo.SetValue(component, value);
+		}
+		
+		private void InspectorRenderVector4(object component, PropertyInfo propertyInfo) {
+			Vector4 value = (Vector4)propertyInfo.GetValue(component);
+			ImGui.DragFloat4($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value);
+			propertyInfo.SetValue(component, value);
+		}
+		
+		private void InspectorRenderColor(object component, PropertyInfo propertyInfo) {
+			Vector4 value = ((Color)propertyInfo.GetValue(component)).ToVector4();
+			ImGui.ColorEdit4($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value);
+			propertyInfo.SetValue(component, value);
+		}
+		
+		private void InspectorRenderBool(object component, PropertyInfo propertyInfo) {
+			bool value = (bool)propertyInfo.GetValue(component);
+			ImGui.Checkbox($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value);
+			propertyInfo.SetValue(component, value);
+		}
+		
+		private void InspectorRenderString(object component, PropertyInfo propertyInfo) {
+			string value = (string)propertyInfo.GetValue(component);
+			ImGui.InputText($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value, 128);
+			propertyInfo.SetValue(component, value);
+		}
+		
+		private void InspectorRenderIComponent(object component, PropertyInfo propertyInfo) {
+			Guid value = ((IComponent)propertyInfo.GetValue(component)).Guid;
+			ImGui.TextDisabled(value.ToString());
+			ImGui.SameLine();
+			ImGui.Text("Guid");
+			
+			//TODO: Add drag and drop support of IComponent onto this field
+			
+			//TODO: Do we find that IComponent that was set and set it for them now?
+			//propertyInfo.SetValue(component, value);
 		}
 
 		#endregion

@@ -97,7 +97,7 @@
 		}
 
 		public void RemoveComponent<T>() where T : IComponent {
-			if (HasComponent<T>()) {
+			if (HasComponent<T>() && typeof(T) != typeof(Transform)) {
 				this.Components.Remove(GetComponent<T>());
 			}
 		}

@@ -7,6 +7,10 @@
 			get;
 			set;
 		}
+
+		public Guid Guid {
+			get;
+		}
 		
 	}
 }
