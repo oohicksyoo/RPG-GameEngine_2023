@@ -8,10 +8,11 @@
 	using Engine.Graphics;
 	using Engine.Modules;
 	using Engine.Modules.Interfaces;
+	using Engine.Serialization;
 	using Engine.Utility;
 	using ImGuiNET;
 
-	public class EditorModule : IModule, IRender {
+	public class EditorModule : IEditorModule {
 
 
 		#region NonSerialized Fields
@@ -44,10 +45,15 @@
 			}
 		}
 
+		private string Text {
+			get;
+			set;
+		}
+
 		#endregion
 		
 		
-		#region IModule
+		#region IEditorModule
 
 		public string ModuleName => GetType().Name;
 
@@ -78,6 +84,7 @@
 			this.Windows.Add(new RenderTargetWindow("Scene", Application.Instance.SceneFramebuffer.RenderTextureId));
 			this.Windows.Add(new InspectorWindow());
 			this.Windows.Add(new AsepriteWindow(true));
+			this.Windows.Add(new DemoWindow(true));
 		}
 
 		public void Update() {
@@ -88,17 +95,12 @@
 			
 		}
 
-		#endregion
-
-
-		#region IRender
-
 		public void Render() {
 			uint dockSpaceId = ImGui.DockSpaceOverViewport();
 			foreach (AbstractWindow window in this.Windows) {
 				window.Render(dockSpaceId);
 			}
-			
+
 			ImGUISystem.Render();
 		}
 
@@ -147,6 +149,7 @@
 			Register<bool>(InspectorRenderBool);
 			Register<string>(InspectorRenderString);
 			Register<IComponent>(InspectorRenderIComponent);
+			Register<AsepriteAssetFile>(InspectorRenderAsepriteAssetFile);
 		}
 		
 		private void InspectorRenderInt(object component, PropertyInfo propertyInfo) {
@@ -193,8 +196,9 @@
 		
 		private void InspectorRenderString(object component, PropertyInfo propertyInfo) {
 			string value = (string)propertyInfo.GetValue(component);
-			ImGui.InputText($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value, 128);
-			propertyInfo.SetValue(component, value);
+			if (ImGui.InputText($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref value, 128)) {
+				propertyInfo.SetValue(component, value);
+			}
 		}
 		
 		private void InspectorRenderIComponent(object component, PropertyInfo propertyInfo) {
@@ -228,6 +232,10 @@
 			
 			//TODO: Do we find that IComponent that was set and set it for them now?
 			//propertyInfo.SetValue(component, value);
+		}
+
+		public void InspectorRenderAsepriteAssetFile(object component, PropertyInfo propertyInfo) {
+			
 		}
 
 		#endregion

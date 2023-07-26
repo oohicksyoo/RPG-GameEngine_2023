@@ -35,6 +35,11 @@ namespace RPG.Engine.Core {
 			private set;
 		}
 		
+		public IEditorModule? EditorModule {
+			get;
+			private set;
+		}
+		
 		private ModuleList ModuleList {
 			get {
 				return moduleList ??= new ModuleList();
@@ -160,6 +165,13 @@ namespace RPG.Engine.Core {
 							Debug.Warning(GetType().Name, $"{typeof(T).Name} module with IGraphicsModule already exists and will not be added.");
 						}
 						break;
+					case IEditorModule editorModule:
+						if (this.EditorModule == null) {
+							this.EditorModule = editorModule;
+						} else {
+							Debug.Warning(GetType().Name, $"{typeof(T).Name} module with IEditorModule already exists and will not be added.");
+						}
+						break;
 				}
 			} else {
 				Debug.Warning(GetType().Name, $"{typeof(T).Name} module already exists and will not be added.");
@@ -180,17 +192,18 @@ namespace RPG.Engine.Core {
 
 			while (this.IsRunning) {
 				this.SystemModule.TimeStep();
+				this.InputModule.BeginFrame();
 				
 				if (this.InputModule.Poll()) {
-					this.InputModule.BeginFrame();
 					
 					((IModule)this.SystemModule!).Update();
 					
+					this.EditorModule?.Update();
 					this.ModuleList.Update();
 
 					//Rendering Phase
 					this.SystemModule.BeginPresent();
-
+					
 					//Editor Scene Rendering
 					if (this.IsEditor) {
 						this.GraphicsModule.PreRender(this.SceneFramebuffer.Id, Color.Blue);
@@ -206,6 +219,9 @@ namespace RPG.Engine.Core {
 						this.ModuleList.PostProcess();
 						this.GraphicsModule.PostRender();
 					}
+					
+					//Render Editor Module
+					this.EditorModule?.Render();
 					
 					//Scene Presenting
 					this.SystemModule.Present();
@@ -224,6 +240,8 @@ namespace RPG.Engine.Core {
 
 		private void ModulesShutdown() {
 			this.ModuleList.Shutdown();
+			
+			this.EditorModule?.Shutdown();
 			
 			//SystemModule needs to offload some tasks to the GraphicsModule for shutdown
 			this.SystemModule?.PreShutdown();

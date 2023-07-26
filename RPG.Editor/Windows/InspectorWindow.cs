@@ -44,9 +44,10 @@
 
 			//Name
 			string name = node.Name;
-			ImGui.InputText("Name", ref name, 32);
-			node.Name = name;
-			
+			if (ImGui.InputText($"Name##{node.Guid}", ref name, 32)) {
+				node.Name = name;
+			}
+
 			//Tag
 			ImGui.SetNextItemWidth(ImGui.GetItemRectSize().X / 1.5f);
 			string tag = node.Tag;

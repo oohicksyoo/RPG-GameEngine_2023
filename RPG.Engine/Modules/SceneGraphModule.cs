@@ -39,7 +39,7 @@
 		}
 
 		public void Start() {
-			DebugSceneGraph();
+			
 		}
 
 		public void Update() {
