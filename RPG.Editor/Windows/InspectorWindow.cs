@@ -2,6 +2,7 @@
 	using System.Diagnostics;
 	using System.Numerics;
 	using System.Reflection;
+	using System.Runtime.InteropServices;
 	using Engine.Attributes;
 	using Engine.Components;
 	using Engine.Components.Interfaces;
@@ -76,6 +77,19 @@
 				if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
 					ImGui.OpenPopup($"Component Context##{component.Guid}");
 				}
+				
+				//TODO: AddDragDrop
+				if (ImGui.BeginDragDropSource()) {
+					int sizeOfChar = Marshal.SizeOf<char>();
+					string dataString = $"{component.Guid}";
+					IntPtr data = Marshal.StringToHGlobalAnsi(dataString);
+					
+					ImGui.SetDragDropPayload("_IComponent", data, (uint)(sizeOfChar * dataString.Length));
+					ImGui.Text($"IComponent");
+					ImGui.EndDragDropSource();
+				}
+				
+				ImGui.TextDisabled($"{component.Guid}");
 				
 				//Find all properties in the class marked as Inspector
 				PropertyInfo[] properties = component.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);

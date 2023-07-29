@@ -1,4 +1,5 @@
 ﻿namespace RPG.DearImGUI.Windows {
+	using System.Runtime.InteropServices;
 	using Engine.Core;
 	using Engine.Modules;
 	using ImGuiNET;
@@ -11,18 +12,21 @@
 		/// <summary>
 		/// Main node starting point
 		/// </summary>
-		private Node RootNode {
-			get;
+		public Node RootNode {
+			private get;
 			set;
 		}
 		
-		public HierarchyWindow(Node rootNode, bool isOpen = true) : base(isOpen) {
-			this.RootNode = rootNode;
+		public HierarchyWindow(bool isOpen = true) : base(isOpen) {
 		}
 
 		public override string Name => "Hierarchy";
 
 		protected override void OnRenderGui() {
+			if (this.RootNode == null) {
+				return;
+			}
+			
 			if (ImGui.CollapsingHeader($"{this.RootNode.Name}##Header", ImGuiTreeNodeFlags.DefaultOpen)) {
 				foreach (Node nodeChild in this.RootNode.Children) {
 					RenderSingleNode(nodeChild);
@@ -54,6 +58,16 @@
 			
 			if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && (ImGui.GetMousePos().X - ImGui.GetItemRectMin().X) > ImGui.GetTreeNodeToLabelSpacing()) {
 				editorModule.SelectedNode = (isSelected) ? null : node;
+			}
+			
+			if (ImGui.BeginDragDropSource()) {
+				int sizeOfChar = Marshal.SizeOf<char>();
+				string dataString = $"{node.Guid}";
+				IntPtr data = Marshal.StringToHGlobalAnsi(dataString);
+					
+				ImGui.SetDragDropPayload("_Node", data, (uint)(sizeOfChar * dataString.Length));
+				ImGui.Text($"Node");
+				ImGui.EndDragDropSource();
 			}
 			
 			if (isOpen) {

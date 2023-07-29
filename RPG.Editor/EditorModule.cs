@@ -1,11 +1,14 @@
 ﻿namespace RPG.DearImGUI {
+	
 	using System.Drawing;
 	using System.Numerics;
 	using System.Reflection;
+	using System.Runtime.InteropServices;
 	using Windows;
 	using Engine.Components.Interfaces;
 	using Engine.Core;
 	using Engine.Graphics;
+	using Engine.Input;
 	using Engine.Modules;
 	using Engine.Modules.Interfaces;
 	using Engine.Serialization;
@@ -45,7 +48,12 @@
 			}
 		}
 
-		private string Text {
+		private MenuBarWindow MenuBarWindow {
+			get;
+			set;
+		}
+
+		private HierarchyWindow HierarchyWindow {
 			get;
 			set;
 		}
@@ -76,19 +84,15 @@
 			if (sceneGraphModule != null) {
 				node = sceneGraphModule.RootNode;
 			}
-			
-			this.Windows.Add(new MenuBarWindow());
-			this.Windows.Add(new HierarchyWindow(node));
-			this.Windows.Add(new ConsoleWindow());
-			this.Windows.Add(new RenderTargetWindow("Game", Application.Instance.GameFramebuffer.RenderTextureId));
-			this.Windows.Add(new RenderTargetWindow("Scene", Application.Instance.SceneFramebuffer.RenderTextureId));
-			this.Windows.Add(new InspectorWindow());
-			this.Windows.Add(new AsepriteWindow(true));
-			this.Windows.Add(new DemoWindow(true));
+
+			this.HierarchyWindow.RootNode = node;
 		}
 
 		public void Update() {
 			ImGUISystem.Update();
+			
+			//Check for Registered Shortcuts
+			this.MenuBarWindow.CheckShortcuts();
 		}
 
 		public void Shutdown() {
@@ -102,6 +106,14 @@
 			}
 
 			ImGUISystem.Render();
+		}
+
+		public void SubscribeToMenuBar(string menuName, string name, KeyboardKeyMod mod, KeyboardKeys key, Action onClickAction) {
+			this.MenuBarWindow.SubscribeToMenuBar(menuName, name, mod, key, onClickAction);
+		}
+
+		public void SubscribeToMenuBar(string menuName, string name, Action onClickAction) {
+			this.MenuBarWindow.SubscribeToMenuBar(menuName, name, onClickAction);
 		}
 
 		#endregion
@@ -136,10 +148,34 @@
 
 		#endregion
 
-
+		
 		#region Private Methods
-
+		
 		private void Initialize() {
+			InitializeWindows();
+			InitializeTypeRendering();
+		}
+
+		private void InitializeWindows() {
+			this.MenuBarWindow = new MenuBarWindow();
+			this.HierarchyWindow = new HierarchyWindow();
+			
+			this.Windows.Add(this.MenuBarWindow);
+			this.Windows.Add(this.HierarchyWindow );
+			this.Windows.Add(new ConsoleWindow());
+			this.Windows.Add(new RenderTargetWindow("Game", Application.Instance.GameFramebuffer.RenderTextureId));
+			this.Windows.Add(new RenderTargetWindow("Scene", Application.Instance.SceneFramebuffer.RenderTextureId));
+			this.Windows.Add(new InspectorWindow());
+			this.Windows.Add(new AsepriteWindow(true));
+			//this.Windows.Add(new DemoWindow(true));
+		}
+
+		#endregion
+
+
+		#region Private Methods - Type Rendering
+
+		private void InitializeTypeRendering() {
 			Register<int>(InspectorRenderInt);
 			Register<float>(InspectorRenderFloat);
 			Register<Vector2>(InspectorRenderVector2);
@@ -206,7 +242,7 @@
 			string value = string.Empty;
 			bool isMissing = obj == null;
 			if (obj != null) {
-				value = ((IComponent)propertyInfo.GetValue(component)).Guid.ToString();
+				value = $"{((IComponent)propertyInfo.GetValue(component)).Node.Name} - {propertyInfo.Name}";
 			} else {
 				value = Guid.Empty.ToString();
 			}
@@ -221,17 +257,55 @@
 			
 			ImGui.Text(value);
 			
+			//Handle Drop Target
+			if (ImGui.BeginDragDropTarget()) {
+				ImGuiPayloadPtr componentPayload = ImGui.AcceptDragDropPayload("_IComponent");
+				if (!componentPayload.Equals(default(ImGuiPayloadPtr))) {
+					string? payloadValue = Marshal.PtrToStringAnsi(componentPayload.Data, componentPayload.DataSize);
+					//TODO: Convert to Json here in the future
+					if (payloadValue != null) {
+						Guid guid = Guid.Parse(payloadValue);
+						if (GuidDatabase.Instance.ComponentMap.ContainsKey(guid)) {
+							IComponent componentValue = GuidDatabase.Instance.ComponentMap[guid];
+							//Double check it is the correct type for the property
+							if (componentValue.GetType() == propertyInfo.PropertyType) {
+								propertyInfo.SetValue(component, componentValue);
+							}
+						}
+					}
+				}
+				
+				ImGuiPayloadPtr nodePayload = ImGui.AcceptDragDropPayload("_Node");
+				if (!nodePayload.Equals(default(ImGuiPayloadPtr))) {
+					string? payloadValue = Marshal.PtrToStringAnsi(nodePayload.Data, nodePayload.DataSize);
+					if (payloadValue != null) {
+						Guid guid = Guid.Parse(payloadValue);
+						if (GuidDatabase.Instance.NodeMap.ContainsKey(guid)) {
+							Node nodeValue = GuidDatabase.Instance.NodeMap[guid];
+							IComponent componentValue = (IComponent)nodeValue.GetType()
+								.GetMethod("GetComponent")
+								.MakeGenericMethod(propertyInfo.PropertyType)
+								.Invoke(nodeValue, null);
+
+							if (componentValue != null) {
+								propertyInfo.SetValue(component, componentValue);
+							}
+						}
+						Debug.Log(GetType().Name, payloadValue);
+					}
+				}
+			}
+			
 			if (isMissing) {
 				ImGui.PopStyleColor();
 			}
 			
 			ImGui.SameLine();
-			ImGui.Text("Guid");
+			ImGui.Text($"{propertyInfo.Name}");
 
-			//TODO: Add drag and drop support of IComponent onto this field
-			
-			//TODO: Do we find that IComponent that was set and set it for them now?
-			//propertyInfo.SetValue(component, value);
+			if (!isMissing) {
+				ImGui.TextDisabled($"{((IComponent)propertyInfo.GetValue(component)).Guid}");
+			}
 		}
 
 		public void InspectorRenderAsepriteAssetFile(object component, PropertyInfo propertyInfo) {

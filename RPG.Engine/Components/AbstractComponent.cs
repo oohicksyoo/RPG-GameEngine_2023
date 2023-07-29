@@ -1,6 +1,7 @@
 ﻿namespace RPG.Engine.Components {
 	using Core;
 	using Interfaces;
+	using Serialization;
 
 	public abstract class AbstractComponent : IComponent {
 
@@ -10,6 +11,7 @@
 		public AbstractComponent() {
 			//TODO: Be able to pass in guid
 			this.Guid = Guid.NewGuid();
+			GuidDatabase.Instance.ComponentMap.Add(this.Guid, this);
 		}
 
 		#endregion

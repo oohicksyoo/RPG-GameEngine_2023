@@ -177,10 +177,10 @@ namespace RPG.DearImGUI {
 				}
 			}
 
-			io.KeyCtrl = keyboard.IsDown(KeyboardKeys.Control);
-			io.KeyAlt = keyboard.IsDown(KeyboardKeys.Alt);
-			io.KeyShift = keyboard.IsDown(KeyboardKeys.Shift);
-			io.KeySuper = keyboard.IsDown(KeyboardKeys.LeftSuper) || keyboard.IsDown(KeyboardKeys.RightSuper);
+			io.AddKeyEvent(ImGuiKey.ModCtrl, keyboard.IsDown(KeyboardKeys.Control));
+			io.AddKeyEvent(ImGuiKey.ModAlt, keyboard.IsDown(KeyboardKeys.Alt));
+			io.AddKeyEvent(ImGuiKey.ModShift, keyboard.IsDown(KeyboardKeys.Shift));
+			io.AddKeyEvent(ImGuiKey.ModSuper, keyboard.IsDown(KeyboardKeys.LeftSuper) || keyboard.IsDown(KeyboardKeys.RightSuper));
 		}
 
 		public static void RenderImDrawData(ImDrawDataPtr drawDataPtr) {

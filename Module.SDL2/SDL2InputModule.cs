@@ -136,6 +136,16 @@ namespace Module.SDL2 {
 				//Uppercase Letters
 				case SDL.SDL_Keycode.SDLK_KP_A:
 					return KeyboardKeys.A;
+				case SDL.SDL_Keycode.SDLK_KP_B:
+					return KeyboardKeys.b;
+				case SDL.SDL_Keycode.SDLK_KP_C:
+					return KeyboardKeys.c;
+				case SDL.SDL_Keycode.SDLK_KP_D:
+					return KeyboardKeys.d;
+				case SDL.SDL_Keycode.SDLK_KP_E:
+					return KeyboardKeys.e;
+				case SDL.SDL_Keycode.SDLK_KP_F:
+					return KeyboardKeys.f;
 				
 				//Lowercase Letters
 				case SDL.SDL_Keycode.SDLK_a:
@@ -190,7 +200,18 @@ namespace Module.SDL2 {
 					return KeyboardKeys.y;
 				case SDL.SDL_Keycode.SDLK_z:
 					return KeyboardKeys.z;
+				
+				//Super Keys
+				case SDL.SDL_Keycode.SDLK_LCTRL:
+					return KeyboardKeys.Control;
+				case SDL.SDL_Keycode.SDLK_LSHIFT:
+					return KeyboardKeys.Shift;
+				case SDL.SDL_Keycode.SDLK_LALT:
+					return KeyboardKeys.Alt;
+				
+				//Default
 				default:
+					Debug.Warning(GetType().Name, $"Key missing from input module: ({keycode})");
 					return KeyboardKeys.Enter;
 			}
 		}

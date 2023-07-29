@@ -1,14 +1,18 @@
 ﻿namespace RPG.Engine.Core {
+	
 	using Attributes;
 	using Components;
 	using Components.Interfaces;
+	using Newtonsoft.Json.Linq;
+	using Serialization;
+	using Serialization.Interfaces;
 	using Utility;
 
 	/// <summary>
 	/// Nodes are the base building block, nodes can contain components and have other children nodes under them.
 	/// Nodes Always come with a TransformComponent
 	/// </summary>
-	public class Node {
+	public class Node : ISerialize<Node> {
 
 
 		#region Constructor
@@ -18,6 +22,7 @@
 			this.Guid = Guid.NewGuid();
 			this.IsEnabled = true;
 			this.Tag = String.Empty;
+			GuidDatabase.Instance.NodeMap.Add(this.Guid, this);
 			AddComponent<Transform>();
 		}
 
@@ -111,6 +116,18 @@
 			} else if (isSingular) {
 				Debug.Error(GetType().Name, $"Node ({this.Name}) already contains the component ({typeof(T).Name}) and it was marked as singular.");
 			}
+		}
+
+		#endregion
+
+
+		#region ISerialize
+
+		public JObject Serialize() {
+			JObject jsonObject = new JObject();
+			
+			
+			return jsonObject;
 		}
 
 		#endregion
