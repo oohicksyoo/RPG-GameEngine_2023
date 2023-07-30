@@ -12,7 +12,7 @@
 	/// Nodes are the base building block, nodes can contain components and have other children nodes under them.
 	/// Nodes Always come with a TransformComponent
 	/// </summary>
-	public class Node : ISerialize<Node> {
+	public class Node : ISerialize {
 
 
 		#region Constructor
@@ -122,12 +122,22 @@
 
 
 		#region ISerialize
+		
+		public string AssetName => $"{this.Name}";
+
+		public string AssetExtension => "node";
+		
+		public string SpecialFolder => $"Nodes";
 
 		public JObject Serialize() {
 			JObject jsonObject = new JObject();
 			
 			
 			return jsonObject;
+		}
+
+		public void Deserialize(JObject jObject) {
+			
 		}
 
 		#endregion

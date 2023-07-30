@@ -1,31 +1,22 @@
 ﻿namespace RPG.DearImGUI.Windows {
+	using System.Numerics;
 	using Engine.Core;
 	using Engine.Input;
 	using Engine.Modules;
 	using Engine.Utility;
 	using ImGuiNET;
+	using Popups;
 
 	public class MenuBarWindow : AbstractWindow {
-
-
-		#region Types
-
-		private struct MenuItem {
-			public string name;
-			public string shortcut;
-			public Action onClickAction;
-			public KeyboardKeys mod;
-			public KeyboardKeys key;
-			public bool hasShortcut;
-		}
-
-		#endregion
 		
 
 		#region NonSerialized Fields
 		
 		[NonSerialized]
-		private Dictionary<string, List<MenuItem>> menuMap;
+		private Dictionary<string, List<MenuItemData>> menuItemDataMap;
+
+		[NonSerialized]
+		private Dictionary<string, AbstractPopup> openedPopupsMap;
 
 		#endregion
 		
@@ -35,6 +26,9 @@
 		public MenuBarWindow() : base(true) {
 			SubscribeToMenuBar("File", "New", KeyboardKeyMod.CTRL, KeyboardKeys.n, OnNewNode);
 			SubscribeToMenuBar("File", "Quit", OnQuit);
+			
+			SubscribeToMenuBar("Project", "Settings", KeyboardKeyMod.CTRL, KeyboardKeys.p, OnProjectSettings);
+			SubscribeToMenuBar("Editor", "Settings", OnEditorSettings);
 		}
 
 		#endregion
@@ -42,10 +36,21 @@
 
 		#region Properties
 
-		private Dictionary<string, List<MenuItem>> MenuMap {
+		private Dictionary<string, List<MenuItemData>> MenuItemDataMap {
 			get {
-				return menuMap ??= new Dictionary<string, List<MenuItem>>();
+				return menuItemDataMap ??= new Dictionary<string, List<MenuItemData>>();
 			}
+		}
+
+		private Dictionary<string, AbstractPopup> OpenedPopupsMap {
+			get {
+				return openedPopupsMap ??= new Dictionary<string, AbstractPopup>();
+			}
+		}
+
+		private string OpenPopupKey {
+			get;
+			set;
 		}
 
 		#endregion
@@ -57,6 +62,7 @@
 
 		public override void Render(uint dockId) {
 			OnRenderGui();
+			RenderPopups();
 		}
 
 		protected override void OnRenderGui() {
@@ -72,7 +78,7 @@
 		#region Public Methods
 
 		public void SubscribeToMenuBar(string menuName, string name, Action onClickAction) {
-			MenuItem menuItem = new MenuItem();
+			MenuItemData menuItem = new MenuItemData();
 			menuItem.name = name;
 			menuItem.shortcut = String.Empty;
 			menuItem.onClickAction = onClickAction;
@@ -82,7 +88,7 @@
 		}
 
 		public void SubscribeToMenuBar(string menuName, string name, KeyboardKeyMod mod, KeyboardKeys key, Action onClickAction) {
-			MenuItem menuItem = new MenuItem();
+			MenuItemData menuItem = new MenuItemData();
 			menuItem.name = name;
 			menuItem.shortcut = $"{mod.ToString().ToUpper()}+{key.ToString().ToUpper()}";
 			menuItem.onClickAction = onClickAction;
@@ -95,8 +101,8 @@
 
 		public void CheckShortcuts() {
 			Keyboard keyboard = Application.Instance.InputModule.Keyboard;
-			foreach (List<MenuItem> menuItems in this.MenuMap.Values) {
-				foreach (MenuItem menuItem in menuItems) {
+			foreach (List<MenuItemData> menuItems in this.MenuItemDataMap.Values) {
+				foreach (MenuItemData menuItem in menuItems) {
 					if (menuItem.hasShortcut) {
 						if (keyboard.IsDown(menuItem.mod) && keyboard.IsPressed(menuItem.key)) {
 							menuItem.onClickAction?.Invoke();
@@ -106,21 +112,49 @@
 			}
 			
 		}
+		
+		//TODO: Expose this more so others in their project can use this functionality to open popups
+		public void OpenPopup(AbstractPopup abstractPopup) {
+			this.OpenPopupKey = abstractPopup.Name;
+			this.OpenedPopupsMap.TryAdd(abstractPopup.Name, abstractPopup);
+		}
 
 		#endregion
 
 
 		#region Private Methods
 
-		private void SubscribeToMenuBar(string menuName, MenuItem menuItem) {
+		private void RenderPopups() {
+			if (!string.IsNullOrEmpty(this.OpenPopupKey)) {
+				if (ImGui.IsPopupOpen(this.OpenPopupKey)) {
+					this.OpenedPopupsMap.Remove(this.OpenPopupKey);
+					ImGui.CloseCurrentPopup();
+				} else {
+					ImGui.OpenPopup(this.OpenPopupKey);
+				}
+				this.OpenPopupKey = string.Empty;
+			}
+
+			foreach (AbstractPopup abstractPopup in this.OpenedPopupsMap.Values) {
+				if (!abstractPopup.IsOpen) {
+					//Popup x was clicked and we need to cleanup
+					abstractPopup.Close();
+					this.OpenedPopupsMap.Remove(abstractPopup.Name);
+				} else {
+					abstractPopup?.Render();
+				}
+			}
+		}
+
+		private void SubscribeToMenuBar(string menuName, MenuItemData menuItem) {
 			//Doesnt contain this menu name yet
-			if (!this.MenuMap.ContainsKey(menuName)) {
-				this.MenuMap.Add(menuName, new List<MenuItem>() {menuItem});
+			if (!this.MenuItemDataMap.ContainsKey(menuName)) {
+				this.MenuItemDataMap.Add(menuName, new List<MenuItemData>() {menuItem});
 				return;
 			}
 			
 			//Menu Item Does exist
-			List<MenuItem> menuItems = this.MenuMap[menuName];
+			List<MenuItemData> menuItems = this.MenuItemDataMap[menuName];
 
 			if (!menuItems.Any(x => x.name == menuItem.name)) {
 				menuItems.Add(menuItem);
@@ -128,29 +162,23 @@
 				Debug.Warning(GetType().Name, $"MenuItem ({menuItem.name}) already exists and we can not add in the new one");
 			}
 			
-			this.MenuMap[menuName] = menuItems;
+			this.MenuItemDataMap[menuName] = menuItems;
 		}
 
 		private void RenderMainMenuBar() {
-			foreach (KeyValuePair<string,List<MenuItem>> keyValuePair in this.MenuMap) {
+			foreach (KeyValuePair<string,List<MenuItemData>> keyValuePair in this.MenuItemDataMap) {
 				RenderMenu(keyValuePair.Key, keyValuePair.Value);
 			}
 		}
 
-		private void RenderMenu(string menuName, List<MenuItem> menuItems) {
+		private void RenderMenu(string menuName, List<MenuItemData> menuItems) {
 			if (ImGui.BeginMenu(menuName)) {
-				
-				foreach (MenuItem menuItem in menuItems) {
-					RenderMenuItem(menuItem.name, menuItem.shortcut, menuItem.onClickAction);
+				foreach (MenuItemData menuItem in menuItems) {
+					if (ImGui.MenuItem(menuItem.name, menuItem.shortcut)) {
+						menuItem.onClickAction?.Invoke();
+					}
 				}
-				
 				ImGui.EndMenu();
-			}
-		}
-
-		private void RenderMenuItem(string menuItemName, string shortcut, Action onClickAction) {
-			if (ImGui.MenuItem(menuItemName, shortcut)) {
-				onClickAction?.Invoke();
 			}
 		}
 
@@ -165,6 +193,14 @@
 
 		private void OnQuit() {
 			Application.Instance.RequestShutdown();
+		}
+
+		private void OnProjectSettings() {
+			OpenPopup(new ProjectSettingsPopup());
+		}
+
+		private void OnEditorSettings() {
+			OpenPopup(new EditorSettingsPopup());
 		}
 
 		#endregion

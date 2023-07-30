@@ -9,10 +9,23 @@
 
 		#region Public Methods
 
-		public void Serialize<T>(ISerialize<T> serializableAsset, string assetName) {
+		public void Serialize(ISerialize serializableAsset) {
 			JObject jObject = serializableAsset.Serialize();
 			string data = JsonConvert.SerializeObject(jObject, Formatting.Indented);
-			File.WriteAllText($"{Directory.GetCurrentDirectory()}/{assetName}.node", data);
+			string specialFolders = string.IsNullOrEmpty(serializableAsset.SpecialFolder) ? String.Empty : $"{serializableAsset.SpecialFolder}/";
+			File.WriteAllText($"{Directory.GetCurrentDirectory()}/{specialFolders}{serializableAsset.AssetName}.{serializableAsset.AssetExtension}", data);
+		}
+
+		public void Deserialize(ISerialize serializableAsset) {
+			string specialFolders = string.IsNullOrEmpty(serializableAsset.SpecialFolder) ? String.Empty : $"{serializableAsset.SpecialFolder}/";
+			string path = $"{Directory.GetCurrentDirectory()}/{specialFolders}{serializableAsset.AssetName}.{serializableAsset.AssetExtension}";
+			JObject jObject = null;
+			if (File.Exists(path)) {
+				string data = File.ReadAllText(path);
+				jObject = JObject.Parse(data);
+			}
+			
+			serializableAsset.Deserialize(jObject);
 		}
 
 		#endregion
