@@ -3,6 +3,8 @@
 	using Attributes;
 	using Core;
 	using Interfaces;
+	using Newtonsoft.Json.Linq;
+	using Serialization;
 
 	[Singular]
 	public class Transform : AbstractComponent {
@@ -36,6 +38,27 @@
 			get;
 			set;
 		} = Vector2.One;
+
+		#endregion
+		
+		
+		#region ISerialize
+
+		public override JObject Serialize() {
+			JObject jsonObject = base.Serialize();
+
+			jsonObject[nameof(this.Position)] = this.Position.ToJObject();
+			jsonObject[nameof(this.Rotation)] = this.Rotation;
+			jsonObject[nameof(this.Scale)] = this.Scale.ToJObject();
+			
+			return jsonObject;
+		}
+
+		public override void Deserialize(JObject jsonObject) {
+			this.Position = ((JObject)jsonObject[nameof(this.Position)]).FromJObject();
+			this.Rotation = (float)jsonObject[nameof(this.Rotation)];
+			this.Scale = ((JObject)jsonObject[nameof(this.Scale)]).FromJObject();
+		}
 
 		#endregion
 		

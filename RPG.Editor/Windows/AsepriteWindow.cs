@@ -26,7 +26,7 @@
 
 		protected override void OnRenderGui() {
 			if (ImGui.Button("Load Sample File")) {
-				this.AsepriteFile = new AsepriteFile(Directory.GetCurrentDirectory() + "/Assets/Sample.aseprite");
+				this.AsepriteFile = new AsepriteFile(Directory.GetCurrentDirectory() + "/Assets/Graphics/Sample.aseprite");
 				this.Texture = new Texture(this.AsepriteFile.GetPixels(), (uint)this.AsepriteFile.TextureWidth, (uint)this.AsepriteFile.TextureHeight, this.AsepriteFile.FilePath, ColorType.RGBA);
 			}
 

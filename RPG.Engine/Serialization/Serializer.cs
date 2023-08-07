@@ -13,19 +13,27 @@
 			JObject jObject = serializableAsset.Serialize();
 			string data = JsonConvert.SerializeObject(jObject, Formatting.Indented);
 			string specialFolders = string.IsNullOrEmpty(serializableAsset.SpecialFolder) ? String.Empty : $"{serializableAsset.SpecialFolder}/";
-			File.WriteAllText($"{Directory.GetCurrentDirectory()}/{specialFolders}{serializableAsset.AssetName}.{serializableAsset.AssetExtension}", data);
+			string directoryLocation = $"{Directory.GetCurrentDirectory()}/{specialFolders}";
+			string path = $"{directoryLocation}{serializableAsset.AssetName}.{serializableAsset.AssetExtension}";
+			Directory.CreateDirectory(directoryLocation);
+			File.WriteAllText(path, data);
 		}
 
 		public void Deserialize(ISerialize serializableAsset) {
 			string specialFolders = string.IsNullOrEmpty(serializableAsset.SpecialFolder) ? String.Empty : $"{serializableAsset.SpecialFolder}/";
-			string path = $"{Directory.GetCurrentDirectory()}/{specialFolders}{serializableAsset.AssetName}.{serializableAsset.AssetExtension}";
+			string directoryLocation = $"{Directory.GetCurrentDirectory()}/{specialFolders}";
+			string path = $"{directoryLocation}{serializableAsset.AssetName}.{serializableAsset.AssetExtension}";
+			
 			JObject jObject = null;
 			if (File.Exists(path)) {
 				string data = File.ReadAllText(path);
 				jObject = JObject.Parse(data);
 			}
-			
-			serializableAsset.Deserialize(jObject);
+
+			//Only deserialize if the jObject was properly loaded from disk, otherwise it might not exist and ISerialize classes should self handle
+			if (jObject != null) {
+				serializableAsset.Deserialize(jObject);
+			}
 		}
 
 		#endregion

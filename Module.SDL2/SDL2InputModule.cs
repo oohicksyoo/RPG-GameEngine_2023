@@ -110,6 +110,10 @@ namespace Module.SDL2 {
 					return KeyboardKeys.Backspace;
 				case SDL.SDL_Keycode.SDLK_PERIOD:
 					return KeyboardKeys.Period;
+				case SDL.SDL_Keycode.SDLK_RETURN:
+					return KeyboardKeys.Enter;
+				case SDL.SDL_Keycode.SDLK_SPACE:
+					return KeyboardKeys.Space;
 				
 				//Numbers
 				case SDL.SDL_Keycode.SDLK_0:
@@ -212,7 +216,7 @@ namespace Module.SDL2 {
 				//Default
 				default:
 					Debug.Warning(GetType().Name, $"Key missing from input module: ({keycode})");
-					return KeyboardKeys.Enter;
+					return KeyboardKeys.Unknown;
 			}
 		}
 

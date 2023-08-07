@@ -9,7 +9,7 @@
 		#region Constructor
 
 		public ProjectSettingsPopup() {
-			Serializer.Instance.Deserialize(ProjectSettings.Instance);
+			
 		}
 
 		#endregion
@@ -25,10 +25,16 @@
 			if (ImGui.InputText($"Name", ref name, 128)) {
 				ProjectSettings.Instance.Name = name;
 			}
+			
+			//Starting Node
+			string startingNode = ProjectSettings.Instance.StartingNode;
+			if (ImGui.InputText($"Starting Node", ref startingNode, 128)) {
+				ProjectSettings.Instance.StartingNode = startingNode;
+			}
 		}
 		
 		public override void Close() {
-			Serializer.Instance.Serialize(ProjectSettings.Instance);
+			ProjectSettings.Instance.Save();
 		}
 
 		#endregion

@@ -3,6 +3,8 @@
 	using Engine.Core;
 	using Engine.Input;
 	using Engine.Modules;
+	using Engine.Modules.Interfaces;
+	using Engine.Serialization;
 	using Engine.Utility;
 	using ImGuiNET;
 	using Popups;
@@ -24,7 +26,8 @@
 		#region Constructor
 
 		public MenuBarWindow() : base(true) {
-			SubscribeToMenuBar("File", "New", KeyboardKeyMod.CTRL, KeyboardKeys.n, OnNewNode);
+			SubscribeToMenuBar("File", "New Node Group", KeyboardKeyMod.CTRL, KeyboardKeys.n, OnNewNodeGroup);
+			SubscribeToMenuBar("File", "Save Node Group", KeyboardKeyMod.CTRL, KeyboardKeys.s, OnSaveNodeGroup);
 			SubscribeToMenuBar("File", "Quit", OnQuit);
 			
 			SubscribeToMenuBar("Project", "Settings", KeyboardKeyMod.CTRL, KeyboardKeys.p, OnProjectSettings);
@@ -187,8 +190,24 @@
 
 		#region MenuItem Actions
 
-		private void OnNewNode() {
-			Debug.Log(GetType().Name,"New");
+		private void OnNewNodeGroup() {
+			//TODO: Detect if the current SceneGraphModule RootNode is dirty to prompt the user to maybe save
+			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
+			if (sceneGraphModule != null) {
+				sceneGraphModule.RootNode = new Node("New Node");
+			}
+
+			IEditorModule editorModule = Application.Instance.EditorModule;
+			if (editorModule != null) {
+				editorModule.UpdateHierachyNode();
+			}
+		}
+
+		private void OnSaveNodeGroup() {
+			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
+			if (sceneGraphModule != null) {
+				Serializer.Instance.Serialize(sceneGraphModule.RootNode);
+			}
 		}
 
 		private void OnQuit() {

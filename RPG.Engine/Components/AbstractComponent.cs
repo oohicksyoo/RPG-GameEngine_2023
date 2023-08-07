@@ -1,6 +1,7 @@
 ﻿namespace RPG.Engine.Components {
 	using Core;
 	using Interfaces;
+	using Newtonsoft.Json.Linq;
 	using Serialization;
 
 	public abstract class AbstractComponent : IComponent {
@@ -27,6 +28,42 @@
 		public Guid Guid {
 			get;
 			private set;
+		}
+
+		#endregion
+
+
+		#region ISerialize
+
+		/// <summary>
+		/// File name
+		/// </summary>
+		public string AssetName => GetType().Name;
+
+		/// <summary>
+		/// File extension of this asset; the . is not needed
+		/// </summary>
+		public string AssetExtension => "component";
+
+		/// <summary>
+		/// Any special folder structure between the exe and the asset
+		/// </summary>
+		public string SpecialFolder => string.Empty;
+
+		public virtual JObject Serialize() {
+			JObject jsonObject = new JObject();
+
+			//Guid
+			jsonObject[nameof(this.Guid)] = this.Guid;
+			
+			//Type
+			jsonObject["Type"] = GetType().AssemblyQualifiedName;
+
+			return jsonObject;
+		}
+
+		public virtual void Deserialize(JObject jObject) {
+			
 		}
 
 		#endregion

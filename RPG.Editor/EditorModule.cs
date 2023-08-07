@@ -78,14 +78,7 @@
 		}
 
 		public void Start() {
-			//Configure main node for HierarchyWindow, double check if SceneGraphModule is in fact being used
-			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
-			Node node = new Node("Empty");
-			if (sceneGraphModule != null) {
-				node = sceneGraphModule.RootNode;
-			}
-
-			this.HierarchyWindow.RootNode = node;
+			UpdateHierachyNode();
 		}
 
 		public void Update() {
@@ -116,6 +109,17 @@
 
 		public void SubscribeToMenuBar(string menuName, string name, Action onClickAction) {
 			this.MenuBarWindow.SubscribeToMenuBar(menuName, name, onClickAction);
+		}
+
+		public void UpdateHierachyNode() {
+			//Configure main node for HierarchyWindow, double check if SceneGraphModule is in fact being used
+			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
+			Node node = new Node("Empty");
+			if (sceneGraphModule != null) {
+				node = sceneGraphModule.RootNode;
+			}
+
+			this.HierarchyWindow.RootNode = node;
 		}
 
 		#endregion
@@ -169,6 +173,7 @@
 			this.Windows.Add(new RenderTargetWindow("Scene", Application.Instance.SceneFramebuffer.RenderTextureId));
 			this.Windows.Add(new InspectorWindow());
 			this.Windows.Add(new AsepriteWindow(true));
+			this.Windows.Add(new AssetWindow());
 			//this.Windows.Add(new DemoWindow(true));
 		}
 

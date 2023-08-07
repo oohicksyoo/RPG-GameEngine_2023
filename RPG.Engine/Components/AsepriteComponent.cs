@@ -2,6 +2,7 @@
 	using Attributes;
 	using Graphics;
 	using Interfaces;
+	using Newtonsoft.Json.Linq;
 	using Serialization;
 
 	public class AsepriteComponent : AbstractComponent, IComponentRenderable {
@@ -42,6 +43,20 @@
 
 		public int TotalFrameCount {
 			get;
+		}
+
+		#endregion
+		
+		
+		#region ISerialize
+
+		public override JObject Serialize() {
+			JObject jsonObject = base.Serialize();
+			return jsonObject;
+		}
+
+		public override void Deserialize(JObject jObject) {
+			
 		}
 
 		#endregion

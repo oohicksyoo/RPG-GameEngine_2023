@@ -2,7 +2,7 @@
 	using Newtonsoft.Json.Linq;
 
 	public interface ISerialize {
-
+		
 		/// <summary>
 		/// File name
 		/// </summary>

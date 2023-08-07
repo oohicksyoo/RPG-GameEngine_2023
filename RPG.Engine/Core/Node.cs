@@ -127,17 +127,88 @@
 
 		public string AssetExtension => "node";
 		
-		public string SpecialFolder => $"Nodes";
+		public string SpecialFolder => $"Assets/Nodes";
+
+		/// <summary>
+		/// Gets the assembly type for serialization
+		/// </summary>
+		private string Type => GetType().AssemblyQualifiedName;
 
 		public JObject Serialize() {
 			JObject jsonObject = new JObject();
+
+			//Name
+			jsonObject[nameof(this.Name)] = this.Name;
 			
+			//Guid
+			jsonObject[nameof(this.Guid)] = this.Guid;
 			
+			//Assembly Type
+			jsonObject[nameof(this.Type)] = this.Type;
+			
+			//IsEnabled
+			jsonObject[nameof(this.IsEnabled)] = this.IsEnabled;
+			
+			//Tag
+			jsonObject[nameof(this.Tag)] = this.Tag;
+			
+			//Components
+			JArray components = new JArray();
+			foreach (IComponent component in this.Components) {
+				components.Add(component.Serialize());
+			}
+			jsonObject[nameof(this.Components)] = components;
+
+			//Children
+			JArray children = new JArray();
+			foreach (Node child in this.Children) {
+				children.Add(child.Serialize());
+			}
+			jsonObject[nameof(this.Children)] = children;
+
 			return jsonObject;
 		}
 
-		public void Deserialize(JObject jObject) {
+		public void Deserialize(JObject jsonObject) {
+			//Name
+			this.Name = (string)jsonObject[nameof(this.Name)];
 			
+			//Guid
+			this.Guid = Guid.Parse((string)jsonObject[nameof(this.Guid)]);
+			
+			//Assembly Type - Not Needed
+			//this.Type = (string)jsonObject[nameof(this.Type)];
+			
+			//IsEnabled
+			this.IsEnabled = (bool)jsonObject[nameof(this.IsEnabled)];
+			
+			//Tag
+			this.Tag = (string)jsonObject[nameof(this.Tag)];
+			
+			//Components
+			//Pre Work to get all possible component types from our different assemblies
+			List<Type> types = ComponentsHelper.GetAllAvailableComponentTypes();
+			JArray components = (JArray)jsonObject[nameof(this.Components)];
+			this.Components.Clear(); //Clear all components because we are going to fill in Transform ourselves
+			foreach (JObject componentObject in components) {
+				string assemblyType = (string)componentObject["Type"];
+				Type type = types.SingleOrDefault(x => x.AssemblyQualifiedName == assemblyType);
+				if (type != null) {
+					IComponent component = (IComponent)Activator.CreateInstance(type);
+					component.Deserialize(componentObject);
+					this.Components.Add(component);
+				} else {
+					Debug.Warning(GetType().Name, $"Could not find type of ({assemblyType}) to add to component.");
+				}
+			}
+
+			//Children
+			JArray children = (JArray)jsonObject[nameof(this.Children)];
+			foreach (JObject child in children) {
+				Node childNode = new Node();
+				childNode.Deserialize(child);
+				this.Children.Add(childNode);
+			}
 		}
 
 		#endregion

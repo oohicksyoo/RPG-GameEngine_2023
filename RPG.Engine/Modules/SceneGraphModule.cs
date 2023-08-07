@@ -6,6 +6,8 @@
 	using Core;
 	using Graphics;
 	using Interfaces;
+	using Serialization;
+	using Settings;
 	using Utility;
 
 	public class SceneGraphModule : IModule, IGraphicsClear, IRender {
@@ -15,7 +17,7 @@
 
 		public Node RootNode {
 			get;
-			private set;
+			set;
 		}
 
 		#endregion
@@ -32,10 +34,16 @@
 		public int Priority => int.MaxValue - 5;
 
 		public void Awake() {
-			this.RootNode = new Node("Root");
-			this.RootNode.Add(new Node("Sample 1"));
-			this.RootNode.Add(new Node("Sample 2"));
-			this.RootNode.Add(new Node("Sample 3"));
+			string startingNode = ProjectSettings.Instance.StartingNode;
+			if (string.IsNullOrEmpty(startingNode)) {
+				startingNode = "Root";
+				ProjectSettings.Instance.StartingNode = startingNode;
+				ProjectSettings.Instance.Save();
+			}
+			
+			//Load in this node data for us
+			this.RootNode = new Node(startingNode);
+			Serializer.Instance.Deserialize(this.RootNode);
 		}
 
 		public void Start() {
