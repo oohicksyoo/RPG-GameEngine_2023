@@ -170,11 +170,17 @@
 		}
 
 		public void Deserialize(JObject jsonObject) {
+			//Remove Node From NodeDatabase
+			GuidDatabase.Instance.NodeMap.Remove(this.Guid);
+			
 			//Name
 			this.Name = (string)jsonObject[nameof(this.Name)];
 			
 			//Guid
 			this.Guid = Guid.Parse((string)jsonObject[nameof(this.Guid)]);
+			
+			//Readd this Node back to the database
+			GuidDatabase.Instance.NodeMap.Add(this.Guid, this);
 			
 			//Assembly Type - Not Needed
 			//this.Type = (string)jsonObject[nameof(this.Type)];
@@ -196,6 +202,7 @@
 				if (type != null) {
 					IComponent component = (IComponent)Activator.CreateInstance(type);
 					component.Deserialize(componentObject);
+					component.Node = this;
 					this.Components.Add(component);
 				} else {
 					Debug.Warning(GetType().Name, $"Could not find type of ({assemblyType}) to add to component.");
@@ -209,6 +216,8 @@
 				childNode.Deserialize(child);
 				this.Children.Add(childNode);
 			}
+			
+			//Hook up my serialized values
 		}
 
 		#endregion
