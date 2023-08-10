@@ -23,7 +23,17 @@
 		}
 
 		private void RenderDirectory(string path) {
-				
+			string[] files = Directory.GetFiles(path);
+
+			foreach (var filePath in files) {
+				FileInfo fi = new FileInfo(filePath);
+				string[] split = fi.Name.Split('.');
+				string name = split[0];
+				string extension = split[1];
+				if (ImGui.Selectable(name)) {
+					
+				}
+			}
 		}
 	}
 }
