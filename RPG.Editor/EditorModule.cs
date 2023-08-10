@@ -249,12 +249,15 @@
 			string value = string.Empty;
 			bool isMissing = obj == null;
 			if (obj != null) {
-				value = $"{((IComponent)propertyInfo.GetValue(component)).Node.Name} - {propertyInfo.Name}";
+				IComponent com = (IComponent)propertyInfo.GetValue(component);
+				if (com.Node != null) {
+					value = $"{com.Node.Name}";
+				} else {
+					value = $"{((IComponent)propertyInfo.GetValue(component)).Guid}";
+				}
 			} else {
 				value = Guid.Empty.ToString();
 			}
-
-			
 			
 			if (isMissing) {
 				Color color = Color.DarkRed;
@@ -263,7 +266,7 @@
 			}
 			
 			ImGui.Text(value);
-			
+
 			//Handle Drop Target
 			if (ImGui.BeginDragDropTarget()) {
 				ImGuiPayloadPtr componentPayload = ImGui.AcceptDragDropPayload("_IComponent");
@@ -309,10 +312,6 @@
 			
 			ImGui.SameLine();
 			ImGui.Text($"{propertyInfo.Name}");
-
-			if (!isMissing) {
-				ImGui.TextDisabled($"{((IComponent)propertyInfo.GetValue(component)).Guid}");
-			}
 		}
 
 		public void InspectorRenderAsepriteAssetFile(object component, PropertyInfo propertyInfo) {
