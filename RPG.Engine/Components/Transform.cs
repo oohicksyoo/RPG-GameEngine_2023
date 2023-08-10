@@ -55,6 +55,8 @@
 		}
 
 		public override void Deserialize(JObject jsonObject) {
+			base.Deserialize(jsonObject);
+			
 			this.Position = ((JObject)jsonObject[nameof(this.Position)]).FromJObject();
 			this.Rotation = (float)jsonObject[nameof(this.Rotation)];
 			this.Scale = ((JObject)jsonObject[nameof(this.Scale)]).FromJObject();

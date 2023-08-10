@@ -62,8 +62,15 @@
 			return jsonObject;
 		}
 
-		public virtual void Deserialize(JObject jObject) {
+		public virtual void Deserialize(JObject jsonObject) {
+			//Remove Node From NodeDatabase
+			GuidDatabase.Instance.ComponentMap.Remove(this.Guid);
 			
+			//Guid
+			this.Guid = Guid.Parse((string)jsonObject[nameof(this.Guid)]);
+			
+			//Readd this Node back to the database
+			GuidDatabase.Instance.ComponentMap.Add(this.Guid, this);
 		}
 
 		#endregion

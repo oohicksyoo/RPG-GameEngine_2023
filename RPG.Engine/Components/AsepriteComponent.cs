@@ -55,8 +55,8 @@
 			return jsonObject;
 		}
 
-		public override void Deserialize(JObject jObject) {
-			
+		public override void Deserialize(JObject jsonObject) {
+			base.Deserialize(jsonObject);
 		}
 
 		#endregion
