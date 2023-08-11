@@ -3,16 +3,16 @@
 	using Interfaces;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
+	using Serialization.Interfaces;
 
-	public abstract class AbstractComponent : IComponent {
+	public abstract class AbstractComponent : IComponent, IGuidDatabase {
 
 
 		#region Constructor
 
 		public AbstractComponent() {
-			//TODO: Be able to pass in guid
 			this.Guid = Guid.NewGuid();
-			GuidDatabase.Instance.ComponentMap.Add(this.Guid, this);
+			AddToGuidDatabase();
 		}
 
 		#endregion
@@ -64,13 +64,26 @@
 
 		public virtual void Deserialize(JObject jsonObject) {
 			//Remove Node From NodeDatabase
-			GuidDatabase.Instance.ComponentMap.Remove(this.Guid);
+			RemoveFromGuidDatabase();
 			
 			//Guid
 			this.Guid = Guid.Parse((string)jsonObject[nameof(this.Guid)]);
 			
 			//Readd this Node back to the database
+			AddToGuidDatabase();
+		}
+
+		#endregion
+		
+		
+		#region IGuidDatabase
+
+		public void AddToGuidDatabase() {
 			GuidDatabase.Instance.ComponentMap.Add(this.Guid, this);
+		}
+
+		public void RemoveFromGuidDatabase() {
+			GuidDatabase.Instance.ComponentMap.Remove(this.Guid);
 		}
 
 		#endregion

@@ -1,8 +1,13 @@
 ﻿namespace RPG.DearImGUI.Windows {
 	using System.Runtime.InteropServices;
+	using DragDrop;
 	using Engine.Core;
 	using Engine.Modules;
+	using Engine.Serialization;
+	using Engine.Serialization.Interfaces;
+	using Engine.Utility;
 	using ImGuiNET;
+	using Utility;
 
 	/// <summary>
 	/// Shows the Hierarchy starting at a specific Node, most times is the SceneGraphModule root Node but could be others if editing a Copy
@@ -12,12 +17,13 @@
 		/// <summary>
 		/// Main node starting point
 		/// </summary>
-		public Node RootNode {
-			private get;
+		private Node RootNode {
+			get;
 			set;
 		}
 		
 		public HierarchyWindow(bool isOpen = true) : base(isOpen) {
+			
 		}
 
 		public override string Name => "Hierarchy";
@@ -26,8 +32,22 @@
 			if (this.RootNode == null) {
 				return;
 			}
-			
-			if (ImGui.CollapsingHeader($"{this.RootNode.Name}##Header", ImGuiTreeNodeFlags.DefaultOpen)) {
+
+			bool isOpen = ImGui.CollapsingHeader($"{this.RootNode.Name}##Header", ImGuiTreeNodeFlags.DefaultOpen);
+
+			//Drop Target
+			DropTarget dropTarget = ImGuiHelpers.DropTarget<NodeDragDropAsset>();
+			if (dropTarget.HasDragDropAsset) {
+				Node node = new Node(dropTarget.DragDropAsset.Name);
+				Serializer.Instance.Deserialize(node);
+				SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
+				if (sceneGraphModule != null) { 
+					sceneGraphModule.RootNode = node;
+				}
+				SetRootNode(node);
+			}
+
+			if (isOpen) {
 				foreach (Node nodeChild in this.RootNode.Children) {
 					RenderSingleNode(nodeChild);
 				}
@@ -78,6 +98,11 @@
 			}
 			
 			ImGui.Unindent();
+		}
+
+		public void SetRootNode(Node node) {
+			((IGuidDatabase)node).RemoveFromGuidDatabase();
+			this.RootNode = node;
 		}
 	}
 }

@@ -12,7 +12,7 @@
 	/// Nodes are the base building block, nodes can contain components and have other children nodes under them.
 	/// Nodes Always come with a TransformComponent
 	/// </summary>
-	public class Node : ISerialize {
+	public class Node : ISerialize, IGuidDatabase {
 
 
 		#region Constructor
@@ -22,7 +22,7 @@
 			this.Guid = Guid.NewGuid();
 			this.IsEnabled = true;
 			this.Tag = String.Empty;
-			GuidDatabase.Instance.NodeMap.Add(this.Guid, this);
+			AddToGuidDatabase();
 			AddComponent<Transform>();
 		}
 
@@ -171,7 +171,7 @@
 
 		public void Deserialize(JObject jsonObject) {
 			//Remove Node From NodeDatabase
-			GuidDatabase.Instance.NodeMap.Remove(this.Guid);
+			RemoveFromGuidDatabase();
 			
 			//Name
 			this.Name = (string)jsonObject[nameof(this.Name)];
@@ -180,7 +180,7 @@
 			this.Guid = Guid.Parse((string)jsonObject[nameof(this.Guid)]);
 			
 			//Readd this Node back to the database
-			GuidDatabase.Instance.NodeMap.Add(this.Guid, this);
+			AddToGuidDatabase();
 			
 			//Assembly Type - Not Needed
 			//this.Type = (string)jsonObject[nameof(this.Type)];
@@ -218,6 +218,27 @@
 			}
 			
 			//Hook up my serialized values
+		}
+
+		#endregion
+
+
+		#region IGuidDatabase
+
+		public void AddToGuidDatabase() {
+			GuidDatabase.Instance.NodeMap.Add(this.Guid, this);
+		}
+
+		public void RemoveFromGuidDatabase() {
+			GuidDatabase.Instance.NodeMap.Remove(this.Guid);
+
+			foreach (IGuidDatabase component in components) {
+				component.RemoveFromGuidDatabase();
+			}
+
+			foreach (IGuidDatabase child in this.Children) {
+				child.RemoveFromGuidDatabase();
+			}
 		}
 
 		#endregion

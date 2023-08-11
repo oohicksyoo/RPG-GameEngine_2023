@@ -119,7 +119,7 @@
 				node = sceneGraphModule.RootNode;
 			}
 
-			this.HierarchyWindow.RootNode = node;
+			this.HierarchyWindow.SetRootNode(node);
 		}
 
 		#endregion

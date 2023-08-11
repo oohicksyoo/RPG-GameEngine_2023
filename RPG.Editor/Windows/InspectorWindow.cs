@@ -78,7 +78,7 @@
 					ImGui.OpenPopup($"Component Context##{component.Guid}");
 				}
 				
-				//TODO: AddDragDrop
+				//Drag Drop Source
 				if (ImGui.BeginDragDropSource()) {
 					int sizeOfChar = Marshal.SizeOf<char>();
 					string dataString = $"{component.Guid}";
