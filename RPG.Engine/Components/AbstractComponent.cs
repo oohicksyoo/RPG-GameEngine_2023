@@ -1,9 +1,11 @@
 ﻿namespace RPG.Engine.Components {
+	
 	using Core;
 	using Interfaces;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
 	using Serialization.Interfaces;
+	using Utility;
 
 	public abstract class AbstractComponent : IComponent, IGuidDatabase {
 
@@ -28,6 +30,18 @@
 		public Guid Guid {
 			get;
 			private set;
+		}
+
+		public virtual void Awake() {
+			Debug.Log(GetType().Name, $"{GetType().Name} - Awake");
+		}
+		
+		public virtual void Start() {
+			Debug.Log(GetType().Name, $"{GetType().Name} - Start");
+		}
+		
+		public virtual void Update() {
+			Debug.Log(GetType().Name, $"{GetType().Name} - Update");
 		}
 
 		#endregion

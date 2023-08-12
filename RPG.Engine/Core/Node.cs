@@ -3,6 +3,7 @@
 	using Attributes;
 	using Components;
 	using Components.Interfaces;
+	using Interfaces;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
 	using Serialization.Interfaces;
@@ -12,7 +13,7 @@
 	/// Nodes are the base building block, nodes can contain components and have other children nodes under them.
 	/// Nodes Always come with a TransformComponent
 	/// </summary>
-	public class Node : ISerialize, IGuidDatabase {
+	public class Node : ISerialize, IGuidDatabase, IRunnable {
 
 
 		#region Constructor
@@ -238,6 +239,41 @@
 
 			foreach (IGuidDatabase child in this.Children) {
 				child.RemoveFromGuidDatabase();
+			}
+		}
+
+		#endregion
+
+
+		#region IRunnable
+
+		public void Awake() {
+			foreach (IRunnable child in this.Children) {
+				child.Awake();
+			}
+
+			foreach (IRunnable component in this.Components) {
+				component.Awake();
+			}
+		}
+
+		public void Start() {
+			foreach (IRunnable child in this.Children) {
+				child.Start();
+			}
+
+			foreach (IRunnable component in this.Components) {
+				component.Start();
+			}
+		}
+
+		public void Update() {
+			foreach (IRunnable child in this.Children) {
+				child.Update();
+			}
+
+			foreach (IRunnable component in this.Components) {
+				component.Update();
 			}
 		}
 

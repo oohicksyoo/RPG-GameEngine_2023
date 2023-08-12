@@ -51,9 +51,14 @@ namespace RPG.Engine.Core {
 			private set;
 		}
 
-		public bool IsRunning {
+		public bool IsApplicationRunning {
 			get;
 			private set;
+		}
+
+		public bool IsGameRunning {
+			get;
+			set;
 		}
 		
 		/// <summary>
@@ -137,7 +142,7 @@ namespace RPG.Engine.Core {
 		}
 
 		public void RequestShutdown() {
-			this.IsRunning = false;
+			this.IsApplicationRunning = false;
 		}
 		
 		public void Register<T>() where T : IModule {
@@ -188,9 +193,10 @@ namespace RPG.Engine.Core {
 		#region Private Methods
 
 		private void RunGameLoop() {
-			this.IsRunning = !(this.SystemModule == null || this.GraphicsModule == null || this.InputModule == null);
+			this.IsApplicationRunning = !(this.SystemModule == null || this.GraphicsModule == null || this.InputModule == null);
+			this.IsGameRunning = !this.IsEditor;
 
-			while (this.IsRunning) {
+			while (this.IsApplicationRunning) {
 				this.SystemModule.TimeStep();
 				this.InputModule.BeginFrame();
 				
@@ -226,7 +232,7 @@ namespace RPG.Engine.Core {
 					//Scene Presenting
 					this.SystemModule.Present();
 				} else {
-					this.IsRunning = false;
+					this.IsApplicationRunning = false;
 				}
 			}
 			

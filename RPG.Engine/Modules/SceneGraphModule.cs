@@ -4,6 +4,7 @@
 	using System.Text;
 	using Components.Interfaces;
 	using Core;
+	using Core.Interfaces;
 	using Graphics;
 	using Interfaces;
 	using Serialization;
@@ -16,6 +17,11 @@
 		#region Property
 
 		public Node RootNode {
+			get;
+			set;
+		}
+
+		private bool HasInitializedRootNode {
 			get;
 			set;
 		}
@@ -47,11 +53,14 @@
 		}
 
 		public void Start() {
-			
+			InitializeRootNode();
 		}
 
 		public void Update() {
-			
+			if (Application.Instance.IsGameRunning) {
+				InitializeRootNode();
+				((IRunnable)this.RootNode).Update();
+			}
 		}
 
 		public void Shutdown() {
@@ -79,37 +88,16 @@
 
 		#region Private Methods
 
-		private void DebugSceneGraph() {
-			string output =	DebugSceneGraphNode(this.RootNode);
-			Debug.Log(this.ModuleName, $"{output}");
-		}
-
-		private string DebugSceneGraphNode(Node node, int indentLevel = 1) {
-			StringBuilder stringBuilder = new StringBuilder(); 
-			stringBuilder.Append(IndentLine(indentLevel));
-
-			stringBuilder.Append($"Node ({node.Name})");
-			foreach (IComponent component in node.Components) {
-				stringBuilder.Append(IndentLine(indentLevel));
-				stringBuilder.Append($"- {component.GetType().Name}");
+		private void InitializeRootNode() {
+			if (this.HasInitializedRootNode) {
+				return;
 			}
 			
-			foreach (Node childNode in node.Children) {
-				string output = DebugSceneGraphNode(childNode, indentLevel + 1);
-				stringBuilder.Append(output);
+			if (Application.Instance.IsGameRunning) {
+				((IRunnable)this.RootNode).Awake();
+				((IRunnable)this.RootNode).Start();
+				this.HasInitializedRootNode = true;
 			}
-
-			return stringBuilder.ToString();
-		}
-
-		private string IndentLine(int indentLevel) {
-			string output = "\n";
-
-			for (int i = 0; i < indentLevel; i++) {
-				output += "\t";
-			}
-			
-			return output;
 		}
 
 		#endregion
