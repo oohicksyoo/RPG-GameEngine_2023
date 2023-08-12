@@ -60,6 +60,10 @@
 			if (Application.Instance.IsGameRunning) {
 				InitializeRootNode();
 				((IRunnable)this.RootNode).Update();
+			} else if (this.HasInitializedRootNode) {
+				//Scene Clean Up as the editor has stopped us
+				//TODO: Replace RootNote with what we had before initialization
+				this.HasInitializedRootNode = false;
 			}
 		}
 
@@ -92,6 +96,9 @@
 			if (this.HasInitializedRootNode) {
 				return;
 			}
+			
+			//TODO: Store RootNode temp in case we turn IsGameRunning to false and need to revert back
+			
 			
 			if (Application.Instance.IsGameRunning) {
 				((IRunnable)this.RootNode).Awake();
