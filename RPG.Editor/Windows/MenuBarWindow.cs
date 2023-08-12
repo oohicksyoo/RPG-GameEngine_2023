@@ -130,6 +130,7 @@
 		private void RenderPopups() {
 			if (!string.IsNullOrEmpty(this.OpenPopupKey)) {
 				if (ImGui.IsPopupOpen(this.OpenPopupKey)) {
+					this.OpenedPopupsMap[this.OpenPopupKey].Close();
 					this.OpenedPopupsMap.Remove(this.OpenPopupKey);
 					ImGui.CloseCurrentPopup();
 				} else {
