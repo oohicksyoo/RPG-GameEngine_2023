@@ -71,6 +71,13 @@
 		protected override void OnRenderGui() {
 			if (ImGui.BeginMainMenuBar()) {
 				RenderMainMenuBar();
+				
+				//Render Play Stop button
+				string text = Application.Instance.IsGameRunning ? "Stop" : "Start";
+				if (ImGui.MenuItem(text)) {
+					Application.Instance.IsGameRunning = !Application.Instance.IsGameRunning;
+				}
+				
 				ImGui.EndMainMenuBar();
 			}
 		}
