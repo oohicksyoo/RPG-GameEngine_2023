@@ -4,6 +4,7 @@
 	using Components;
 	using Components.Interfaces;
 	using Interfaces;
+	using Modules.Interfaces;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
 	using Serialization.Interfaces;
@@ -13,7 +14,7 @@
 	/// Nodes are the base building block, nodes can contain components and have other children nodes under them.
 	/// Nodes Always come with a TransformComponent
 	/// </summary>
-	public class Node : ISerialize, IGuidDatabase, IRunnable {
+	public class Node : ISerialize, IGuidDatabase, IRunnable, IRender {
 
 
 		#region Constructor
@@ -279,5 +280,20 @@
 
 		#endregion
 
+
+		#region IRender
+
+		public void Render() {
+			foreach (IComponentRenderable componentRenderable in this.Components.Where(x => x is IComponentRenderable && ((IComponentRenderable)x).CanRender).Select(x => (IComponentRenderable)x)) {
+				//TODO: Write to the batcher for displaying
+			}
+
+			foreach (IRender child in this.Children) {
+				child.Render();
+			}
+		}
+
+		#endregion
+		
 	}
 }

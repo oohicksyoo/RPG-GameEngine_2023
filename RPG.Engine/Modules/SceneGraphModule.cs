@@ -95,7 +95,11 @@
 		#region IRender
 
 		public void Render() {
+			if (this.RootNode == null) {
+				return;
+			}
 			
+			((IRender)this.RootNode).Render();
 		}
 
 		#endregion
