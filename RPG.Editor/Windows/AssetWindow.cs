@@ -16,18 +16,18 @@
 
 		protected override void OnRenderGui() {
 			if (ImGui.TreeNodeEx("Graphics", ImGuiTreeNodeFlags.OpenOnArrow, "Graphics")) {
-				RenderDirectory<AsepriteDragDropAsset>(Directory.GetCurrentDirectory(),"/Assets/Graphics", "_Aseprite");
+				RenderDirectory<AsepriteDragDropAsset>(Directory.GetCurrentDirectory(),"/Assets/Graphics");
 				ImGui.TreePop();
 			}
 			
 			if (ImGui.TreeNodeEx("Nodes", ImGuiTreeNodeFlags.OpenOnArrow, "Nodes")) {
-				RenderDirectory<NodeDragDropAsset>(Directory.GetCurrentDirectory(), "/Assets/Nodes", "_Node");
+				RenderDirectory<NodeDragDropAsset>(Directory.GetCurrentDirectory(), "/Assets/Nodes");
 				ImGui.TreePop();
 			}
 			
 		}
 
-		private void RenderDirectory<T>(string directory, string path, string payloadType) where T : IDragDropAsset {
+		private void RenderDirectory<T>(string directory, string path) where T : IDragDropAsset {
 			string[] files = Directory.GetFiles(directory + path);
 
 			foreach (var filePath in files) {

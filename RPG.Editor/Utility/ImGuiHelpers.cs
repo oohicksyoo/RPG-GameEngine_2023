@@ -8,7 +8,7 @@
 
 	public static class ImGuiHelpers {
 
-		public static void DragSource<T>(T dragDropAsset) where T : IDragDropAsset {
+		public static void DragSource<T>(T dragDropAsset) where T : IDragDrop {
 			if (ImGui.BeginDragDropSource()) {
 				IntPtr intPtr = dragDropAsset.ToIntPtr();
 				uint size = (uint)Marshal.SizeOf(intPtr);
@@ -18,7 +18,7 @@
 			}
 		}
 		
-		public static DropTarget DropTarget<T>() where T : IDragDropAsset {
+		public static DropTarget DropTarget<T>() where T : IDragDrop {
 			DropTarget dropTarget = default;
 			
 			if (ImGui.BeginDragDropTarget()) {

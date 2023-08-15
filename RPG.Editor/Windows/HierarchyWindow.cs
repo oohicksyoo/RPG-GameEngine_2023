@@ -1,6 +1,8 @@
 ﻿namespace RPG.DearImGUI.Windows {
+	
 	using System.Runtime.InteropServices;
 	using DragDrop;
+	using DragDrop.Interfaces;
 	using Engine.Core;
 	using Engine.Modules;
 	using Engine.Serialization;
@@ -13,14 +15,6 @@
 	/// Shows the Hierarchy starting at a specific Node, most times is the SceneGraphModule root Node but could be others if editing a Copy
 	/// </summary>
 	public class HierarchyWindow : AbstractWindow {
-
-		/// <summary>
-		/// Main node starting point
-		/// </summary>
-		private Node RootNode {
-			get;
-			set;
-		}
 		
 		public HierarchyWindow(bool isOpen = true) : base(isOpen) {
 			
@@ -29,26 +23,25 @@
 		public override string Name => "Hierarchy";
 
 		protected override void OnRenderGui() {
-			if (this.RootNode == null) {
+			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
+			
+			if (sceneGraphModule == null) {
 				return;
 			}
 
-			bool isOpen = ImGui.CollapsingHeader($"{this.RootNode.Name}##Header", ImGuiTreeNodeFlags.DefaultOpen);
+			bool isOpen = ImGui.CollapsingHeader($"{sceneGraphModule.RootNode.Name}##Header", ImGuiTreeNodeFlags.DefaultOpen);
 
 			//Drop Target
 			DropTarget dropTarget = ImGuiHelpers.DropTarget<NodeDragDropAsset>();
 			if (dropTarget.HasDragDropAsset) {
-				Node node = new Node(dropTarget.DragDropAsset.Name);
+				IDragDropAsset dragDropAsset = (IDragDropAsset)dropTarget.DragDropAsset;
+				Node node = new Node(dragDropAsset.Name);
 				Serializer.Instance.Deserialize(node);
-				SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
-				if (sceneGraphModule != null) { 
-					sceneGraphModule.RootNode = node;
-				}
-				SetRootNode(node);
+				sceneGraphModule.SetRootNode(node);
 			}
 
 			if (isOpen) {
-				foreach (Node nodeChild in this.RootNode.Children) {
+				foreach (Node nodeChild in sceneGraphModule.RootNode.Children) {
 					RenderSingleNode(nodeChild);
 				}
 			}
@@ -80,15 +73,10 @@
 				editorModule.SelectedNode = (isSelected) ? null : node;
 			}
 			
-			if (ImGui.BeginDragDropSource()) {
-				int sizeOfChar = Marshal.SizeOf<char>();
-				string dataString = $"{node.Guid}";
-				IntPtr data = Marshal.StringToHGlobalAnsi(dataString);
-					
-				ImGui.SetDragDropPayload("_Node", data, (uint)(sizeOfChar * dataString.Length));
-				ImGui.Text($"Node");
-				ImGui.EndDragDropSource();
-			}
+			//Dragging node from Heirarchy somewhere
+			IDragDropGuid dragDropGuid = Activator.CreateInstance<NodeDragDropGuid>();
+			dragDropGuid.Guid = node.Guid.ToString();
+			ImGuiHelpers.DragSource(dragDropGuid);
 			
 			if (isOpen) {
 				foreach (Node nodeChild in node.Children) {
@@ -98,11 +86,6 @@
 			}
 			
 			ImGui.Unindent();
-		}
-
-		public void SetRootNode(Node node) {
-			((IGuidDatabase)node).RemoveFromGuidDatabase();
-			this.RootNode = node;
 		}
 	}
 }

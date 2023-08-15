@@ -7,6 +7,7 @@
 	using Core.Interfaces;
 	using Graphics;
 	using Interfaces;
+	using Newtonsoft.Json.Linq;
 	using Serialization;
 	using Settings;
 	using Utility;
@@ -17,6 +18,16 @@
 		#region Property
 
 		public Node RootNode {
+			get;
+			private set;
+		}
+
+		private JObject CloneNode {
+			get;
+			set;
+		}
+
+		private string RootNodeName {
 			get;
 			set;
 		}
@@ -48,7 +59,7 @@
 			}
 			
 			//Load in this node data for us
-			this.RootNode = new Node(startingNode);
+			SetRootNode(new Node(startingNode));
 			Serializer.Instance.Deserialize(this.RootNode);
 		}
 
@@ -62,7 +73,7 @@
 				((IRunnable)this.RootNode).Update();
 			} else if (this.HasInitializedRootNode) {
 				//Scene Clean Up as the editor has stopped us
-				//TODO: Replace RootNote with what we had before initialization
+				ApplyClonedNode();
 				this.HasInitializedRootNode = false;
 			}
 		}
@@ -90,6 +101,24 @@
 		#endregion
 
 
+		#region Public Methods
+
+		public void SetRootNode(Node node) {
+			if (this.RootNode != null) {
+				this.RootNode.RemoveFromGuidDatabase();
+			}
+			
+			this.RootNode = node;
+
+			IEditorModule editorModule = Application.Instance.EditorModule;
+			if (editorModule != null) {
+				editorModule.SelectedNode = null;
+			}
+		}
+
+		#endregion
+
+
 		#region Private Methods
 
 		private void InitializeRootNode() {
@@ -97,14 +126,30 @@
 				return;
 			}
 			
-			//TODO: Store RootNode temp in case we turn IsGameRunning to false and need to revert back
-			
+			//Store RootNode temp in case we turn IsGameRunning to false and need to revert back
+			this.CloneNode = this.RootNode.Serialize();
+			this.RootNodeName = this.RootNode.Name;
 			
 			if (Application.Instance.IsGameRunning) {
 				((IRunnable)this.RootNode).Awake();
 				((IRunnable)this.RootNode).Start();
 				this.HasInitializedRootNode = true;
 			}
+		}
+
+		private void ApplyClonedNode() {
+			//Replace RootNote with what we had before initialization
+			if (this.RootNode != null) {
+				this.RootNode.RemoveFromGuidDatabase();
+				this.RootNode = null;
+			}
+			
+			Node node = new Node(this.RootNodeName);
+			node.Deserialize(this.CloneNode);
+			SetRootNode(node);
+				
+			this.RootNodeName = String.Empty;
+			this.CloneNode = null;
 		}
 
 		#endregion

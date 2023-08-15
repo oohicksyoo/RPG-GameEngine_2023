@@ -5,6 +5,8 @@
 	using System.Reflection;
 	using System.Runtime.InteropServices;
 	using Windows;
+	using DragDrop;
+	using DragDrop.Interfaces;
 	using Engine.Components.Interfaces;
 	using Engine.Core;
 	using Engine.Graphics;
@@ -14,6 +16,7 @@
 	using Engine.Serialization;
 	using Engine.Utility;
 	using ImGuiNET;
+	using Utility;
 
 	public class EditorModule : IEditorModule {
 
@@ -78,7 +81,7 @@
 		}
 
 		public void Start() {
-			UpdateHierachyNode();
+			
 		}
 
 		public void Update() {
@@ -109,17 +112,6 @@
 
 		public void SubscribeToMenuBar(string menuName, string name, Action onClickAction) {
 			this.MenuBarWindow.SubscribeToMenuBar(menuName, name, onClickAction);
-		}
-
-		public void UpdateHierachyNode() {
-			//Configure main node for HierarchyWindow, double check if SceneGraphModule is in fact being used
-			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
-			Node node = new Node("Empty");
-			if (sceneGraphModule != null) {
-				node = sceneGraphModule.RootNode;
-			}
-
-			this.HierarchyWindow.SetRootNode(node);
 		}
 
 		#endregion
@@ -174,6 +166,7 @@
 			this.Windows.Add(new InspectorWindow());
 			this.Windows.Add(new AsepriteWindow(true));
 			this.Windows.Add(new AssetWindow());
+			this.Windows.Add(new CacheWindow());
 			//this.Windows.Add(new DemoWindow(true));
 		}
 
@@ -267,41 +260,34 @@
 			
 			ImGui.Text(value);
 
-			//Handle Drop Target
-			if (ImGui.BeginDragDropTarget()) {
-				ImGuiPayloadPtr componentPayload = ImGui.AcceptDragDropPayload("_IComponent");
-				if (!componentPayload.Equals(default(ImGuiPayloadPtr))) {
-					string? payloadValue = Marshal.PtrToStringAnsi(componentPayload.Data, componentPayload.DataSize);
-					//TODO: Convert to Json here in the future
-					if (payloadValue != null) {
-						Guid guid = Guid.Parse(payloadValue);
-						if (GuidDatabase.Instance.ComponentMap.ContainsKey(guid)) {
-							IComponent componentValue = GuidDatabase.Instance.ComponentMap[guid];
-							//Double check it is the correct type for the property
-							if (componentValue.GetType() == propertyInfo.PropertyType) {
-								propertyInfo.SetValue(component, componentValue);
-							}
-						}
+			//Node Guid Drop Target: Serialized Field
+			DropTarget nodeGuidDropTarget = ImGuiHelpers.DropTarget<NodeDragDropGuid>();
+			if (nodeGuidDropTarget.HasDragDropAsset) {
+				IDragDropGuid dragDropGuid = (IDragDropGuid)nodeGuidDropTarget.DragDropAsset;
+				Guid guid = Guid.Parse(dragDropGuid.Guid);
+				if (GuidDatabase.Instance.NodeMap.ContainsKey(guid)) {
+					Node nodeValue = GuidDatabase.Instance.NodeMap[guid];
+					IComponent componentValue = (IComponent)nodeValue.GetType()
+						.GetMethod("GetComponent")
+						.MakeGenericMethod(propertyInfo.PropertyType)
+						.Invoke(nodeValue, null);
+
+					if (componentValue != null) {
+						propertyInfo.SetValue(component, componentValue);
 					}
 				}
-				
-				ImGuiPayloadPtr nodePayload = ImGui.AcceptDragDropPayload("_Node");
-				if (!nodePayload.Equals(default(ImGuiPayloadPtr))) {
-					string? payloadValue = Marshal.PtrToStringAnsi(nodePayload.Data, nodePayload.DataSize);
-					if (payloadValue != null) {
-						Guid guid = Guid.Parse(payloadValue);
-						if (GuidDatabase.Instance.NodeMap.ContainsKey(guid)) {
-							Node nodeValue = GuidDatabase.Instance.NodeMap[guid];
-							IComponent componentValue = (IComponent)nodeValue.GetType()
-								.GetMethod("GetComponent")
-								.MakeGenericMethod(propertyInfo.PropertyType)
-								.Invoke(nodeValue, null);
-
-							if (componentValue != null) {
-								propertyInfo.SetValue(component, componentValue);
-							}
-						}
-						Debug.Log(GetType().Name, payloadValue);
+			}
+			
+			//Component Guid Drop Target: Serialized Field
+			DropTarget componentGuidDropTarget = ImGuiHelpers.DropTarget<ComponentDragDropGuid>();
+			if (componentGuidDropTarget.HasDragDropAsset) {
+				IDragDropGuid dragDropGuid = (IDragDropGuid)componentGuidDropTarget.DragDropAsset;
+				Guid guid = Guid.Parse(dragDropGuid.Guid);
+				if (GuidDatabase.Instance.ComponentMap.ContainsKey(guid)) {
+					IComponent componentValue = GuidDatabase.Instance.ComponentMap[guid];
+					//Double check it is the correct type for the property
+					if (componentValue.GetType() == propertyInfo.PropertyType) {
+						propertyInfo.SetValue(component, componentValue);
 					}
 				}
 			}

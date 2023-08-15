@@ -3,6 +3,6 @@
 
 	public struct DropTarget {
 		public bool HasDragDropAsset;
-		public IDragDropAsset DragDropAsset;
+		public IDragDrop DragDropAsset;
 	}
 }

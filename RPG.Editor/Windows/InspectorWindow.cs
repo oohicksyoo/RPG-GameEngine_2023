@@ -3,12 +3,15 @@
 	using System.Numerics;
 	using System.Reflection;
 	using System.Runtime.InteropServices;
+	using DragDrop;
+	using DragDrop.Interfaces;
 	using Engine.Attributes;
 	using Engine.Components;
 	using Engine.Components.Interfaces;
 	using Engine.Core;
 	using Engine.Core.Interfaces;
 	using ImGuiNET;
+	using Utility;
 	using Debug = Engine.Utility.Debug;
 
 	public class InspectorWindow : AbstractWindow {
@@ -79,15 +82,9 @@
 				}
 				
 				//Drag Drop Source
-				if (ImGui.BeginDragDropSource()) {
-					int sizeOfChar = Marshal.SizeOf<char>();
-					string dataString = $"{component.Guid}";
-					IntPtr data = Marshal.StringToHGlobalAnsi(dataString);
-					
-					ImGui.SetDragDropPayload("_IComponent", data, (uint)(sizeOfChar * dataString.Length));
-					ImGui.Text($"IComponent");
-					ImGui.EndDragDropSource();
-				}
+				IDragDropGuid dragDropGuid = Activator.CreateInstance<ComponentDragDropGuid>();
+				dragDropGuid.Guid = component.Guid.ToString();
+				ImGuiHelpers.DragSource(dragDropGuid);
 				
 				ImGui.TextDisabled($"{component.Guid}");
 				

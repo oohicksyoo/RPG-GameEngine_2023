@@ -202,12 +202,7 @@
 			//TODO: Detect if the current SceneGraphModule RootNode is dirty to prompt the user to maybe save
 			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
 			if (sceneGraphModule != null) {
-				sceneGraphModule.RootNode = new Node("New Node");
-			}
-
-			IEditorModule editorModule = Application.Instance.EditorModule;
-			if (editorModule != null) {
-				editorModule.UpdateHierachyNode();
+				sceneGraphModule.SetRootNode(new Node("New Node"));
 			}
 		}
 
