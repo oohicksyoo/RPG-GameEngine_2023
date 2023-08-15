@@ -12,7 +12,7 @@
 
 		public AsepriteFile(string filePath) {
 			this.FilePath = filePath;
-			using var stream = File.Open(this.FilePath, FileMode.Open);
+			using var stream = File.Open(Directory.GetCurrentDirectory() + this.FilePath, FileMode.Open);
 			Decode(stream);
 		}
 

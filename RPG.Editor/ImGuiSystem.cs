@@ -127,7 +127,7 @@ namespace RPG.DearImGUI {
 			Marshal.Copy(pixels, data, 0, data.Length);
 			
 			// take the bytes returned by the font texture and then turn it into a texture
-			FontTexture = new Texture(data, (uint)width, (uint)height, String.Empty, ColorType.RGBA);
+			FontTexture = new Texture(data, (uint)width, (uint)height, ColorType.RGBA);
 			
 			io.Fonts.SetTexID((IntPtr)FontTexture.ID);
 			io.Fonts.ClearTexData();

@@ -1,13 +1,14 @@
 ﻿namespace RPG.DearImGUI.Windows {
 	using System.Numerics;
 	using Engine.Aseprite;
+	using Engine.Attributes;
 	using Engine.Core;
 	using Engine.Graphics;
 	using ImGuiNET;
 
 	public class AsepriteWindow : AbstractWindow {
 
-
+		[Inspector]
 		private AsepriteFile AsepriteFile {
 			get;
 			set;
@@ -26,8 +27,8 @@
 
 		protected override void OnRenderGui() {
 			if (ImGui.Button("Load Sample File")) {
-				this.AsepriteFile = new AsepriteFile(Directory.GetCurrentDirectory() + "/Assets/Graphics/Sample.aseprite");
-				this.Texture = new Texture(this.AsepriteFile.GetPixels(), (uint)this.AsepriteFile.TextureWidth, (uint)this.AsepriteFile.TextureHeight, this.AsepriteFile.FilePath, ColorType.RGBA);
+				this.AsepriteFile = new AsepriteFile("/Assets/Graphics/Sample.aseprite");
+				this.Texture = new Texture(this.AsepriteFile.GetPixels(), (uint)this.AsepriteFile.TextureWidth, (uint)this.AsepriteFile.TextureHeight, ColorType.RGBA);
 			}
 
 			if (this.Texture != null && this.AsepriteFile != null) {

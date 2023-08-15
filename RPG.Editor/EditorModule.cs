@@ -7,6 +7,8 @@
 	using Windows;
 	using DragDrop;
 	using DragDrop.Interfaces;
+	using Engine.Aseprite;
+	using Engine.Components;
 	using Engine.Components.Interfaces;
 	using Engine.Core;
 	using Engine.Graphics;
@@ -185,7 +187,7 @@
 			Register<bool>(InspectorRenderBool);
 			Register<string>(InspectorRenderString);
 			Register<IComponent>(InspectorRenderIComponent);
-			Register<AsepriteAssetFile>(InspectorRenderAsepriteAssetFile);
+			Register<AsepriteFile>(InspectorRenderAsepriteAssetFile);
 		}
 		
 		private void InspectorRenderInt(object component, PropertyInfo propertyInfo) {
@@ -301,7 +303,49 @@
 		}
 
 		public void InspectorRenderAsepriteAssetFile(object component, PropertyInfo propertyInfo) {
+			object obj = propertyInfo.GetValue(component);
+			string value = "NULL";
+			bool isMissing = obj == null;
+			if (obj != null) {
+				AsepriteFile asepriteFile = (AsepriteFile)propertyInfo.GetValue(component);
+				if (asepriteFile != null) {
+					value = asepriteFile.FilePath;
+				}
+			}
 			
+			if (isMissing) {
+				Color color = Color.DarkRed;
+				Vector4 chosenColor = new Vector4(color.R, color.G, color.B, color.A);
+				ImGui.PushStyleColor(ImGuiCol.Text, chosenColor);
+			}
+			
+			ImGui.Text(value);
+
+			DropTarget nodeGuidDropTarget = ImGuiHelpers.DropTarget<AsepriteDragDropAsset>();
+			if (nodeGuidDropTarget.HasDragDropAsset) {
+				IDragDropAsset dragDropAsset = (IDragDropAsset)nodeGuidDropTarget.DragDropAsset;
+				propertyInfo.SetValue(component, new AsepriteFile(dragDropAsset.FilePath));
+
+			}
+			
+			if (isMissing) {
+				ImGui.PopStyleColor();
+			}
+			
+			ImGui.SameLine();
+			ImGui.Text($"{propertyInfo.Name}");
+
+			AsepriteComponent asepriteComponent = (AsepriteComponent)component;
+			if (!isMissing && asepriteComponent.Texture != null) {
+				ImGui.Image(
+					(IntPtr)asepriteComponent.Texture.ID, 
+					new Vector2(asepriteComponent.Texture.Width * 5, asepriteComponent.Texture.Height * 5), 
+					new Vector2(0, 0), 
+					new Vector2(1, 1), 
+					Vector4.One, 
+					Vector4.One
+				);
+			}
 		}
 
 		#endregion

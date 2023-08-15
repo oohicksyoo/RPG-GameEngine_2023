@@ -22,20 +22,14 @@
 			private set;
 		}
 
-		public string FilePath {
-			get;
-			private set;
-		}
-
 		#endregion
 
 
 		#region Constructor
 
-		public Texture(byte[] data, uint width, uint height, string filePath, ColorType colorType = ColorType.RGB, WrapModeType wrapModeType = WrapModeType.Repeat) {
+		public Texture(byte[] data, uint width, uint height, ColorType colorType = ColorType.RGB, WrapModeType wrapModeType = WrapModeType.Repeat) {
 			this.Width = width;
 			this.Height = height;
-			this.FilePath = filePath;
 
 			CreateTexture(data, width, height, colorType, wrapModeType);
 		}

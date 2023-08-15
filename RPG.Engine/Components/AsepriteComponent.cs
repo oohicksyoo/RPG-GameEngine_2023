@@ -1,4 +1,6 @@
 ﻿namespace RPG.Engine.Components {
+	
+	using Aseprite;
 	using Attributes;
 	using Graphics;
 	using Interfaces;
@@ -7,13 +9,35 @@
 
 	public class AsepriteComponent : AbstractComponent, IComponentRenderable {
 
+
+		#region Non Serialized
+
+		[NonSerialized]
+		private AsepriteFile asepriteFile;
+
+		#endregion
+		
 		
 		#region Properties
 
 		[Inspector]
-		public AsepriteAssetFile AsepriteAssetFile {
+		public AsepriteFile AsepriteFile {
+			get {
+				return asepriteFile;
+			}
+			set {
+				asepriteFile = value;
+				if (value != null) {
+					this.Texture = new Texture(this.AsepriteFile.GetPixels(), (uint)this.AsepriteFile.TextureWidth, (uint)this.AsepriteFile.TextureHeight, ColorType.RGBA);
+				} else {
+					this.Texture = null;
+				}
+			}
+		}
+
+		public Texture Texture {
 			get;
-			set;
+			private set;
 		}
 
 		#endregion
@@ -21,9 +45,7 @@
 
 		#region IComponentRenderable
 
-		public bool CanRender {
-			get;
-		}
+		public bool CanRender => this.AsepriteFile != null;
 
 		public Mesh Mesh {
 			get;
