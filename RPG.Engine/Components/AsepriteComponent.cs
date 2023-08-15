@@ -74,11 +74,20 @@
 
 		public override JObject Serialize() {
 			JObject jsonObject = base.Serialize();
+
+			if (this.AsepriteFile != null) {
+				jsonObject[nameof(this.AsepriteFile)] = this.AsepriteFile.FilePath;
+			}
+
 			return jsonObject;
 		}
 
 		public override void Deserialize(JObject jsonObject) {
 			base.Deserialize(jsonObject);
+
+			if (jsonObject.ContainsKey(nameof(this.AsepriteFile))) {
+				this.AsepriteFile = new AsepriteFile((string)jsonObject[nameof(this.AsepriteFile)]);
+			}
 		}
 
 		#endregion
