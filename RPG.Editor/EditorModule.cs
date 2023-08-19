@@ -140,7 +140,7 @@
 				return InspectorTypeRendering[typeof(IComponent)];
 			}
 			
-			//Default return should be like GUID storing?
+			//DefaultAseprite return should be like GUID storing?
 			return (component, propertyInfo) => {
 				ImGui.Text($"Missing inspector rendering action for type({type} | {propertyInfo.PropertyType.Name})");
 			};
@@ -169,6 +169,7 @@
 			this.Windows.Add(new AsepriteWindow(true));
 			this.Windows.Add(new AssetWindow());
 			this.Windows.Add(new CacheWindow());
+			this.Windows.Add(new StatisticsWindows());
 			//this.Windows.Add(new DemoWindow(true));
 		}
 

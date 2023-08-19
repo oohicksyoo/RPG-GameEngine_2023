@@ -195,6 +195,8 @@ namespace Module.OpenGL {
 		public static void ActiveTexture(uint id) => bindings.glActiveTexture(id);
 		
 		public static void BindTexture(GLEnum target, uint id) => bindings.glBindTexture(target, id);
+
+		public static void BindTextureUnit(uint index, uint id) => bindings.glBindTextureUnit(index, id);
 		
 		public static unsafe void DeleteTexture(uint id) {
 			bindings.glDeleteTextures(1, &id);

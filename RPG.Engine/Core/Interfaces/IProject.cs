@@ -26,6 +26,10 @@
 			get;
 		}
 
+		public int PixelsPerMetre {
+			get;
+		}
+
 		public void InitializeBasicModules();
 	}
 }

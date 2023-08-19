@@ -2,10 +2,15 @@
 	using System.Drawing;
 	using System.Numerics;
 	using Graphics;
+	using Graphics.Interfaces;
 
 	public interface IGraphicsModule : IApplicationModule {
 
 		public string Renderer {
+			get;
+		}
+
+		public IBatcher Batcher {
 			get;
 		}
 		

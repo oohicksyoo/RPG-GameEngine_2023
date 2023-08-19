@@ -7,7 +7,7 @@
 
 		#region Presets
 
-		public static Shader Default => new Shader(ShaderLibrary.ImGui); //TODO: Fix
+		public static Shader DefaultAseprite => new Shader(ShaderLibrary.Aseprite);
 		
 		public static Shader DefaultImGui => new Shader(ShaderLibrary.ImGui);
 		

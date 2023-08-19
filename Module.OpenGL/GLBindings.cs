@@ -36,6 +36,7 @@ namespace Module.OpenGL {
             CreateDelegate(ref glGenFramebuffers, "glGenFramebuffers");
             CreateDelegate(ref glActiveTexture, "glActiveTexture");
             CreateDelegate(ref glBindTexture, "glBindTexture");
+            CreateDelegate(ref glBindTextureUnit, "glBindTextureUnit");
             CreateDelegate(ref glBindRenderbuffer, "glBindRenderbuffer");
             CreateDelegate(ref glBindFramebuffer, "glBindFramebuffer");
             CreateDelegate(ref glTexImage2D, "glTexImage2D");
@@ -231,6 +232,10 @@ namespace Module.OpenGL {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void BindTexture(GLEnum target, uint id);
         public BindTexture glBindTexture;
+        
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void BindTextureUnit(uint index, uint id);
+        public BindTextureUnit glBindTextureUnit;
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void BindRenderbuffer(GLEnum target, uint id);

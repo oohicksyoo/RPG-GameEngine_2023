@@ -3,6 +3,7 @@
 	using Attributes;
 	using Components;
 	using Components.Interfaces;
+	using Graphics.Interfaces;
 	using Interfaces;
 	using Modules.Interfaces;
 	using Newtonsoft.Json.Linq;
@@ -284,8 +285,12 @@
 		#region IRender
 
 		public void Render() {
-			foreach (IComponentRenderable componentRenderable in this.Components.Where(x => x is IComponentRenderable && ((IComponentRenderable)x).CanRender).Select(x => (IComponentRenderable)x)) {
-				//TODO: Write to the batcher for displaying
+			IBatcher batcher = Application.Instance.GraphicsModule.Batcher;
+			Transform transform = GetComponent<Transform>();
+
+			var collection = this.Components.Where(x => x is IComponentRenderable).Select(x => (IComponentRenderable)x);
+			foreach (IComponentRenderable renderable in collection) {
+				batcher.Draw(transform, renderable);
 			}
 
 			foreach (IRender child in this.Children) {

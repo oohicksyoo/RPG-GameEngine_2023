@@ -5,6 +5,7 @@
 	using Interfaces;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
+	using Utility;
 
 	[Singular]
 	public class Transform : AbstractComponent {
@@ -63,6 +64,19 @@
 		}
 
 		#endregion
-		
+
+		public Matrix4x4 GetTransformMatrix() {
+			Matrix4x4 modelMatrix = Matrix4x4.Identity;
+
+			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, 0));
+			Matrix4x4 rotation = Matrix4x4.CreateRotationZ(MathHelper.ToRadians(this.Rotation));
+			Matrix4x4 scale = Matrix4x4.CreateScale(new Vector3(this.Scale, 1));
+			
+			//TODO: If we have a parent we need to add in their TransformMatrix as well to the result to get the World value
+
+			modelMatrix = translation * rotation * scale;
+			
+			return modelMatrix;
+		}
 	}
 }

@@ -18,6 +18,8 @@ namespace SampleGame.Core {
 		public int WindowHeight => 720;
 		
 		public Vector2 WindowSize => new Vector2(this.WindowWidth, this.WindowHeight);
+		
+		public int PixelsPerMetre => 32;
 
 		public void InitializeBasicModules() {
 			

@@ -213,7 +213,7 @@ namespace Module.SDL2 {
 				case SDL.SDL_Keycode.SDLK_LALT:
 					return KeyboardKeys.Alt;
 				
-				//Default
+				//DefaultAseprite
 				default:
 					Debug.Warning(GetType().Name, $"Key missing from input module: ({keycode})");
 					return KeyboardKeys.Unknown;

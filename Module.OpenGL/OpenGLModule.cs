@@ -8,6 +8,7 @@ namespace Module.OpenGL {
 	using System.Numerics;
 	using System.Runtime.InteropServices;
 	using RPG.Engine.Graphics;
+	using RPG.Engine.Graphics.Interfaces;
 	using RPG.Engine.Modules;
 
 	public class OpenGLModule : IModule, IGraphicsModule {
@@ -47,6 +48,11 @@ namespace Module.OpenGL {
 			get;
 			private set;
 		}
+		
+		public IBatcher Batcher {
+			get;
+			private set;
+		}
 
 		public void Initialize() {
 			ISystemModule? systemModule = Application.Instance.SystemModule;
@@ -67,11 +73,16 @@ namespace Module.OpenGL {
 				throw new Exception($"IProject is not initialized");
 			}
 			GL.Viewport(0,0, project.WindowWidth, project.WindowHeight);
-			
+
+			this.Batcher = new OpenGLBatcher();
+			this.Batcher.Initialize();
+
 			//TODO: Setup window resizing
 		}
 
 		public void PreRender(uint framebufferId, Color clearColor) {
+			GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.LINE);
+			
 			Color color = clearColor;
 			/*IGraphicsClear graphicsClear = Application.Instance.Get<IGraphicsClear>();
 			if (graphicsClear != null) {
@@ -85,6 +96,10 @@ namespace Module.OpenGL {
 			GL.Clear(GLEnum.COLOR_BUFFER_BIT | GLEnum.DEPTH_BUFFER_BIT);
 
 			//Enables
+			GL.Enable(GLEnum.BLEND);
+			GL.BlendFunc(GLEnum.SRC_ALPHA, GLEnum.ONE_MINUS_SRC_ALPHA);
+			
+			GL.Enable(GLEnum.SCISSOR_TEST);
 		}
 
 		public void PostRender() {
@@ -93,7 +108,8 @@ namespace Module.OpenGL {
 			
 			//Disables
 			GL.Disable(GLEnum.DEPTH_TEST);
-
+			GL.Disable(GLEnum.BLEND);
+			GL.Disable(GLEnum.SCISSOR_TEST);
 
 			Vector2 size = Application.Instance.Project.WindowSize;
 			GL.BindFramebuffer(GLEnum.READ_FRAMEBUFFER, Application.Instance.FinalFramebuffer.Id);
@@ -101,6 +117,8 @@ namespace Module.OpenGL {
 			GL.BindFramebuffer(GLEnum.DRAW_FRAMEBUFFER, 0);
 			GL.Viewport(0, 0, (int)size.X, (int)size.Y);
 			GL.BlitFramebuffer(0, 0, (int)size.X, (int)size.Y, 0, 0, (int)size.X, (int)size.Y, GLEnum.COLOR_BUFFER_BIT, GLEnum.NEAREST);
+			
+			GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.FILL);
 		}
 
 		public Framebuffer CreateFramebuffer(Vector2 size) {
@@ -308,6 +326,8 @@ namespace Module.OpenGL {
 
 		public void Shutdown() {
 			Debug.Log(this.ModuleName, $"Shutdown");
+			this.Batcher.Shutdown();
+			
 			foreach (Framebuffer framebuffer in this.Framebuffers) {
 				DeleteFramebuffer(framebuffer);
 			}

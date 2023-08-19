@@ -51,6 +51,16 @@
 
 		public int TextureHeight => this.Height;
 
+		public float PivotX {
+			get;
+			private set;
+		}
+		
+		public float PivotY {
+			get;
+			private set;
+		}
+
 		private int FrameCount {
 			get;
 			set;
@@ -402,6 +412,11 @@
 
 				binaryReader.BaseStream.Position = frameEnd;
 			}
+			
+			//TODO: Animations
+			//TODO: Process Slices: Remove below and set it if the slices are there
+			this.PivotX = 0;
+			this.PivotY = 0;
 		}
 
 		private bool IsBitSet(byte b, int pos) {

@@ -4037,7 +4037,7 @@ namespace Module.SDL2 {
         public const byte SDL_PRESSED = 1;
         public const byte SDL_RELEASED = 0;
 
-        /* Default size is according to SDL2 default. */
+        /* DefaultAseprite size is according to SDL2 default. */
         public const int SDL_TEXTEDITINGEVENT_TEXT_SIZE = 32;
         public const int SDL_TEXTINPUTEVENT_TEXT_SIZE = 32;
 
