@@ -44,6 +44,11 @@
 			set;
 		}
 
+		private int[] Samplers {
+			get;
+			set;
+		}
+
 		#endregion
 
 
@@ -72,6 +77,10 @@
 
 		public void Start() {
 			this.Shader = Shader.DefaultAseprite;
+			this.Samplers = new int[32];
+			for (int i = 0; i < 32; i++) {
+				this.Samplers[i] = i;
+			}
 			InitializeRootNode();
 		}
 
@@ -112,6 +121,9 @@
 
 			//Start Shader
 			this.Shader.Use();
+			
+			//Setup multi textures
+			this.Shader.SetIntArray("textures", 32, this.Samplers);
 
 			//Set Properties
 			this.Shader.SetFloat("wireframe", 0);
@@ -185,7 +197,6 @@
 			Matrix4x4 view = Matrix4x4.Identity;
 			float zoom = 1;
 			Vector2 windowSize = Application.Instance.Project.WindowSize;
-			//view = Matrix4x4.CreateTranslation(windowSize.X * zoom * 0.5f, windowSize.Y * zoom * 0.5f, -10);
 			view = Matrix4x4.CreateTranslation(0, 0, -5);
 			
 			return view;

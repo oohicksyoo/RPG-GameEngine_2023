@@ -51,6 +51,10 @@
 		public void SetInt(string propertyName, int value) {
 			Application.Instance.GraphicsModule.SetShaderInt(this.Id, propertyName, value);
 		}
+
+		public void SetIntArray(string propertyName, int count, int[] value) {
+			Application.Instance.GraphicsModule.SetShaderIntArray(this.Id, propertyName, count, value);
+		}
 		
 		public void SetFloat(string propertyName, float value) {
 			Application.Instance.GraphicsModule.SetShaderFloat(this.Id, propertyName, value);

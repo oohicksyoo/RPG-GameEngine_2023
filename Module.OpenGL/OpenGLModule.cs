@@ -248,6 +248,10 @@ namespace Module.OpenGL {
 		public void SetShaderInt(uint shaderId, string propertyName, int value) {
 			GL.Uniform1i(GL.GetUniformLocation(shaderId, propertyName), value);
 		}
+
+		public void SetShaderIntArray(uint shaderId, string propertyName, int count, int[] value) {
+			GL.Uniform1iv(GL.GetUniformLocation(shaderId, propertyName), count, value.ArrayToIntPtr());
+		}
 		
 		public void SetShaderFloat(uint shaderId, string propertyName, float value) {
 			GL.Uniform1f(GL.GetUniformLocation(shaderId, propertyName), value);

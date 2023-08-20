@@ -99,8 +99,8 @@ void main() {
 			}
 
 			//Gamma Correction
-			float gamma = 2.2;
-			FragColor.rgb = pow(FragColor.rgb, vec3(1.0/gamma));
+			//float gamma = 2.2;
+			//FragColor.rgb = pow(FragColor.rgb, vec3(1.0/gamma));
 		}";
 		
 		public readonly static UncompiledShader Aseprite = new UncompiledShader() {

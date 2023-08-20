@@ -125,10 +125,10 @@
 			
 			this.Mesh = new Mesh(
 				new List<Vertex>() {
-					new Vertex(new Vector3(-textureWidth + offsetX, -textureHeight + offsetY, 0), new Vector2(0, 0), new Vector4(1, 0, 0, 1)),
-					new Vertex(new Vector3(textureWidth + offsetX, -textureHeight + offsetY,0), new Vector2(1, 0),new Vector4(0, 1, 0, 1)),
-					new Vertex(new Vector3(-textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(0, 1), new Vector4(0, 0, 1, 1)),
-					new Vertex(new Vector3(textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(1, 1), new Vector4(1, 0, 1, 1))
+					new Vertex(new Vector3(-textureWidth + offsetX, -textureHeight + offsetY, 0), new Vector2(0, 1), new Vector4(1, 0, 0, 1)),
+					new Vertex(new Vector3(textureWidth + offsetX, -textureHeight + offsetY,0), new Vector2(1, 1),new Vector4(0, 1, 0, 1)),
+					new Vertex(new Vector3(-textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(0, 0), new Vector4(0, 0, 1, 1)),
+					new Vertex(new Vector3(textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(1, 0), new Vector4(1, 0, 1, 1))
 				}, 
 				new List<int>() {
 					0, 1, 2,

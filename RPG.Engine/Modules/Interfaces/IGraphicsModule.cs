@@ -31,6 +31,8 @@
 		public void SetShaderBool(uint shaderId, string propertyName, bool value);
 		
 		public void SetShaderInt(uint shaderId, string propertyName, int value);
+
+		public void SetShaderIntArray(uint shaderId, string propertyName, int count, int[] value);
 		
 		public void SetShaderFloat(uint shaderId, string propertyName, float value);
 		
