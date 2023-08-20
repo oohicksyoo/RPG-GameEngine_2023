@@ -60,19 +60,28 @@
 		}
 
 		public uint TextureId {
-			get;
+			get {
+				if (this.Texture != null) {
+					return this.Texture.ID;
+				}
+
+				return 0;
+			}
 		}
 
 		public int CurrentFrame {
 			get;
+			private set;
 		}
 
 		public int SingleFrameWidth {
 			get;
+			private set;
 		}
 
 		public int TotalFrameCount {
 			get;
+			private set;
 		}
 
 		#endregion
@@ -116,17 +125,22 @@
 			
 			this.Mesh = new Mesh(
 				new List<Vertex>() {
-					new Vertex(new Vector3(-textureWidth + offsetX, -textureHeight + offsetY, 0), new Vector2(0, 0), Vector4.One),
-					new Vertex(new Vector3(textureWidth + offsetX, -textureHeight + offsetY,0), new Vector2(1, 0), Vector4.One),
-					new Vertex(new Vector3(textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(1, 1), Vector4.One),
-					new Vertex(new Vector3(-textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(0, 1), Vector4.One)
+					new Vertex(new Vector3(-textureWidth + offsetX, -textureHeight + offsetY, 0), new Vector2(0, 0), new Vector4(1, 0, 0, 1)),
+					new Vertex(new Vector3(textureWidth + offsetX, -textureHeight + offsetY,0), new Vector2(1, 0),new Vector4(0, 1, 0, 1)),
+					new Vertex(new Vector3(-textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(0, 1), new Vector4(0, 0, 1, 1)),
+					new Vertex(new Vector3(textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(1, 1), new Vector4(1, 0, 1, 1))
 				}, 
 				new List<int>() {
 					0, 1, 2,
-					2, 0, 3
+					2, 3, 1,
 				});
 			
 			//TODO: Setup starting animation
+			
+			//Setup Properties
+			this.SingleFrameWidth = this.AsepriteFile.SingleFrameWidth;
+			this.TotalFrameCount = this.AsepriteFile.FrameCount;
+			this.CurrentFrame = 0;
 		}
 
 		#endregion

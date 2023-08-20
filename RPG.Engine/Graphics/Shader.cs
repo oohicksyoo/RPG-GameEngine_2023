@@ -10,6 +10,8 @@
 		public static Shader DefaultAseprite => new Shader(ShaderLibrary.Aseprite);
 		
 		public static Shader DefaultImGui => new Shader(ShaderLibrary.ImGui);
+
+		public static Shader DefaultSample => new Shader(ShaderLibrary.DefaultSample);
 		
 		public uint Id {
 			get;

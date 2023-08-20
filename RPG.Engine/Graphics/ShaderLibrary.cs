@@ -64,7 +64,7 @@ void main() {
 
 		void main() {
 			//model
-			gl_Position = vec4(position.xyz, 1.0);//projection * view * vec4(position.xyz, 1.0);
+			gl_Position = projection * view * vec4(position.xyz, 1.0);
 			TextureCoordinate = textureCoordinate;
 			Color = color;
 			TextureID = textureID;
@@ -93,7 +93,7 @@ void main() {
 			vec2 finalUV = vec2(x, TextureCoordinate.y);
 
 			if (wireframe < 1) {
-				FragColor = texture2D(textures[int(TextureID)], finalUV) * Color;
+				FragColor = texture2D(textures[int(TextureID)], finalUV);// * Color;
 			} else {
 				FragColor = Color;
 			}
@@ -106,6 +106,36 @@ void main() {
 		public readonly static UncompiledShader Aseprite = new UncompiledShader() {
 			vertexShaderData = VertexShaderAseprite,
 			fragmentShaderData = FragmentShaderAseprite
+		};
+
+		#endregion
+		
+		
+		#region Default Sample - DefaultSample
+
+		private readonly static string VertexShaderDefaultSample = @"#version 330 core
+		layout (location = 0) in vec3 position;
+		layout (location = 1) in vec4 color;
+
+		out vec4 Color;
+
+		void main() {
+			gl_Position = vec4(position.xyz, 1.0);
+			Color = color;
+		}";
+
+		private readonly static string FragmentShaderDefaultSample = @"#version 330 core
+		in vec4 Color;
+
+		out vec4 FragColor;
+
+		void main() {
+			FragColor = Color;
+		}";
+		
+		public readonly static UncompiledShader DefaultSample = new UncompiledShader() {
+			vertexShaderData = VertexShaderDefaultSample,
+			fragmentShaderData = FragmentShaderDefaultSample
 		};
 
 		#endregion

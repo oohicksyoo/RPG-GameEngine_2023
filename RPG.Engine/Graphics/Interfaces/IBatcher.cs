@@ -16,6 +16,10 @@
 			get;
 		}
 
+		public ITriangleDrawer TriangleDrawer {
+			get;
+		}
+
 		public void Initialize();
 		public void Shutdown();
 		public void Begin();

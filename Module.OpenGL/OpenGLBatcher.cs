@@ -41,17 +41,17 @@
 			set;
 		}
 		
-		private uint VertexArray {
+		private uint VertexArrayObject {
 			get;
 			set;
 		}
 		
-		private uint VertexBuffer {
+		private uint VertexBufferObject {
 			get;
 			set;
 		}
 
-		private uint IndexBuffer {
+		private int VertexStride {
 			get;
 			set;
 		}
@@ -65,6 +65,11 @@
 		/// Current index we are at in the VertexDataArray
 		/// </summary>
 		private int VertexDataArrayIndex {
+			get;
+			set;
+		}
+
+		private int VertexDataArrayInternalCount {
 			get;
 			set;
 		}
@@ -95,43 +100,47 @@
 			private set;
 		}
 
+		public ITriangleDrawer TriangleDrawer {
+			get;
+			private set;
+		}
+
 		public void Initialize() {
 			this.DataArray = new float[MAX_DATA_ARRAY];
 			this.TextureIds = new uint[MAX_TEXTURE_COUNT];
 			this.VertexDataArrayIndex = 0;
+			this.VertexDataArrayInternalCount = 0;
 			this.TextureSlotIndex = 1;
 			
 			//Create Vertex Array
-			this.VertexArray = GL.GenVertexArray();
-			GL.BindVertexArray(this.VertexArray);
+			this.VertexArrayObject = GL.GenVertexArray();
+			this.VertexBufferObject = GL.GenBuffer();
+			uint elementArrayObject = GL.GenBuffer();
+			
+			//Bind Vertex Array
+			GL.BindVertexArray(this.VertexArrayObject);
 
 			//Setup Vertex Buffer
-			this.VertexBuffer = GL.GenBuffer();
-			GL.BindBuffer(GLEnum.ARRAY_BUFFER, this.VertexBuffer);
-			GL.BufferData(GLEnum.ARRAY_BUFFER, sizeof(float) * MAX_DATA_ARRAY, IntPtr.Zero, GLEnum.DYNAMIC_DRAW);
+			this.VertexStride = sizeof(float) * SHADER_PROPERTIES_COUNT;
+			GL.BindBuffer(GLEnum.ARRAY_BUFFER, this.VertexBufferObject);
+			GL.BufferData(GLEnum.ARRAY_BUFFER, this.VertexStride * MAX_VERTEX_COUNT, IntPtr.Zero, GLEnum.DYNAMIC_DRAW);
 			
 			//Setup Attributes
-			int stride = sizeof(float) * SHADER_PROPERTIES_COUNT;
 			GL.EnableVertexAttribArray(0);
-			GL.VertexAttribPointer(0, 3, GLEnum.FLOAT, false, stride, IntPtr.Zero);
-			
 			GL.EnableVertexAttribArray(1);
-			GL.VertexAttribPointer(1, 2, GLEnum.FLOAT, false, stride, IntPtr.Zero);
-			
 			GL.EnableVertexAttribArray(2);
-			GL.VertexAttribPointer(2, 4, GLEnum.FLOAT, false, stride, IntPtr.Zero);
-			
 			GL.EnableVertexAttribArray(3);
-			GL.VertexAttribPointer(3, 1, GLEnum.FLOAT, false, stride, IntPtr.Zero);
-			
 			GL.EnableVertexAttribArray(4);
-			GL.VertexAttribPointer(4, 1, GLEnum.FLOAT, false, stride, IntPtr.Zero);
-			
 			GL.EnableVertexAttribArray(5);
-			GL.VertexAttribPointer(5, 1, GLEnum.FLOAT, false, stride, IntPtr.Zero);
-			
 			GL.EnableVertexAttribArray(6);
-			GL.VertexAttribPointer(6, 1, GLEnum.FLOAT, false, stride, IntPtr.Zero);
+			
+			GL.VertexAttribPointer(0, 3, GLEnum.FLOAT, false, this.VertexStride, IntPtr.Zero);
+			GL.VertexAttribPointer(1, 2, GLEnum.FLOAT, false, this.VertexStride, sizeof(float)*(3+0));
+			GL.VertexAttribPointer(2, 4, GLEnum.FLOAT, false, this.VertexStride, sizeof(float)*(3+2));
+			GL.VertexAttribPointer(3, 1, GLEnum.FLOAT, false, this.VertexStride, sizeof(float)*(3+2+4));
+			GL.VertexAttribPointer(4, 1, GLEnum.FLOAT, false, this.VertexStride, sizeof(float)*(3+2+4+1));
+			GL.VertexAttribPointer(5, 1, GLEnum.FLOAT, false, this.VertexStride, sizeof(float)*(3+2+4+1+1));
+			GL.VertexAttribPointer(6, 1, GLEnum.FLOAT, false, this.VertexStride, sizeof(float)*(3+2+4+1+1+1));
 			
 			//Indice Buffer Setup
 			int[] indices = new int[MAX_INDICE_COUNT];
@@ -142,17 +151,21 @@
 				indices[i + 2] = 2 + offset;
 
 				indices[i + 3] = 2 + offset;
-				indices[i + 4] = 0 + offset;
-				indices[i + 5] = 3 + offset;
+				indices[i + 4] = 3 + offset;
+				indices[i + 5] = 1 + offset;
+				
+				//0,1,2
+				//2,3,1
 
 				offset += 4;
 			}
-			
-			this.IndexBuffer = GL.GenBuffer();
-			GL.BindBuffer(GLEnum.ELEMENT_ARRAY_BUFFER, this.IndexBuffer);
-			IntPtr data = Marshal.AllocHGlobal(sizeof(int) * indices.Length);
-			Marshal.Copy(indices, 0, data, indices.Length);
-			GL.BufferData(GLEnum.ELEMENT_ARRAY_BUFFER, new IntPtr(sizeof(int) * indices.Length), data, GLEnum.STATIC_DRAW);
+
+			GL.BindBuffer(GLEnum.ELEMENT_ARRAY_BUFFER, elementArrayObject);
+			GL.BufferData(GLEnum.ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.Length, indices.ArrayToIntPtr(), GLEnum.STATIC_DRAW);
+
+			//Reset binds
+			GL.BindBuffer(GLEnum.ARRAY_BUFFER, 0);
+			GL.BindVertexArray(0);
 			
 			//Create White Texture
 			this.WhiteTexture = Application.Instance.GraphicsModule.CompileTexture(new byte[] { 255, 255, 255, 255 }, 1, 1, ColorType.RGBA, WrapModeType.ClampToEdge);
@@ -160,15 +173,13 @@
 				this.TextureIds[i] = this.WhiteTexture;
 			}
 			
-			//Reset binds
-			GL.BindBuffer(GLEnum.ARRAY_BUFFER, 0);
-			GL.BindVertexArray(0);
+			//TESTING
+			this.TriangleDrawer = new TriangleDrawer();
 		}
 
 		public void Shutdown() {
-			GL.DeleteVertexArray(this.VertexArray);
-			GL.DeleteBuffer(this.VertexBuffer);
-			GL.DeleteBuffer(this.IndexBuffer);
+			GL.DeleteVertexArray(this.VertexArrayObject);
+			GL.DeleteBuffer(this.VertexBufferObject);
 			
 			//Remove white texture
 			GL.DeleteTexture(this.WhiteTexture);
@@ -195,10 +206,8 @@
 				return; //nothing to draw
 			}
 			
-			GL.BindBuffer(GLEnum.ARRAY_BUFFER, this.VertexBuffer);
-			IntPtr data = Marshal.AllocHGlobal(sizeof(float) * MAX_DATA_ARRAY);
-			Marshal.Copy(this.DataArray, 0, data, this.DataArray.Length);
-			GL.BufferSubData(GLEnum.ARRAY_BUFFER, 0, sizeof(float) * MAX_DATA_ARRAY, data); //TODO: Size might need to be tweaked if buffer is not full
+			GL.BindBuffer(GLEnum.ARRAY_BUFFER, this.VertexBufferObject);
+			GL.BufferSubData(GLEnum.ARRAY_BUFFER, 0, this.VertexStride * this.VertexDataArrayIndex, this.DataArray.ArrayToIntPtr());
 
 			//Always flush the end results
 			Flush();
@@ -241,25 +250,24 @@
 			}
 			
 			//Apply Shader Properties
-			int internalCount = 0;
 			Vector3 position = Vector3.Zero;
 			foreach (Vertex vertex in mesh.Vertices) {
 				position = Vector3.Transform(vertex.Position, transform.GetTransformMatrix());
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 0] = position.X;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 1] = position.Y;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 2] = position.Z;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 3] = vertex.TextureCoordinate.X;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 4] = vertex.TextureCoordinate.Y;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 5] = vertex.Color.X;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 6] = vertex.Color.Y;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 7] = vertex.Color.Z;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 8] = vertex.Color.W;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 9] = textureIndex;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 10] = (float)renderable.CurrentFrame;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 11] = renderable.SingleFrameWidth;
-				this.DataArray[this.VertexDataArrayIndex * internalCount + 12] = renderable.TotalFrameCount;
+				this.DataArray[this.VertexDataArrayInternalCount + 0] = position.X;
+				this.DataArray[this.VertexDataArrayInternalCount + 1] = position.Y;
+				this.DataArray[this.VertexDataArrayInternalCount + 2] = position.Z;
+				this.DataArray[this.VertexDataArrayInternalCount + 3] = vertex.TextureCoordinate.X;
+				this.DataArray[this.VertexDataArrayInternalCount + 4] = vertex.TextureCoordinate.Y;
+				this.DataArray[this.VertexDataArrayInternalCount + 5] = vertex.Color.X;
+				this.DataArray[this.VertexDataArrayInternalCount + 6] = vertex.Color.Y;
+				this.DataArray[this.VertexDataArrayInternalCount + 7] = vertex.Color.Z;
+				this.DataArray[this.VertexDataArrayInternalCount + 8] = vertex.Color.W;
+				this.DataArray[this.VertexDataArrayInternalCount + 9] = textureIndex;
+				this.DataArray[this.VertexDataArrayInternalCount + 10] = (float)renderable.CurrentFrame;
+				this.DataArray[this.VertexDataArrayInternalCount + 11] = renderable.SingleFrameWidth;
+				this.DataArray[this.VertexDataArrayInternalCount + 12] = renderable.TotalFrameCount;
 				this.VertexDataArrayIndex++;
-				internalCount += SHADER_PROPERTIES_COUNT;
+				this.VertexDataArrayInternalCount += SHADER_PROPERTIES_COUNT;
 			}
 			
 			//Update properties
@@ -282,7 +290,7 @@
 			}
 			
 			//Draw Elements
-			GL.BindVertexArray(this.VertexArray);
+			GL.BindVertexArray(this.VertexArrayObject);
 			GL.DrawElements(GLEnum.TRIANGLES, this.IndiceCount, GLEnum.UNSIGNED_INT, IntPtr.Zero);
 			GL.BindVertexArray(0);
 			
@@ -295,29 +303,22 @@
 		/// </summary>
 		private void Reset() {
 			this.VertexDataArrayIndex = 0;
+			this.VertexDataArrayInternalCount = 0;
 			this.TextureSlotIndex = 1;
-		}
-
-		/// <summary>
-		/// Process of calling End() -> Begin() because the batch is full and needs to go out
-		/// </summary>
-		private void Close() {
-			End();
-			Reset();
 		}
 
 		private void MaxTextureCheck() {
 			//TODO: Support multi texture files?
 			//TODO: Support looking up in the dictionary if our texture uint already exists in which case we could render
 			
-			if (this.TextureIds.Length + 1 >= MAX_TEXTURE_COUNT) {
-				Close();
+			if (this.TextureSlotIndex + 1 >= MAX_TEXTURE_COUNT) {
+				End();
 			}
 		}
 
 		private void MaxIndiceCheck(int indiceCount) {
 			if (this.IndiceCount + indiceCount >= MAX_INDICE_COUNT) {
-				Close();
+				End();
 			}
 		}
 

@@ -61,9 +61,9 @@
 			private set;
 		}
 
-		private int FrameCount {
+		public int FrameCount {
 			get;
-			set;
+			private set;
 		}
 
 		private int Width {

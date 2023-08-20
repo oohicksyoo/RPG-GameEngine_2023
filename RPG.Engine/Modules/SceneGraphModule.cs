@@ -106,7 +106,7 @@
 			if (this.RootNode == null) {
 				return;
 			}
-
+			
 			//TODO: Maybe these can move to the Module Pre and Post render?
 			IBatcher batcher = Application.Instance.GraphicsModule.Batcher;
 
@@ -114,7 +114,7 @@
 			this.Shader.Use();
 
 			//Set Properties
-			this.Shader.SetFloat("wireframe", 1);
+			this.Shader.SetFloat("wireframe", 0);
 			this.Shader.SetMatrix4x4("view", GetViewMatrix());
 			this.Shader.SetMatrix4x4("projection", GetProjectionMatrix());
 
@@ -185,7 +185,8 @@
 			Matrix4x4 view = Matrix4x4.Identity;
 			float zoom = 1;
 			Vector2 windowSize = Application.Instance.Project.WindowSize;
-			view = Matrix4x4.CreateTranslation(windowSize.X * zoom * 0.5f, windowSize.Y * zoom * 0.5f, -10);
+			//view = Matrix4x4.CreateTranslation(windowSize.X * zoom * 0.5f, windowSize.Y * zoom * 0.5f, -10);
+			view = Matrix4x4.CreateTranslation(0, 0, -5);
 			
 			return view;
 		}
@@ -195,12 +196,19 @@
 			float zoom = 1;
 			Vector2 windowSize = Application.Instance.Project.WindowSize;
 
-			projection = Matrix4x4.CreateOrthographicOffCenter(
+			/*projection = Matrix4x4.CreateOrthographicOffCenter(
 				0.0f,
 				windowSize.X * zoom,
 				windowSize.Y * zoom,
 				0.0f,
 				0.01f,
+				1000.0f
+			);*/
+
+			projection = Matrix4x4.CreatePerspectiveFieldOfView(
+				MathHelper.ToRadians(90),
+				windowSize.X / windowSize.Y,
+				0.1f,
 				100.0f
 			);
 			

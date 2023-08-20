@@ -53,6 +53,11 @@ namespace Module.OpenGL {
 			get;
 			private set;
 		}
+		
+		private Shader DefaultShader {
+			get;
+			set;
+		}
 
 		public void Initialize() {
 			ISystemModule? systemModule = Application.Instance.SystemModule;
@@ -76,12 +81,14 @@ namespace Module.OpenGL {
 
 			this.Batcher = new OpenGLBatcher();
 			this.Batcher.Initialize();
+			
+			this.DefaultShader = Shader.DefaultSample;
 
 			//TODO: Setup window resizing
 		}
 
 		public void PreRender(uint framebufferId, Color clearColor) {
-			GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.LINE);
+			GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.FILL);
 			
 			Color color = clearColor;
 			/*IGraphicsClear graphicsClear = Application.Instance.Get<IGraphicsClear>();
@@ -99,7 +106,7 @@ namespace Module.OpenGL {
 			GL.Enable(GLEnum.BLEND);
 			GL.BlendFunc(GLEnum.SRC_ALPHA, GLEnum.ONE_MINUS_SRC_ALPHA);
 			
-			GL.Enable(GLEnum.SCISSOR_TEST);
+			//GL.Enable(GLEnum.SCISSOR_TEST);
 		}
 
 		public void PostRender() {
@@ -109,7 +116,7 @@ namespace Module.OpenGL {
 			//Disables
 			GL.Disable(GLEnum.DEPTH_TEST);
 			GL.Disable(GLEnum.BLEND);
-			GL.Disable(GLEnum.SCISSOR_TEST);
+			//GL.Disable(GLEnum.SCISSOR_TEST);
 
 			Vector2 size = Application.Instance.Project.WindowSize;
 			GL.BindFramebuffer(GLEnum.READ_FRAMEBUFFER, Application.Instance.FinalFramebuffer.Id);

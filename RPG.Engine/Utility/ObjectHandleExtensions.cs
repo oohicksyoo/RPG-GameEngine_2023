@@ -18,5 +18,18 @@
 			return (T)ToGcHandle(target).Target;
 		}
 		
+		//Array Handling for GPU data
+		public static IntPtr ArrayToIntPtr(this float[] target) {
+			IntPtr data = Marshal.AllocHGlobal(sizeof(float) * target.Length);
+			Marshal.Copy(target, 0, data, target.Length);
+			return data;
+		}
+		
+		public static IntPtr ArrayToIntPtr(this int[] target) {
+			IntPtr data = Marshal.AllocHGlobal(sizeof(int) * target.Length);
+			Marshal.Copy(target, 0, data, target.Length);
+			return data;
+		}
+		
 	}
 }
