@@ -5,6 +5,9 @@ using RPG.Engine.Modules.Interfaces;
 using RPG.Engine.Utility;
 
 namespace RPG.Engine.Core {
+	using System.Drawing;
+	using Graphics;
+
 	public class Application : Singleton<Application> {
 
 
@@ -32,6 +35,11 @@ namespace RPG.Engine.Core {
 			private set;
 		}
 		
+		public IEditorModule? EditorModule {
+			get;
+			private set;
+		}
+		
 		private ModuleList ModuleList {
 			get {
 				return moduleList ??= new ModuleList();
@@ -43,9 +51,50 @@ namespace RPG.Engine.Core {
 			private set;
 		}
 
-		public bool IsRunning {
+		public bool IsApplicationRunning {
 			get;
 			private set;
+		}
+
+		public bool IsGameRunning {
+			get;
+			set;
+		}
+		
+		/// <summary>
+		/// Framebuffer containing the game scene rendering
+		/// </summary>
+		public Framebuffer GameFramebuffer {
+			get;
+			private set;
+		}
+
+		public Framebuffer SceneFramebuffer {
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Framebuffer containing all the results from ImGui's rendered Framebuffer
+		/// </summary>
+		public Framebuffer EditorFramebuffer {
+			get;
+			set;
+		}
+
+		public Framebuffer FinalFramebuffer {
+			get {
+				if (this.IsEditor) {
+					return this.EditorFramebuffer;
+				}
+
+				return this.GameFramebuffer;
+			}
+		}
+
+		private bool IsEditor {
+			get;
+			set;
 		}
 
 		#endregion
@@ -53,7 +102,7 @@ namespace RPG.Engine.Core {
 		
 		#region Public Methods
 
-		public void Start(IProject project) {
+		public void Start(IProject project, bool isEditor = false) {
 			if (this.SystemModule == null) {
 				throw new Exception("Missing SystemModule which is needed to run");
 			}
@@ -65,7 +114,8 @@ namespace RPG.Engine.Core {
 			if (this.GraphicsModule == null) {
 				throw new Exception("Missing GraphicsModule which is needed to run");
 			}
-			
+
+			this.IsEditor = isEditor;
 			this.Project = project;
 			
 			//Platform Starting Information
@@ -80,6 +130,11 @@ namespace RPG.Engine.Core {
 			this.InputModule.Initialize();
 			this.GraphicsModule.Initialize();
 			
+			//Create Rendering Framebuffer
+			this.GameFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
+			this.SceneFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
+			this.EditorFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
+			
 			//General IModule Startup
 			ModulesStartup();
 
@@ -87,7 +142,7 @@ namespace RPG.Engine.Core {
 		}
 
 		public void RequestShutdown() {
-			this.IsRunning = false;
+			this.IsApplicationRunning = false;
 		}
 		
 		public void Register<T>() where T : IModule {
@@ -115,10 +170,21 @@ namespace RPG.Engine.Core {
 							Debug.Warning(GetType().Name, $"{typeof(T).Name} module with IGraphicsModule already exists and will not be added.");
 						}
 						break;
+					case IEditorModule editorModule:
+						if (this.EditorModule == null) {
+							this.EditorModule = editorModule;
+						} else {
+							Debug.Warning(GetType().Name, $"{typeof(T).Name} module with IEditorModule already exists and will not be added.");
+						}
+						break;
 				}
 			} else {
 				Debug.Warning(GetType().Name, $"{typeof(T).Name} module already exists and will not be added.");
 			}
+		}
+
+		public T? Get<T>() {
+			return this.ModuleList.Get<T>();
 		}
 
 		#endregion
@@ -127,28 +193,46 @@ namespace RPG.Engine.Core {
 		#region Private Methods
 
 		private void RunGameLoop() {
-			this.IsRunning = !(this.SystemModule == null || this.GraphicsModule == null || this.InputModule == null);
+			this.IsApplicationRunning = !(this.SystemModule == null || this.GraphicsModule == null || this.InputModule == null);
+			this.IsGameRunning = !this.IsEditor;
 
-			while (this.IsRunning) {
+			while (this.IsApplicationRunning) {
 				this.SystemModule.TimeStep();
+				this.InputModule.BeginFrame();
 				
 				if (this.InputModule.Poll()) {
-					this.InputModule.BeginFrame();
 					
 					((IModule)this.SystemModule!).Update();
 					
+					this.EditorModule?.Update();
 					this.ModuleList.Update();
 
 					//Rendering Phase
 					this.SystemModule.BeginPresent();
-					this.GraphicsModule.PreRender();
-					this.ModuleList.PreRender();
-					this.GraphicsModule.Render();
-					this.ModuleList.PostRender();
-					this.GraphicsModule.PostRender();
+					
+					//Editor Scene Rendering
+					if (this.IsEditor) {
+						this.GraphicsModule.PreRender(this.SceneFramebuffer.Id, Color.Blue);
+						this.ModuleList.Render();
+						this.ModuleList.PostProcess();
+						this.GraphicsModule.PostRender();
+					}
+
+					//Game Scene Rendering
+					{
+						this.GraphicsModule.PreRender(this.GameFramebuffer.Id, Color.Aqua);
+						this.ModuleList.Render();
+						this.ModuleList.PostProcess();
+						this.GraphicsModule.PostRender();
+					}
+					
+					//Render Editor Module
+					this.EditorModule?.Render();
+					
+					//Scene Presenting
 					this.SystemModule.Present();
 				} else {
-					this.IsRunning = false;
+					this.IsApplicationRunning = false;
 				}
 			}
 			
@@ -162,6 +246,8 @@ namespace RPG.Engine.Core {
 
 		private void ModulesShutdown() {
 			this.ModuleList.Shutdown();
+			
+			this.EditorModule?.Shutdown();
 			
 			//SystemModule needs to offload some tasks to the GraphicsModule for shutdown
 			this.SystemModule?.PreShutdown();

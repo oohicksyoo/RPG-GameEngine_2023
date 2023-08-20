@@ -1,9 +1,7 @@
 ﻿namespace RPG.Engine.Modules.Interfaces {
+	using Graphics;
+
 	public interface IRender {
-		
-		public void PreRender();
-		
-		public void PostRender();
-		
+		public void Render();
 	}
 }

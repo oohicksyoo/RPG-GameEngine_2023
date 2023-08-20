@@ -36,7 +36,7 @@ namespace RPG.EngineTesting {
 			new Thread(() => Application.Instance.Start(Project.Instance)).Start();
 			
 			//Wait for the engine to fully start up before starting tests
-			while (!Application.Instance.IsRunning) { }
+			while (!Application.Instance.IsApplicationRunning) { }
 		}
 		
 		[OneTimeTearDown]
@@ -89,7 +89,7 @@ namespace RPG.EngineTesting {
 
 		[Test]
 		public void TestWindowSetup() {
-			if (Application.Instance.IsRunning) {
+			if (Application.Instance.IsApplicationRunning) {
 				this.TestState = TestState.Completed;
 			} else {
 				this.TestState = TestState.Failed;

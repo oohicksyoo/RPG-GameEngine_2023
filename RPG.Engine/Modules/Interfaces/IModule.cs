@@ -21,6 +21,10 @@
 			get;
 		}
 
+		public int Priority {
+			get;
+		}
+
 		#endregion
 
 

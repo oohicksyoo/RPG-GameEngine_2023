@@ -11,7 +11,7 @@
 
 		#region Properties
 
-		private static Queue<Log> Logs {
+		public static Queue<Log> Logs {
 			get {
 				return logs ??= new Queue<Log>();
 			}

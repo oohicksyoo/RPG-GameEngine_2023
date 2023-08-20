@@ -2,6 +2,11 @@
 using RPG.Engine.Modules.Interfaces;
 
 namespace RPG.Engine.Modules {
+	using System.Diagnostics;
+	using Attributes;
+	using Graphics;
+	using Debug = Utility.Debug;
+
 	public class ModuleList : IEnumerable<IModule> {
 
 
@@ -17,6 +22,9 @@ namespace RPG.Engine.Modules {
 		private List<IModule> Modules {
 			get {
 				return modules ??= new List<IModule>();
+			}
+			set {
+				modules = value;
 			}
 		}
 
@@ -49,6 +57,7 @@ namespace RPG.Engine.Modules {
 		public IModule Register<T>() where T : IModule {
 			T module = Activator.CreateInstance<T>();
 			this.Modules.Add(module);
+			this.Modules = this.Modules.OrderByDescending(x => x.Priority).ToList();
 			return module;
 		}
 
@@ -71,14 +80,14 @@ namespace RPG.Engine.Modules {
 			return false;
 		}
 		
-		public IModule? Get<T>() where T : IModule {
+		public T? Get<T>() {
 			foreach (var module in this.Modules) {
 				if (module is T returnModule) {
 					return returnModule;
 				}
 			}
 
-			return null;
+			return default;
 		}
 
 		public void Awake() {
@@ -95,28 +104,24 @@ namespace RPG.Engine.Modules {
 
 		public void Update() {
 			foreach (var module in this.Modules) {
-				if (!(module is IApplicationModule)) {
+				if (!(module is IApplicationModule) && !(module is IEditorModule)) {
 					module.Update();
 				}
 			}
 		}
 
-		public void PreRender() {
+		public void Render() {
 			foreach (var module in this.Modules) {
-				if (module is IRender renderModule) {
-					renderModule.PreRender();
+				if (!(module is IApplicationModule) && !(module is IEditorModule) && module is IRender renderModule) {
+					renderModule.Render();
 				}
 			}
 		}
-
-		/// <summary>
-		/// See if any Modules using IRender want to PostRender anything
-		/// Example: Clear Debug Data, Post Processing on the frame
-		/// </summary>
-		public void PostRender() {
+		
+		public void PostProcess() {
 			foreach (var module in this.Modules) {
-				if (module is IRender renderModule) {
-					renderModule.PostRender();
+				if (!(module is IApplicationModule) && module is IPostProcess postProcess) {
+					postProcess.PostProcess();
 				}
 			}
 		}

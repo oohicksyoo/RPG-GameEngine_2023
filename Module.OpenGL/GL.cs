@@ -110,6 +110,10 @@ namespace Module.OpenGL {
 		}
 		
 		public static void FramebufferTexture2D(GLEnum target, GLEnum attachment, GLEnum textarget, uint texture, int level) => bindings.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+
+		public static void FramebufferTexture(GLEnum target, GLEnum attachment, uint texture, int level) =>
+			bindings.glFramebufferTexture(target, attachment, texture, level);
+		
 		
 		public static unsafe void DeleteFramebuffer(uint id) {
 			bindings.glDeleteFramebuffers(1, &id);
@@ -121,6 +125,10 @@ namespace Module.OpenGL {
 			return id;
 		}
 		
+		public static unsafe void DeleteRenderbuffer(uint id) {
+			bindings.glDeleteRenderbuffers(1, &id);
+		}
+
 		public static void BindRenderbuffer(GLEnum target, uint id) => bindings.glBindRenderbuffer(target, id);
 		
 		public static void FramebufferRenderbuffer(GLEnum target, GLEnum attachment, GLEnum renderbuffertarget, uint renderbuffer) => bindings.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
@@ -187,6 +195,8 @@ namespace Module.OpenGL {
 		public static void ActiveTexture(uint id) => bindings.glActiveTexture(id);
 		
 		public static void BindTexture(GLEnum target, uint id) => bindings.glBindTexture(target, id);
+
+		public static void BindTextureUnit(uint index, uint id) => bindings.glBindTextureUnit(index, id);
 		
 		public static unsafe void DeleteTexture(uint id) {
 			bindings.glDeleteTextures(1, &id);
@@ -224,6 +234,9 @@ namespace Module.OpenGL {
 		public static void BufferSubData(GLEnum target, IntPtr offset, IntPtr size, IntPtr data) => bindings.glBufferSubData(target, offset, size, data);
 
 		public static void PolygonMode(GLEnum face, GLEnum mode) => bindings.glPolygonMode(face, mode);
+
+		public static void BlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, GLEnum mask,
+			GLEnum filter) => bindings.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter); 
 		
 		public static int GetUniformLocation(uint program, string name) => bindings.glGetUniformLocation(program, name);
 
@@ -231,69 +244,69 @@ namespace Module.OpenGL {
 
 		public static void Uniform1f(int location, float v0) => bindings.glUniform1f(location, v0);
 
-        public static void Uniform2f(int location, float v0, float v1) => bindings.glUniform2f(location, v0, v1);
+		public static void Uniform2f(int location, float v0, float v1) => bindings.glUniform2f(location, v0, v1);
 
-        public static void Uniform3f(int location, float v0, float v1, float v2) => bindings.glUniform3f(location, v0, v1, v2);
+		public static void Uniform3f(int location, float v0, float v1, float v2) => bindings.glUniform3f(location, v0, v1, v2);
 
-        public static void Uniform4f(int location, float v0, float v1, float v2, float v3) => bindings.glUniform4f(location, v0, v1, v2, v3);
+		public static void Uniform4f(int location, float v0, float v1, float v2, float v3) => bindings.glUniform4f(location, v0, v1, v2, v3);
 
-        public static void Uniform1fv(int location, int count, IntPtr value) => bindings.glUniform1fv(location, count, value);
+		public static void Uniform1fv(int location, int count, IntPtr value) => bindings.glUniform1fv(location, count, value);
 
-        public static void Uniform2fv(int location, int count, IntPtr value) => bindings.glUniform2fv(location, count, value);
+		public static void Uniform2fv(int location, int count, IntPtr value) => bindings.glUniform2fv(location, count, value);
 
-        public static void Uniform3fv(int location, int count, IntPtr value) => bindings.glUniform3fv(location, count, value);
+		public static void Uniform3fv(int location, int count, IntPtr value) => bindings.glUniform3fv(location, count, value);
 
-        public static void Uniform4fv(int location, int count, IntPtr value) => bindings.glUniform4fv(location, count, value);
+		public static void Uniform4fv(int location, int count, IntPtr value) => bindings.glUniform4fv(location, count, value);
 
-        public static void Uniform1i(int location, int v0) => bindings.glUniform1i(location, v0);
+		public static void Uniform1i(int location, int v0) => bindings.glUniform1i(location, v0);
 
-        public static void Uniform2i(int location, int v0, int v1) => bindings.glUniform2i(location, v0, v1);
+		public static void Uniform2i(int location, int v0, int v1) => bindings.glUniform2i(location, v0, v1);
 
-        public static void Uniform3i(int location, int v0, int v1, int v2) => bindings.glUniform3i(location, v0, v1, v2);
+		public static void Uniform3i(int location, int v0, int v1, int v2) => bindings.glUniform3i(location, v0, v1, v2);
 
-        public static void Uniform4i(int location, int v0, int v1, int v2, int v3) => bindings.glUniform4i(location, v0, v1, v2, v3);
+		public static void Uniform4i(int location, int v0, int v1, int v2, int v3) => bindings.glUniform4i(location, v0, v1, v2, v3);
 
-        public static void Uniform1iv(int location, int count, IntPtr value) => bindings.glUniform1iv(location, count, value);
+		public static void Uniform1iv(int location, int count, IntPtr value) => bindings.glUniform1iv(location, count, value);
 
-        public static void Uniform2iv(int location, int count, IntPtr value) => bindings.glUniform2iv(location, count, value);
+		public static void Uniform2iv(int location, int count, IntPtr value) => bindings.glUniform2iv(location, count, value);
 
-        public static void Uniform3iv(int location, int count, IntPtr value) => bindings.glUniform3iv(location, count, value);
+		public static void Uniform3iv(int location, int count, IntPtr value) => bindings.glUniform3iv(location, count, value);
 
-        public static void Uniform4iv(int location, int count, IntPtr value) => bindings.glUniform4iv(location, count, value);
+		public static void Uniform4iv(int location, int count, IntPtr value) => bindings.glUniform4iv(location, count, value);
 
-        public static void Uniform1ui(int location, uint v0) => bindings.glUniform1ui(location, v0);
+		public static void Uniform1ui(int location, uint v0) => bindings.glUniform1ui(location, v0);
 
-        public static void Uniform2ui(int location, uint v0, uint v1) => bindings.glUniform2ui(location, v0, v1);
+		public static void Uniform2ui(int location, uint v0, uint v1) => bindings.glUniform2ui(location, v0, v1);
 
-        public static void Uniform3ui(int location, uint v0, uint v1, uint v2) => bindings.glUniform3ui(location, v0, v1, v2);
+		public static void Uniform3ui(int location, uint v0, uint v1, uint v2) => bindings.glUniform3ui(location, v0, v1, v2);
 
-        public static void Uniform4ui(int location, uint v0, uint v1, uint v2, uint v3) => bindings.glUniform4ui(location, v0, v1, v2, v3);
+		public static void Uniform4ui(int location, uint v0, uint v1, uint v2, uint v3) => bindings.glUniform4ui(location, v0, v1, v2, v3);
 
-        public static void Uniform1uiv(int location, int count, IntPtr value) => bindings.glUniform1uiv(location, count, value);
+		public static void Uniform1uiv(int location, int count, IntPtr value) => bindings.glUniform1uiv(location, count, value);
 
-        public static void Uniform2uiv(int location, int count, IntPtr value) => bindings.glUniform2uiv(location, count, value);
+		public static void Uniform2uiv(int location, int count, IntPtr value) => bindings.glUniform2uiv(location, count, value);
 
-        public static void Uniform3uiv(int location, int count, IntPtr value) => bindings.glUniform3uiv(location, count, value);
+		public static void Uniform3uiv(int location, int count, IntPtr value) => bindings.glUniform3uiv(location, count, value);
 
-        public static void Uniform4uiv(int location, int count, IntPtr value) => bindings.glUniform4uiv(location, count, value);
+		public static void Uniform4uiv(int location, int count, IntPtr value) => bindings.glUniform4uiv(location, count, value);
 
-        public static void UniformMatrix2fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix2fv(location, count, transpose, value);
+		public static void UniformMatrix2fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix2fv(location, count, transpose, value);
 
-        public static void UniformMatrix3fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix3fv(location, count, transpose, value);
+		public static void UniformMatrix3fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix3fv(location, count, transpose, value);
 
-        public static void UniformMatrix4fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix4fv(location, count, transpose, value);
+		public static void UniformMatrix4fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix4fv(location, count, transpose, value);
 
-        public static void UniformMatrix2x3fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix2x3fv(location, count, transpose, value);
+		public static void UniformMatrix2x3fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix2x3fv(location, count, transpose, value);
 
-        public static void UniformMatrix3x2fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix3x2fv(location, count, transpose, value);
+		public static void UniformMatrix3x2fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix3x2fv(location, count, transpose, value);
 
-        public static void UniformMatrix2x4fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix2x4fv(location, count, transpose, value);
+		public static void UniformMatrix2x4fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix2x4fv(location, count, transpose, value);
 
-        public static void UniformMatrix4x2fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix4x2fv(location, count, transpose, value);
+		public static void UniformMatrix4x2fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix4x2fv(location, count, transpose, value);
 
-        public static void UniformMatrix3x4fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix3x4fv(location, count, transpose, value);
+		public static void UniformMatrix3x4fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix3x4fv(location, count, transpose, value);
 
-        public static void UniformMatrix4x3fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix4x3fv(location, count, transpose, value);
+		public static void UniformMatrix4x3fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix4x3fv(location, count, transpose, value);
 
 
 		#endregion

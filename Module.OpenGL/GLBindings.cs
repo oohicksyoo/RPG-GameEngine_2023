@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
 namespace Module.OpenGL {
-	public class GLBindings {
+    public class GLBindings {
         private Func<string, IntPtr> GetProcAddressFunc {
             get;
             set;
@@ -36,11 +36,13 @@ namespace Module.OpenGL {
             CreateDelegate(ref glGenFramebuffers, "glGenFramebuffers");
             CreateDelegate(ref glActiveTexture, "glActiveTexture");
             CreateDelegate(ref glBindTexture, "glBindTexture");
+            CreateDelegate(ref glBindTextureUnit, "glBindTextureUnit");
             CreateDelegate(ref glBindRenderbuffer, "glBindRenderbuffer");
             CreateDelegate(ref glBindFramebuffer, "glBindFramebuffer");
             CreateDelegate(ref glTexImage2D, "glTexImage2D");
             CreateDelegate(ref glFramebufferRenderbuffer, "glFramebufferRenderbuffer");
             CreateDelegate(ref glFramebufferTexture2D, "glFramebufferTexture2D");
+            CreateDelegate(ref glFramebufferTexture, "glFramebufferTexture");
             CreateDelegate(ref glTexParameteri, "glTexParameteri");
             CreateDelegate(ref glRenderbufferStorage, "glRenderbufferStorage");
             CreateDelegate(ref glGetTexImage, "glGetTexImage");
@@ -117,6 +119,7 @@ namespace Module.OpenGL {
             CreateDelegate(ref glUniformMatrix3x4fv, "glUniformMatrix3x4fv");
             CreateDelegate(ref glUniformMatrix4x3fv, "glUniformMatrix4x3fv");
             CreateDelegate(ref glPolygonMode, "glPolygonMode");
+            CreateDelegate(ref glBlitFramebuffer, "glBlitFramebuffer");
         }
 
         private void CreateDelegate<T>(ref T def, string name) where T : class
@@ -229,6 +232,10 @@ namespace Module.OpenGL {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void BindTexture(GLEnum target, uint id);
         public BindTexture glBindTexture;
+        
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void BindTextureUnit(uint index, uint id);
+        public BindTextureUnit glBindTextureUnit;
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void BindRenderbuffer(GLEnum target, uint id);
@@ -249,6 +256,10 @@ namespace Module.OpenGL {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void FramebufferTexture2D(GLEnum target, GLEnum attachment, GLEnum textarget, uint texture, int level);
         public FramebufferTexture2D glFramebufferTexture2D;
+        
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void FramebufferTexture(GLEnum target, GLEnum attachment, uint texture, int level);
+        public FramebufferTexture glFramebufferTexture;
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void TexParameteri(GLEnum target, GLEnum name, int param);
@@ -553,6 +564,10 @@ namespace Module.OpenGL {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void PolygonMode(GLEnum face, GLEnum mode);
         public PolygonMode glPolygonMode;
-        
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void BlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, GLEnum mask, GLEnum filter);
+        public BlitFramebuffer glBlitFramebuffer;
+
     }
 }

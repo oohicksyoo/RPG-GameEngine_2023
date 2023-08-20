@@ -1,5 +1,15 @@
 ﻿namespace RPG.Engine.Modules.Interfaces {
+	using Graphics;
+
 	public interface ISystemModule : IApplicationModule {
+
+		public float Delta {
+			get;
+		}
+		
+		public ulong ElapsedDuration {
+			get;
+		}
 		
 		/// <summary>
 		/// Called before other shutdowns happen so we can off load specific actions to other IApplicationModules if needed

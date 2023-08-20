@@ -1,5 +1,6 @@
 ﻿namespace RPG.Engine.Core.Interfaces {
-	
+	using System.Numerics;
+
 	/// <summary>
 	/// Information about the project
 	/// </summary>
@@ -18,6 +19,14 @@
 		}
 		
 		public int WindowHeight {
+			get;
+		}
+
+		public Vector2 WindowSize {
+			get;
+		}
+
+		public int PixelsPerMetre {
 			get;
 		}
 

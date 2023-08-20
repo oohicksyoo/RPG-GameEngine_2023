@@ -2,6 +2,8 @@
 using RPG.Engine.Utility;
 
 namespace SampleGame.Core {
+	using System.Numerics;
+
 	public class Project : Singleton<Project>, IProject {
 
 		#region IProject
@@ -14,6 +16,10 @@ namespace SampleGame.Core {
 		public int WindowWidth => 1280;
 
 		public int WindowHeight => 720;
+		
+		public Vector2 WindowSize => new Vector2(this.WindowWidth, this.WindowHeight);
+		
+		public int PixelsPerMetre => 32;
 
 		public void InitializeBasicModules() {
 			

@@ -4,6 +4,8 @@ using RPG.Engine.Modules.Interfaces;
 using RPG.Engine.Utility;
 
 namespace Module.SDL2 {
+	using RPG.Engine.Graphics;
+
 	//TODO: SDL2.dll and the libSDL2.dylib get built to Desktop everytime and only the specific library file should move depending on the platform
 	//TODO: Abstract base with implementation based on the graphics we want to use
 	public class SDL2Module : IModule, ISystemModule {
@@ -31,6 +33,11 @@ namespace Module.SDL2 {
 			set;
 		}
 
+		private ulong Duration {
+			get;
+			set;
+		}
+
 		private float CurrentDeltaTime {
 			get;
 			set;
@@ -40,6 +47,10 @@ namespace Module.SDL2 {
 		
 		
 		#region ISystemModule
+
+		public float Delta => this.CurrentDeltaTime;
+
+		public ulong ElapsedDuration => this.Duration;
 
 		public void Initialize() {
 			this.Version = new Version(SDL.SDL_MAJOR_VERSION, SDL.SDL_MINOR_VERSION);
@@ -99,7 +110,9 @@ namespace Module.SDL2 {
 		public void TimeStep() {
 			this.PreviousTimeStep = this.CurrentTimeStep;
 			this.CurrentTimeStep = SDL.SDL_GetPerformanceCounter();
-			float elapsed = (this.CurrentTimeStep - this.PreviousTimeStep) * 1000.0f;
+			ulong diff = this.CurrentTimeStep - this.PreviousTimeStep;
+			this.Duration += diff;
+			float elapsed = diff * 1000.0f;
 			this.CurrentDeltaTime = (elapsed / SDL.SDL_GetPerformanceFrequency()) * 0.001f;
 		}
 
@@ -127,6 +140,8 @@ namespace Module.SDL2 {
 			get;
 			private set;
 		} = new Version();
+		
+		public int Priority => int.MaxValue;
 
 		public void Awake() {
 			
