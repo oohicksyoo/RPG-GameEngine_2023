@@ -166,7 +166,6 @@
 			this.Windows.Add(new RenderTargetWindow("Game", Application.Instance.GameFramebuffer.RenderTextureId));
 			this.Windows.Add(new RenderTargetWindow("Scene", Application.Instance.SceneFramebuffer.RenderTextureId));
 			this.Windows.Add(new InspectorWindow());
-			this.Windows.Add(new AsepriteWindow(true));
 			this.Windows.Add(new AssetWindow());
 			this.Windows.Add(new CacheWindow());
 			this.Windows.Add(new StatisticsWindows());
