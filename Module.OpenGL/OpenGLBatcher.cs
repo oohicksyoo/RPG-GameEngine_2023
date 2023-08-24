@@ -100,11 +100,6 @@
 			private set;
 		}
 
-		public ITriangleDrawer TriangleDrawer {
-			get;
-			private set;
-		}
-
 		public void Initialize() {
 			this.DataArray = new float[MAX_DATA_ARRAY];
 			this.TextureIds = new uint[MAX_TEXTURE_COUNT];
@@ -160,8 +155,10 @@
 				offset += 4;
 			}
 
+			IntPtr indiceIntPtr = indices.ArrayToIntPtr();
 			GL.BindBuffer(GLEnum.ELEMENT_ARRAY_BUFFER, elementArrayObject);
-			GL.BufferData(GLEnum.ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.Length, indices.ArrayToIntPtr(), GLEnum.STATIC_DRAW);
+			GL.BufferData(GLEnum.ELEMENT_ARRAY_BUFFER, sizeof(int) * indices.Length, indiceIntPtr, GLEnum.STATIC_DRAW);
+			indiceIntPtr.FreeArrayIntPtr();
 
 			//Reset binds
 			GL.BindBuffer(GLEnum.ARRAY_BUFFER, 0);
@@ -172,9 +169,6 @@
 			for (int i = 0; i < MAX_TEXTURE_COUNT; i++) {
 				this.TextureIds[i] = this.WhiteTexture;
 			}
-			
-			//TESTING
-			this.TriangleDrawer = new TriangleDrawer();
 		}
 
 		public void Shutdown() {
@@ -205,9 +199,11 @@
 				Reset();
 				return; //nothing to draw
 			}
-			
+
+			IntPtr dataArrayIntPtr = this.DataArray.ArrayToIntPtr();
 			GL.BindBuffer(GLEnum.ARRAY_BUFFER, this.VertexBufferObject);
-			GL.BufferSubData(GLEnum.ARRAY_BUFFER, 0, this.VertexStride * this.VertexDataArrayIndex, this.DataArray.ArrayToIntPtr());
+			GL.BufferSubData(GLEnum.ARRAY_BUFFER, 0, this.VertexStride * this.VertexDataArrayIndex, dataArrayIntPtr);
+			dataArrayIntPtr.FreeArrayIntPtr();
 
 			//Always flush the end results
 			Flush();
