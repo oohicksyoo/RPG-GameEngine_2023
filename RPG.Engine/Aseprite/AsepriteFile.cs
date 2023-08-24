@@ -414,9 +414,19 @@
 			}
 			
 			//TODO: Animations
-			//TODO: Process Slices: Remove below and set it if the slices are there
-			this.PivotX = 0;
-			this.PivotY = 0;
+			ProcessSlices();
+		}
+
+		private void ProcessSlices() {
+			this.PivotX = 0.0f;
+			this.PivotY = 0.0f;
+
+			foreach (Slice slice in this.Slices) {
+				if (slice.Name == "Pivot") {
+					this.PivotX = ((float)slice.OriginX + ((float)slice.Width * 0.5f)) / (float)this.SingleFrameWidth;  //(this.SingleFrameWidth * 0.5f) - (slice.OriginX + (slice.Width * 0.5f));
+					this.PivotY = ((float)slice.OriginY + ((float)slice.Height * 0.5f)) / (float)this.SingleFrameHeight; //(this.SingleFrameHeight * 0.5f) - (slice.OriginY + (slice.Height * 0.5f));
+				}
+			}
 		}
 
 		private bool IsBitSet(byte b, int pos) {

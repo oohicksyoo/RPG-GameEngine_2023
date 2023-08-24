@@ -116,19 +116,19 @@
 			float width = this.AsepriteFile.SingleFrameWidth;
 			float height = this.AsepriteFile.SingleFrameHeight;
 			float pixelPerMeter = Application.Instance.Project.PixelsPerMetre;
-			float baseWidth = (width / pixelPerMeter) * 0.5f;
-			float baseHeight = (height / pixelPerMeter) * 0.5f;
-			float textureWidth = baseWidth;
-			float textureHeight = baseHeight;
-			float offsetX = (this.AsepriteFile.PivotX / (width * 0.5f)) * textureWidth;
-			float offsetY = (this.AsepriteFile.PivotY / (height * 0.5f)) * textureHeight;
+			float ppmWidth = width / pixelPerMeter;
+			float ppmHeight = height / pixelPerMeter;
+			float halfWidth = ppmWidth * 0.5f;
+			float halfHeight = ppmHeight * 0.5f;
+			float offsetX = this.AsepriteFile.PivotX * ppmWidth * 0.5f;
+			float offsetY = this.AsepriteFile.PivotY * ppmHeight * 0.5f;
 			
 			this.Mesh = new Mesh(
 				new List<Vertex>() {
-					new Vertex(new Vector3(-textureWidth + offsetX, -textureHeight + offsetY, 0), new Vector2(0, 1), new Vector4(1, 0, 0, 1)),
-					new Vertex(new Vector3(textureWidth + offsetX, -textureHeight + offsetY,0), new Vector2(1, 1),new Vector4(0, 1, 0, 1)),
-					new Vertex(new Vector3(-textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(0, 0), new Vector4(0, 0, 1, 1)),
-					new Vertex(new Vector3(textureWidth + offsetX, textureHeight + offsetY,0), new Vector2(1, 0), new Vector4(1, 0, 1, 1))
+					new Vertex(new Vector3(-halfWidth + offsetX, -halfHeight + offsetY, 0), new Vector2(0, 1), new Vector4(1, 0, 0, 1)),
+					new Vertex(new Vector3(halfWidth + offsetX, -halfHeight + offsetY,0), new Vector2(1, 1),new Vector4(0, 1, 0, 1)),
+					new Vertex(new Vector3(-halfWidth + offsetX, halfHeight + offsetY,0), new Vector2(0, 0), new Vector4(0, 0, 1, 1)),
+					new Vertex(new Vector3(halfWidth + offsetX, halfHeight + offsetY,0), new Vector2(1, 0), new Vector4(1, 0, 1, 1))
 				}, 
 				new List<int>() {
 					0, 1, 2,
