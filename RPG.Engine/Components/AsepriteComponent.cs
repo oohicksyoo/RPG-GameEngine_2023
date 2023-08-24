@@ -70,8 +70,13 @@
 		}
 
 		public int CurrentFrame {
-			get;
-			private set;
+			get {
+				if (this.AsepriteFile != null) {
+					return this.AsepriteFile.CurrentFrame;
+				}
+
+				return 0;
+			}
 		}
 
 		public int SingleFrameWidth {
@@ -110,6 +115,24 @@
 		#endregion
 
 
+		#region Overrides
+
+		public override void Update() {
+			this.AsepriteFile?.Update();
+		}
+
+		#endregion
+
+
+		#region Public Methods
+
+		public void SetAnimation(string name) {
+			this.AsepriteFile?.SetAnimation(name);
+		}
+
+		#endregion
+
+
 		#region Private Methods
 
 		private void BuildMesh() {
@@ -140,7 +163,6 @@
 			//Setup Properties
 			this.SingleFrameWidth = this.AsepriteFile.SingleFrameWidth;
 			this.TotalFrameCount = this.AsepriteFile.FrameCount;
-			this.CurrentFrame = 0;
 		}
 
 		#endregion

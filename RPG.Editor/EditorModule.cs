@@ -337,14 +337,16 @@
 
 			AsepriteComponent asepriteComponent = (AsepriteComponent)component;
 			if (!isMissing && asepriteComponent.Texture != null) {
+				ImGui.BeginGroup();
 				ImGui.Image(
 					(IntPtr)asepriteComponent.Texture.ID, 
-					new Vector2(asepriteComponent.Texture.Width * 5, asepriteComponent.Texture.Height * 5), 
+					new Vector2((asepriteComponent.Texture.Width / asepriteComponent.Texture.Height) * 100, 100), 
 					new Vector2(0, 0), 
 					new Vector2(1, 1), 
 					Vector4.One, 
 					Vector4.One
 				);
+				ImGui.EndGroup();
 			}
 		}
 
