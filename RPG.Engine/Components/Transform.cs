@@ -74,7 +74,7 @@
 			
 			//TODO: If we have a parent we need to add in their TransformMatrix as well to the result to get the World value
 
-			modelMatrix = translation * rotation * scale;
+			modelMatrix = scale * rotation * translation;
 			
 			return modelMatrix;
 		}
