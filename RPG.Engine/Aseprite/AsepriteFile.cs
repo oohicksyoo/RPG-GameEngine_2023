@@ -33,6 +33,9 @@
 		[NonSerialized]
 		private List<Layer> layers;
 
+		[NonSerialized]
+		private Dictionary<string, Animation> animations;
+
 		#endregion
 
 
@@ -105,10 +108,50 @@
 			}
 		}
 
+		private Dictionary<string, Animation> Animations {
+			get {
+				return animations ??= new Dictionary<string, Animation>();
+			}
+		}
+
+		private Animation CurrentAnimation {
+			get;
+			set;
+		}
+
+		public int CurrentFrame {
+			get {
+				if (this.CurrentAnimation != null) {
+					return this.CurrentAnimation.CurrentFrame;
+				}
+
+				return 0;
+			}
+		}
+
 		#endregion
 
 
 		#region Public Methods
+
+		/// <summary>
+		/// Animation Update using the engine's Update method (AsepriteComponent)
+		/// </summary>
+		public void Update() {
+			this.CurrentAnimation?.Update();
+		}
+
+		public void SetAnimation(string name) {
+			if (this.CurrentAnimation != null && this.CurrentAnimation.Name == name) {
+				//This animation is currently running
+				return;
+			}
+			
+			if (this.Animations.ContainsKey(name)) {
+				this.CurrentAnimation = this.Animations[name];
+				this.CurrentAnimation.Reset();
+			}
+		}
 
 		public byte[] GetPixels() {
 			//TODO: Maybe double check loading the file went okay
@@ -414,9 +457,43 @@
 			}
 			
 			//TODO: Animations
+			ProcessAnimations();
 			//TODO: Process Slices: Remove below and set it if the slices are there
 			this.PivotX = 0;
 			this.PivotY = 0;
+		}
+
+		private void ProcessAnimations() {
+			string firstAnimation = String.Empty;
+			foreach (Tag tag in this.Tags) {
+				if (string.IsNullOrEmpty(firstAnimation)) {
+					firstAnimation = tag.Name;
+				}
+				
+				List<float> frameTimes = new List<float>();
+
+				for (int i = tag.From; i <= tag.To; i++) {
+					frameTimes.Add(this.Frames[i].Duration);
+				}
+
+				Animation animation = new Animation(tag, frameTimes);
+				this.Animations.Add(tag.Name, animation);
+			}
+
+			if (this.Animations.Count == 0 || string.IsNullOrEmpty(firstAnimation)) {
+				//Create a default animation using the first frame
+				Tag tag = new Tag();
+				tag.Name = "No Animation";
+				tag.From = 0;
+				tag.To = 0;
+				tag.Color = Color.White;
+				Animation animation = new Animation(tag, new List<float>() { 100 });
+				this.Animations.Add(tag.Name, animation);
+
+				firstAnimation = tag.Name;
+			}
+
+			this.CurrentAnimation = this.Animations[firstAnimation];
 		}
 
 		private bool IsBitSet(byte b, int pos) {

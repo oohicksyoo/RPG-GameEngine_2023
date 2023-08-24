@@ -72,20 +72,20 @@
 			foreach (var component in components) {
 				bool isOpen = ImGui.CollapsingHeader(component.GetType().Name, ImGuiTreeNodeFlags.DefaultOpen);
 				bool wasModified = false;
-
-				if (!isOpen) {
-					continue;
-				}
-
-				if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
-					ImGui.OpenPopup($"Component Context##{component.Guid}");
-				}
 				
 				//Drag Drop Source
 				IDragDropGuid dragDropGuid = Activator.CreateInstance<ComponentDragDropGuid>();
 				dragDropGuid.Guid = component.Guid.ToString();
 				ImGuiHelpers.DragSource(dragDropGuid);
+
+				if (!isOpen) {
+					continue;
+				}
 				
+				if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
+					ImGui.OpenPopup($"Component Context##{component.Guid}");
+				}
+
 				ImGui.TextDisabled($"{component.Guid}");
 				
 				//Find all properties in the class marked as Inspector

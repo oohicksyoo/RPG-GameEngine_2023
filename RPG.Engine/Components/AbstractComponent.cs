@@ -33,15 +33,15 @@
 		}
 
 		public virtual void Awake() {
-			Debug.Log(GetType().Name, $"{GetType().Name} - Awake");
+			//Debug.Log(GetType().Name, $"{GetType().Name} - Awake");
 		}
 		
 		public virtual void Start() {
-			Debug.Log(GetType().Name, $"{GetType().Name} - Start");
+			//Debug.Log(GetType().Name, $"{GetType().Name} - Start");
 		}
 		
 		public virtual void Update() {
-			Debug.Log(GetType().Name, $"{GetType().Name} - Update");
+			//Debug.Log(GetType().Name, $"{GetType().Name} - Update");
 		}
 
 		#endregion
