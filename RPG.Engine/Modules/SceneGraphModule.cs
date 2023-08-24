@@ -126,14 +126,13 @@
 			
 			//Setup multi textures
 			this.Shader.SetIntArray("textures", 32, this.Samplers);
-			//TODO: Issue: Intptr are causing lost memory issues, we need to create a nicer class wrapper which can take the type, return the IntPtr and handle its life cycle to free memory
-
+			
 			//Set Properties
 			this.Shader.SetFloat("wireframe", 0);
 			this.Shader.SetMatrix4x4("view", GetViewMatrix());
 			this.Shader.SetMatrix4x4("projection", GetProjectionMatrix());
 
-			//Run Batcher //TODO: Memory leak here while using batcher
+			//Run Batcher
 			batcher.Begin();
 			((IRender)this.RootNode).Render();
 			batcher.End();
