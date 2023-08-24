@@ -30,6 +30,10 @@
 			Marshal.Copy(target, 0, data, target.Length);
 			return data;
 		}
+
+		public static void FreeArrayIntPtr(this IntPtr pointer) {
+			Marshal.FreeHGlobal(pointer);
+		}
 		
 	}
 }

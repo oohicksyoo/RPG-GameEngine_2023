@@ -51,8 +51,8 @@
 		public void SetInt(string propertyName, int value) {
 			Application.Instance.GraphicsModule.SetShaderInt(this.Id, propertyName, value);
 		}
-
-		public void SetIntArray(string propertyName, int count, int[] value) {
+		
+		public void SetIntArray(string propertyName, int count, IntPtr value) {
 			Application.Instance.GraphicsModule.SetShaderIntArray(this.Id, propertyName, count, value);
 		}
 		

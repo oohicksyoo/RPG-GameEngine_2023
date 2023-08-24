@@ -44,7 +44,7 @@
 			set;
 		}
 
-		private int[] Samplers {
+		private IntPtr Samplers {
 			get;
 			set;
 		}
@@ -77,10 +77,12 @@
 
 		public void Start() {
 			this.Shader = Shader.DefaultAseprite;
-			this.Samplers = new int[32];
+			int[] samplers = new int[32];
 			for (int i = 0; i < 32; i++) {
-				this.Samplers[i] = i;
+				samplers[i] = i;
 			}
+
+			this.Samplers = samplers.ArrayToIntPtr();
 			InitializeRootNode();
 		}
 
@@ -96,7 +98,7 @@
 		}
 
 		public void Shutdown() {
-
+			this.Samplers.FreeArrayIntPtr();
 		}
 
 		#endregion
@@ -124,13 +126,14 @@
 			
 			//Setup multi textures
 			this.Shader.SetIntArray("textures", 32, this.Samplers);
+			//TODO: Issue: Intptr are causing lost memory issues, we need to create a nicer class wrapper which can take the type, return the IntPtr and handle its life cycle to free memory
 
 			//Set Properties
 			this.Shader.SetFloat("wireframe", 0);
 			this.Shader.SetMatrix4x4("view", GetViewMatrix());
 			this.Shader.SetMatrix4x4("projection", GetProjectionMatrix());
 
-			//Run Batcher
+			//Run Batcher //TODO: Memory leak here while using batcher
 			batcher.Begin();
 			((IRender)this.RootNode).Render();
 			batcher.End();
