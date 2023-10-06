@@ -20,6 +20,9 @@
       <None Update="SDL2.dll">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="imgui.ini">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
