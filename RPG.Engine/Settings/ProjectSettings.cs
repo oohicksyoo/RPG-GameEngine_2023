@@ -54,7 +54,7 @@
 
 		public string AssetExtension => "settings";
 		
-		public string SpecialFolder => String.Empty;
+		public string SpecialFolder => "Assets/Settings";
 		
 		public JObject Serialize() {
 			JObject jsonObject = new JObject();
