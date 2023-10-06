@@ -222,6 +222,9 @@
 			
 			//Hook up my serialized values
 		}
+		
+		public void FileDoesntExist() {
+		}
 
 		#endregion
 

@@ -86,6 +86,9 @@
 			//Readd this Node back to the database
 			AddToGuidDatabase();
 		}
+		
+		public virtual void FileDoesntExist() {
+		}
 
 		#endregion
 		

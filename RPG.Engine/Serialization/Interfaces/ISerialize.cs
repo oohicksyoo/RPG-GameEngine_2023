@@ -28,5 +28,7 @@
 
 		public void Deserialize(JObject jObject);
 
+		public void FileDoesntExist();
+
 	}
 }

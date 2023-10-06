@@ -1,4 +1,5 @@
 ﻿namespace RPG.Engine.Settings {
+	using Core;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
 	using Serialization.Interfaces;using Utility;
@@ -66,16 +67,17 @@
 		}
 
 		public void Deserialize(JObject jObject) {
-			//Asset doesnt exist so lets setup defaults that can be saved
-			if (jObject == null) {
-				this.Name = "Project Name";
-				this.StartingNode = string.Empty;
-				return;
-			}
-
 			this.Name = (string)jObject[nameof(this.Name)];
 			this.StartingNode = (string)jObject[nameof(this.StartingNode)];
 
+		}
+
+		public void FileDoesntExist() {
+			this.Name = Application.Instance.Project.Name;
+			this.StartingNode = string.Empty;
+			
+			//Serialize asset with fresh stuff to disk
+			Serializer.Instance.Serialize(this);
 		}
 
 		#endregion

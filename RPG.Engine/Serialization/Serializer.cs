@@ -33,6 +33,8 @@
 			//Only deserialize if the jObject was properly loaded from disk, otherwise it might not exist and ISerialize classes should self handle
 			if (jObject != null) {
 				serializableAsset.Deserialize(jObject);
+			} else {
+				serializableAsset.FileDoesntExist();
 			}
 		}
 
