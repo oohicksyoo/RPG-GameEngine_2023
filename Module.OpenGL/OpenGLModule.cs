@@ -78,6 +78,7 @@ namespace Module.OpenGL {
 				throw new Exception($"IProject is not initialized");
 			}
 			GL.Viewport(0,0, project.WindowWidth, project.WindowHeight);
+			GL.Scissor(0, 0, project.WindowWidth, project.WindowHeight);
 
 			this.Batcher = new OpenGLBatcher();
 			this.Batcher.Initialize();
@@ -96,17 +97,15 @@ namespace Module.OpenGL {
 				color = Color.Aqua;// graphicsClear.ClearColor;
 			}*/
 			
-			GL.Enable(GLEnum.DEPTH_TEST);
 			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, framebufferId);
 			
 			GL.ClearColor(color.R / 255,color.G / 255,color.B / 255,color.A / 255);
 			GL.Clear(GLEnum.COLOR_BUFFER_BIT | GLEnum.DEPTH_BUFFER_BIT);
 
 			//Enables
-			GL.Enable(GLEnum.BLEND);
 			GL.BlendFunc(GLEnum.SRC_ALPHA, GLEnum.ONE_MINUS_SRC_ALPHA);
-			
-			//GL.Enable(GLEnum.SCISSOR_TEST);
+			GL.Enable(GLEnum.BLEND);
+			GL.Enable(GLEnum.DEPTH_TEST);
 		}
 
 		public void PostRender() {
@@ -114,9 +113,8 @@ namespace Module.OpenGL {
 			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, 0);
 			
 			//Disables
-			GL.Disable(GLEnum.DEPTH_TEST);
 			GL.Disable(GLEnum.BLEND);
-			//GL.Disable(GLEnum.SCISSOR_TEST);
+			GL.Disable(GLEnum.DEPTH_TEST);
 
 			Vector2 size = Application.Instance.Project.WindowSize;
 			GL.BindFramebuffer(GLEnum.READ_FRAMEBUFFER, Application.Instance.FinalFramebuffer.Id);
