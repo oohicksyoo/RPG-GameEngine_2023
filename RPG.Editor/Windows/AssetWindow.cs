@@ -28,6 +28,10 @@
 		}
 
 		private void RenderDirectory<T>(string directory, string path) where T : IDragDropAsset {
+			if (!Directory.Exists(directory + path)) {
+				return;
+			}
+			
 			string[] files = Directory.GetFiles(directory + path);
 
 			foreach (var filePath in files) {
