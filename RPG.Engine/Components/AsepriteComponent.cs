@@ -42,6 +42,12 @@
 			}
 		}
 
+		[Inspector]
+		public int Layer {
+			get;
+			set;
+		}
+
 		public Texture Texture {
 			get;
 			private set;
@@ -101,6 +107,8 @@
 				jsonObject[nameof(this.AsepriteFile)] = this.AsepriteFile.FilePath;
 			}
 
+			jsonObject[nameof(this.Layer)] = this.Layer;
+
 			return jsonObject;
 		}
 
@@ -109,6 +117,10 @@
 
 			if (jsonObject.ContainsKey(nameof(this.AsepriteFile))) {
 				this.AsepriteFile = new AsepriteFile((string)jsonObject[nameof(this.AsepriteFile)]);
+			}
+
+			if (jsonObject.ContainsKey(nameof(this.Layer))) {
+				this.Layer = (int)jsonObject[nameof(this.Layer)];
 			}
 		}
 
