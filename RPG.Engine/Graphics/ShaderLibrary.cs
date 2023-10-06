@@ -98,6 +98,10 @@ void main() {
 				FragColor = Color;
 			}
 
+			if (FragColor.a < 0.5) {
+				discard;
+			}
+
 			//Gamma Correction
 			//float gamma = 2.2;
 			//FragColor.rgb = pow(FragColor.rgb, vec3(1.0/gamma));
