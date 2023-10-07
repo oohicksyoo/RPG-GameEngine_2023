@@ -34,6 +34,8 @@
 			//Drop Target
 			DropTarget dropTarget = ImGuiHelpers.DropTarget<NodeDragDropAsset>();
 			if (dropTarget.HasDragDropAsset) {
+				//Clear out root node to avoid filling cache with GUIDs that may exist
+				sceneGraphModule.SetRootNode(null);
 				IDragDropAsset dragDropAsset = (IDragDropAsset)dropTarget.DragDropAsset;
 				Node node = new Node(dragDropAsset.Name);
 				Serializer.Instance.Deserialize(node);
