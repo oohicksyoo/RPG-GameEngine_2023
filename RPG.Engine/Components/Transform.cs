@@ -71,10 +71,12 @@
 			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, 0));
 			Matrix4x4 rotation = Matrix4x4.CreateRotationZ(MathHelper.ToRadians(this.Rotation));
 			Matrix4x4 scale = Matrix4x4.CreateScale(new Vector3(this.Scale, 1));
-			
-			//TODO: If we have a parent we need to add in their TransformMatrix as well to the result to get the World value
-
 			modelMatrix = scale * rotation * translation;
+			
+			if (this.Node.Parent != null) {
+				//TODO: Perhaps node should always have a reference handy to Transform to speed things up
+				modelMatrix = this.Node.Parent.GetComponent<Transform>().GetTransformMatrix() * modelMatrix;
+			}
 			
 			return modelMatrix;
 		}
