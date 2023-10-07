@@ -14,5 +14,10 @@ echo Current cd = %cd%
 REM SETUP path to the assets folder
 set assetsPath=%path%\Assets
 echo %assetsPath%
-echo mklink /d Assets %assetsPath%
-mklink /d Assets %assetsPath%
+
+if exist %assetsPath% (
+    echo folder for Assets is already hooked up
+) else (    
+    echo mklink /d Assets %assetsPath%
+    mklink /d Assets %assetsPath%
+)
