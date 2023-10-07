@@ -21,7 +21,7 @@
 		#region Constructor
 
 		public Node(string name = "") {
-			this.Name = name;
+			this.Name = string.IsNullOrEmpty(name) ? "Node" : name;
 			this.Guid = Guid.NewGuid();
 			this.IsEnabled = true;
 			this.Tag = String.Empty;
@@ -50,6 +50,11 @@
 			set;
 		}
 
+		public bool IsSerializedRoot {
+			get;
+			private set;
+		}
+
 		public Guid Guid {
 			get;
 			private set;
@@ -61,6 +66,11 @@
 		}
 
 		public string Tag {
+			get;
+			set;
+		}
+
+		public Node Parent {
 			get;
 			set;
 		}
@@ -84,6 +94,7 @@
 
 		public void Add(Node node) {
 			if (!Contains(node)) {
+				node.Parent = this;
 				this.Children.Add(node);
 			}
 		}
@@ -218,6 +229,7 @@
 				Node childNode = new Node();
 				childNode.Deserialize(child);
 				this.Children.Add(childNode);
+				childNode.Parent = this;
 			}
 			
 			//Hook up my serialized values

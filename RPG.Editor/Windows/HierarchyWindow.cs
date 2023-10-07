@@ -22,12 +22,19 @@
 
 		public override string Name => "Hierarchy";
 
+		private bool CollectionModified {
+			get;
+			set;
+		}
+
 		protected override void OnRenderGui() {
 			SceneGraphModule sceneGraphModule = Application.Instance.Get<SceneGraphModule>();
 			
 			if (sceneGraphModule == null) {
 				return;
 			}
+
+			this.CollectionModified = false;
 
 			bool isOpen = ImGui.CollapsingHeader($"{sceneGraphModule.RootNode.Name}##Header", ImGuiTreeNodeFlags.DefaultOpen);
 
@@ -42,9 +49,14 @@
 				sceneGraphModule.SetRootNode(node);
 			}
 
+			ContextMenu(sceneGraphModule.RootNode, true);
+
 			if (isOpen) {
 				foreach (Node nodeChild in sceneGraphModule.RootNode.Children) {
 					RenderSingleNode(nodeChild);
+					if (this.CollectionModified) {
+						return;
+					}
 				}
 			}
 		}
@@ -74,6 +86,8 @@
 			if (ImGui.IsItemClicked(ImGuiMouseButton.Left) && (ImGui.GetMousePos().X - ImGui.GetItemRectMin().X) > ImGui.GetTreeNodeToLabelSpacing()) {
 				editorModule.SelectedNode = (isSelected) ? null : node;
 			}
+
+			ContextMenu(node);
 			
 			//Dragging node from Heirarchy somewhere
 			IDragDropGuid dragDropGuid = Activator.CreateInstance<NodeDragDropGuid>();
@@ -83,11 +97,45 @@
 			if (isOpen) {
 				foreach (Node nodeChild in node.Children) {
 					RenderSingleNode(nodeChild);
+					if (this.CollectionModified) {
+						return;
+					}
 				}
 				ImGui.TreePop();
 			}
 			
 			ImGui.Unindent();
+		}
+
+		private void ContextMenu(Node node, bool isRoot = false) {
+			if (ImGui.IsItemClicked(ImGuiMouseButton.Right)) {
+				ImGui.OpenPopup("Hierarchy Context");
+			}
+
+			if (ImGui.BeginPopup("Hierarchy Context")) {
+				if (ImGui.Button("Create Node")) {
+					node.Add(new Node());
+					//TODO: Mark sceneGraph as dirty
+				}
+
+				if (!isRoot && ImGui.Button("Delete")) {
+					//Since it is not the root node Parent should exist
+					if (node.Parent != null) {
+						node.Parent.Remove(node);
+						
+						//Clean Up
+						foreach (Node nodeChild in node.Children) {
+							nodeChild.RemoveFromGuidDatabase();
+						}
+						node.RemoveFromGuidDatabase();
+						
+						//Collection was modified and we can no longer render the rest of the list this frame
+						this.CollectionModified = true;
+					}
+				}
+				
+				ImGui.EndPopup();
+			}
 		}
 	}
 }
