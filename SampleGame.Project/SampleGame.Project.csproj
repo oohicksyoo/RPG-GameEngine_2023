@@ -11,4 +11,8 @@
       <ProjectReference Include="..\RPG.Engine\RPG.Engine.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Assets\" />
+    </ItemGroup>
+
 </Project>

@@ -25,4 +25,8 @@
       </None>
     </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="$(ProjectDir)..\DoubleTap.Project\PostBuild.bat $(TargetDir) $(ProjectDir)..\SampleGame.Project\" />
+    </Target>
+
 </Project>
