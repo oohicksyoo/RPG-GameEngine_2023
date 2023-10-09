@@ -38,6 +38,16 @@
 			}
 		}
 
+		public void Remove(ISerialize serializableAsset) {
+			string specialFolders = string.IsNullOrEmpty(serializableAsset.SpecialFolder) ? String.Empty : $"{serializableAsset.SpecialFolder}/";
+			string directoryLocation = $"{Directory.GetCurrentDirectory()}/{specialFolders}";
+			string path = $"{directoryLocation}{serializableAsset.AssetName}.{serializableAsset.AssetExtension}";
+
+			if (File.Exists(path)) {
+				File.Delete(path);
+			}
+		}
+
 		#endregion
 		
 	}

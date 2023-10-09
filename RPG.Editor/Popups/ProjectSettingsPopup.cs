@@ -4,15 +4,6 @@
 	using ImGuiNET;
 
 	public class ProjectSettingsPopup : AbstractPopup {
-
-
-		#region Constructor
-
-		public ProjectSettingsPopup() {
-			
-		}
-
-		#endregion
 		
 
 		#region Overrides

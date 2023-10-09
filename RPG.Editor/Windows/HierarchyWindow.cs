@@ -117,7 +117,7 @@
 
 				if (isRoot) {
 					if (ImGui.Button("Root Node Settings")) {
-						Application.Instance.EditorModule?.OpenPopup(new BasicPopup());
+						Application.Instance.EditorModule?.OpenPopup(new RootNodeSettingsPopup());
 					}
 					ImGui.Separator();
 				}
