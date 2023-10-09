@@ -118,7 +118,6 @@
 				window.Render(dockSpaceId);
 			}
 			
-			//TODO: Should move popup rendering out of the MenuBarWindow rendering so really anything can start a popup and know it will open for them
 			RenderPopups();
 
 			ImGUISystem.Render();
