@@ -9,6 +9,7 @@
 	using Engine.Serialization.Interfaces;
 	using Engine.Utility;
 	using ImGuiNET;
+	using Popups;
 	using Utility;
 
 	/// <summary>
@@ -113,6 +114,14 @@
 			}
 
 			if (ImGui.BeginPopup("Hierarchy Context")) {
+
+				if (isRoot) {
+					if (ImGui.Button("Root Node Settings")) {
+						Application.Instance.EditorModule?.OpenPopup(new BasicPopup());
+					}
+					ImGui.Separator();
+				}
+				
 				if (ImGui.Button("Create Node")) {
 					node.Add(new Node());
 					//TODO: Mark sceneGraph as dirty
@@ -136,6 +145,8 @@
 				
 				ImGui.EndPopup();
 			}
+
+			
 		}
 	}
 }

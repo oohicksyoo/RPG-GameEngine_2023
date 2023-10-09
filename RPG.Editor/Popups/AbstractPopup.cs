@@ -1,9 +1,10 @@
 ﻿namespace RPG.DearImGUI.Popups {
 	using System.Numerics;
 	using Engine.Core;
+	using Engine.Modules.Interfaces;
 	using ImGuiNET;
 
-	public abstract class AbstractPopup {
+	public abstract class AbstractPopup : IEditorPopup {
 
 		public abstract string Name {
 			get;

@@ -17,9 +17,6 @@
 		[NonSerialized]
 		private Dictionary<string, List<MenuItemData>> menuItemDataMap;
 
-		[NonSerialized]
-		private Dictionary<string, AbstractPopup> openedPopupsMap;
-
 		#endregion
 		
 
@@ -45,17 +42,6 @@
 			}
 		}
 
-		private Dictionary<string, AbstractPopup> OpenedPopupsMap {
-			get {
-				return openedPopupsMap ??= new Dictionary<string, AbstractPopup>();
-			}
-		}
-
-		private string OpenPopupKey {
-			get;
-			set;
-		}
-
 		#endregion
 
 
@@ -65,7 +51,6 @@
 
 		public override void Render(uint dockId) {
 			OnRenderGui();
-			RenderPopups();
 		}
 
 		protected override void OnRenderGui() {
@@ -120,42 +105,12 @@
 					}
 				}
 			}
-			
-		}
-		
-		//TODO: Expose this more so others in their project can use this functionality to open popups
-		public void OpenPopup(AbstractPopup abstractPopup) {
-			this.OpenPopupKey = abstractPopup.Name;
-			this.OpenedPopupsMap.TryAdd(abstractPopup.Name, abstractPopup);
 		}
 
 		#endregion
 
 
 		#region Private Methods
-
-		private void RenderPopups() {
-			if (!string.IsNullOrEmpty(this.OpenPopupKey)) {
-				if (ImGui.IsPopupOpen(this.OpenPopupKey)) {
-					this.OpenedPopupsMap[this.OpenPopupKey].Close();
-					this.OpenedPopupsMap.Remove(this.OpenPopupKey);
-					ImGui.CloseCurrentPopup();
-				} else {
-					ImGui.OpenPopup(this.OpenPopupKey);
-				}
-				this.OpenPopupKey = string.Empty;
-			}
-
-			foreach (AbstractPopup abstractPopup in this.OpenedPopupsMap.Values) {
-				if (!abstractPopup.IsOpen) {
-					//Popup x was clicked and we need to cleanup
-					abstractPopup.Close();
-					this.OpenedPopupsMap.Remove(abstractPopup.Name);
-				} else {
-					abstractPopup?.Render();
-				}
-			}
-		}
 
 		private void SubscribeToMenuBar(string menuName, MenuItemData menuItem) {
 			//Doesnt contain this menu name yet
@@ -218,11 +173,11 @@
 		}
 
 		private void OnProjectSettings() {
-			OpenPopup(new ProjectSettingsPopup());
+			Application.Instance.EditorModule?.OpenPopup(new ProjectSettingsPopup());
 		}
 
 		private void OnEditorSettings() {
-			OpenPopup(new EditorSettingsPopup());
+			Application.Instance.EditorModule?.OpenPopup(new EditorSettingsPopup());
 		}
 
 		#endregion
