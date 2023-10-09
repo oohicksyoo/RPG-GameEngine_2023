@@ -18,6 +18,7 @@
 	using Engine.Serialization;
 	using Engine.Utility;
 	using ImGuiNET;
+	using Popups;
 	using Utility;
 
 	public class EditorModule : IEditorModule {
@@ -27,6 +28,9 @@
 
 		[NonSerialized]
 		private List<AbstractWindow> windows;
+		
+		[NonSerialized]
+		private Dictionary<string, AbstractPopup> openedPopupsMap;
 
 		[NonSerialized]
 		private static Dictionary<Type, Action<object, PropertyInfo>> inspectorTypeRendering;
@@ -51,6 +55,17 @@
 			get {
 				return inspectorTypeRendering ??= new Dictionary<Type, Action<object, PropertyInfo>>();
 			}
+		}
+		
+		private Dictionary<string, AbstractPopup> OpenedPopupsMap {
+			get {
+				return openedPopupsMap ??= new Dictionary<string, AbstractPopup>();
+			}
+		}
+
+		private string OpenPopupKey {
+			get;
+			set;
 		}
 
 		private MenuBarWindow MenuBarWindow {
@@ -104,6 +119,7 @@
 			}
 			
 			//TODO: Should move popup rendering out of the MenuBarWindow rendering so really anything can start a popup and know it will open for them
+			RenderPopups();
 
 			ImGUISystem.Render();
 		}
@@ -115,10 +131,15 @@
 		public void SubscribeToMenuBar(string menuName, string name, Action onClickAction) {
 			this.MenuBarWindow.SubscribeToMenuBar(menuName, name, onClickAction);
 		}
+		
+		public void OpenPopup(IEditorPopup popup) {
+			this.OpenPopupKey = ((AbstractPopup)popup).Name;
+			this.OpenedPopupsMap.TryAdd(this.OpenPopupKey, (AbstractPopup)popup);
+		}
 
 		#endregion
-
-
+		
+		
 		#region Public Static Methods
 
 		/// <summary>
@@ -147,7 +168,7 @@
 		}
 
 		#endregion
-
+		
 		
 		#region Private Methods
 		
@@ -170,6 +191,29 @@
 			this.Windows.Add(new CacheWindow());
 			this.Windows.Add(new StatisticsWindows());
 			//this.Windows.Add(new DemoWindow(true));
+		}
+		
+		private void RenderPopups() {
+			if (!string.IsNullOrEmpty(this.OpenPopupKey)) {
+				if (ImGui.IsPopupOpen(this.OpenPopupKey)) {
+					this.OpenedPopupsMap[this.OpenPopupKey].Close();
+					this.OpenedPopupsMap.Remove(this.OpenPopupKey);
+					ImGui.CloseCurrentPopup();
+				} else {
+					ImGui.OpenPopup(this.OpenPopupKey);
+				}
+				this.OpenPopupKey = string.Empty;
+			}
+
+			foreach (AbstractPopup abstractPopup in this.OpenedPopupsMap.Values) {
+				if (!abstractPopup.IsOpen) {
+					//Popup x was clicked and we need to cleanup
+					abstractPopup.Close();
+					this.OpenedPopupsMap.Remove(abstractPopup.Name);
+				} else {
+					abstractPopup?.Render();
+				}
+			}
 		}
 
 		#endregion
