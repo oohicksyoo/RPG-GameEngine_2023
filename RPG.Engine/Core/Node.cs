@@ -75,6 +75,11 @@
 			set;
 		}
 
+		public Transform Transform {
+			get;
+			private set;
+		}
+
 		public List<IComponent> Components {
 			get {
 				return components ??= new List<IComponent>();
@@ -127,6 +132,11 @@
 				IComponent component = Activator.CreateInstance<T>();
 				component.Node = this;
 				this.Components.Add(component);
+
+				if (typeof(T) == typeof(Transform)) {
+					this.Transform = (Transform)component;
+				}
+				
 			} else if (isSingular) {
 				Debug.Error(GetType().Name, $"Node ({this.Name}) already contains the component ({typeof(T).Name}) and it was marked as singular.");
 			}
@@ -218,6 +228,9 @@
 					component.Deserialize(componentObject);
 					component.Node = this;
 					this.Components.Add(component);
+					if (type == typeof(Transform)) {
+						this.Transform = (Transform)component;
+					}
 				} else {
 					Debug.Warning(GetType().Name, $"Could not find type of ({assemblyType}) to add to component.");
 				}
@@ -228,8 +241,7 @@
 			foreach (JObject child in children) {
 				Node childNode = new Node();
 				childNode.Deserialize(child);
-				this.Children.Add(childNode);
-				childNode.Parent = this;
+				Add(childNode);
 			}
 			
 			//Hook up my serialized values

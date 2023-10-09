@@ -67,15 +67,14 @@
 
 		public Matrix4x4 GetTransformMatrix() {
 			Matrix4x4 modelMatrix = Matrix4x4.Identity;
-
+			
 			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, 0));
 			Matrix4x4 rotation = Matrix4x4.CreateRotationZ(MathHelper.ToRadians(this.Rotation));
 			Matrix4x4 scale = Matrix4x4.CreateScale(new Vector3(this.Scale, 1));
-			modelMatrix = scale * rotation * translation;
-			
-			if (this.Node.Parent != null) {
-				//TODO: Perhaps node should always have a reference handy to Transform to speed things up
-				modelMatrix = this.Node.Parent.GetComponent<Transform>().GetTransformMatrix() * modelMatrix;
+			modelMatrix = translation * rotation * scale;
+
+			if (this.Node.Parent != null && this.Node.Parent.Transform != null) {
+				modelMatrix = this.Node.Parent.Transform.GetTransformMatrix() *  modelMatrix;
 			}
 			
 			return modelMatrix;
