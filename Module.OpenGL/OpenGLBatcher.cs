@@ -248,7 +248,7 @@
 			//Apply Shader Properties
 			Vector3 position = Vector3.Zero;
 			foreach (Vertex vertex in mesh.Vertices) {
-				position = Vector3.Transform(vertex.Position, transform.GetTransformMatrix());
+				position = Vector3.Transform(vertex.Position, transform.LocalToWorld());
 				this.DataArray[this.VertexDataArrayInternalCount + 0] = position.X;
 				this.DataArray[this.VertexDataArrayInternalCount + 1] = position.Y;
 				this.DataArray[this.VertexDataArrayInternalCount + 2] = position.Z;

@@ -65,19 +65,42 @@
 
 		#endregion
 
-		public Matrix4x4 GetTransformMatrix() {
-			Matrix4x4 modelMatrix = Matrix4x4.Identity;
-			
-			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, 0));
-			Matrix4x4 rotation = Matrix4x4.CreateRotationZ(MathHelper.ToRadians(this.Rotation));
-			Matrix4x4 scale = Matrix4x4.CreateScale(new Vector3(this.Scale, 1));
-			modelMatrix = translation * rotation * scale;
 
-			if (this.Node.Parent != null && this.Node.Parent.Transform != null) {
-				modelMatrix = this.Node.Parent.Transform.GetTransformMatrix() *  modelMatrix;
-			}
-			
-			return modelMatrix;
+		#region Public Methods
+
+		/// <summary>
+		/// Model Matrix
+		/// </summary>
+		public Matrix4x4 LocalToParent() {
+			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, 0));
+			Matrix4x4 rotation = Matrix4x4.CreateFromYawPitchRoll(0, 0, MathHelper.ToRadians(this.Rotation));
+			Matrix4x4 scale = Matrix4x4.CreateScale(new Vector3(this.Scale, 0));
+			return translation * rotation * scale;
 		}
+
+		public Matrix4x4 ParentToLocal() {
+			Matrix4x4 result = Matrix4x4.Identity;
+			Matrix4x4.Invert(LocalToParent(), out result);
+			return result;
+		}
+
+		public Matrix4x4 LocalToWorld() {
+			if (this.Node.Parent != null) {
+				return this.Node.Parent.Transform.LocalToWorld() * LocalToParent();
+			}
+
+			return LocalToParent();
+		}
+
+		public Matrix4x4 WorldToLocal() {
+			if (this.Node.Parent != null) {
+				return ParentToLocal() * this.Node.Parent.Transform.WorldToLocal();
+			}
+
+			return ParentToLocal();
+		}
+
+		#endregion
+
 	}
 }
