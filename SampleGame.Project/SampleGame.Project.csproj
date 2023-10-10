@@ -8,6 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Module.OpenGL\Module.OpenGL.csproj" />
+      <ProjectReference Include="..\Module.SDL2\Module.SDL2.csproj" />
       <ProjectReference Include="..\RPG.Engine\RPG.Engine.csproj" />
     </ItemGroup>
 

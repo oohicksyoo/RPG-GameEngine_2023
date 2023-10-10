@@ -5,19 +5,17 @@ using Module.OpenGL;
 
 
 namespace SampleGame.DesktopEditor {
+	using RPG.DearImGUI;
+
 	public class Entry {
 		
 		static void Main(string[] args) {
-			//System Module
-			Application.Instance.Register<SDL2Module>();
+			Project.Instance.InitializeBasicModules();
 			
-			//Input Module
-			Application.Instance.Register<SDL2InputModule>();
+			//Register Editor Modules
+			Application.Instance.Register<EditorModule>();
 			
-			//Graphics Module
-			Application.Instance.Register<OpenGLModule>();
-			
-			Application.Instance.Start(Project.Instance);
+			Application.Instance.Start(Project.Instance, true);
 		}
 	}
 }

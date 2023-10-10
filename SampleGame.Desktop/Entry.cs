@@ -8,14 +8,7 @@ namespace SampleGame.Desktop {
 	public class Entry {
 		
 		static void Main(string[] args) {
-			//System Module
-			Application.Instance.Register<SDL2Module>();
-			
-			//Input Module
-			Application.Instance.Register<SDL2InputModule>();
-			
-			//Graphics Module
-			Application.Instance.Register<OpenGLModule>();
+			Project.Instance.InitializeBasicModules();
 			
 			Application.Instance.Start(Project.Instance);
 		}
