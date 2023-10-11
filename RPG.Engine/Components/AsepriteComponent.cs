@@ -5,6 +5,7 @@
 	using Attributes;
 	using Core;
 	using Graphics;
+	using Inspector;
 	using Interfaces;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
@@ -15,10 +16,22 @@
 	public class AsepriteComponent : AbstractComponent, IComponentRenderable {
 
 
+		#region Types
+
+		public class Dropdown : AbstractDropdown {
+			public Dropdown(string[] list) : base(list) {}
+		}
+
+		#endregion
+		
+
 		#region Non Serialized
 
 		[NonSerialized]
 		private AsepriteFile asepriteFile;
+
+		[NonSerialized]
+		private Dropdown animationDropdown;
 
 		#endregion
 		
@@ -35,6 +48,7 @@
 				if (value != null) {
 					this.Texture = new Texture(this.AsepriteFile.GetPixels(), (uint)this.AsepriteFile.TextureWidth, (uint)this.AsepriteFile.TextureHeight, ColorType.RGBA);
 					BuildMesh();
+					this.Animation = new Dropdown(this.AsepriteFile.GetAnimationList());
 				} else {
 					this.Texture = null;
 					this.Mesh = null;
@@ -46,6 +60,27 @@
 		public int Layer {
 			get;
 			set;
+		}
+
+		[Inspector]
+		public Dropdown Animation {
+			get {
+				if (animationDropdown == null) {
+					string[] list = new[] {"AsepriteFile Missing!"};
+					if (this.AsepriteFile != null) {
+						list = this.AsepriteFile.GetAnimationList();
+					}
+					animationDropdown = new Dropdown(list);
+				}
+				
+				return animationDropdown;
+			}
+			set {
+				animationDropdown = value;
+				if (this.AsepriteFile != null) {
+					this.AsepriteFile.SetAnimation(animationDropdown.SelectedValue);
+				}
+			}
 		}
 
 		public Texture Texture {
@@ -108,6 +143,7 @@
 			}
 
 			jsonObject[nameof(this.Layer)] = this.Layer;
+			jsonObject[nameof(this.Animation)] = this.Animation.SelectedValue;
 
 			return jsonObject;
 		}
@@ -121,6 +157,10 @@
 
 			if (jsonObject.ContainsKey(nameof(this.Layer))) {
 				this.Layer = (int)jsonObject[nameof(this.Layer)];
+			}
+
+			if (jsonObject.ContainsKey(nameof(this.Animation))) {
+				this.Animation.PresetValue((string)jsonObject[nameof(this.Animation)]);
 			}
 		}
 
@@ -139,6 +179,7 @@
 		#region Public Methods
 
 		public void SetAnimation(string name) {
+			this.Animation.PresetValue(name);
 			this.AsepriteFile?.SetAnimation(name);
 		}
 

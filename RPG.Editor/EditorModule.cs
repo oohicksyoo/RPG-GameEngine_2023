@@ -13,6 +13,7 @@
 	using Engine.Core;
 	using Engine.Graphics;
 	using Engine.Input;
+	using Engine.Inspector;
 	using Engine.Modules;
 	using Engine.Modules.Interfaces;
 	using Engine.Serialization;
@@ -159,6 +160,10 @@
 			if (typeof(IComponent).IsAssignableFrom(type)) {
 				return InspectorTypeRendering[typeof(IComponent)];
 			}
+
+			if (typeof(IDropdown).IsAssignableFrom(type)) {
+				return InspectorTypeRendering[typeof(IDropdown)];
+			}
 			
 			//DefaultAseprite return should be like GUID storing?
 			return (component, propertyInfo) => {
@@ -231,6 +236,7 @@
 			Register<string>(InspectorRenderString);
 			Register<IComponent>(InspectorRenderIComponent);
 			Register<AsepriteFile>(InspectorRenderAsepriteAssetFile);
+			Register<IDropdown>(InspectorRenderDropdown);
 		}
 		
 		private void InspectorRenderInt(object component, PropertyInfo propertyInfo) {
@@ -391,6 +397,14 @@
 				);
 				ImGui.EndGroup();
 			}
+		}
+
+		private void InspectorRenderDropdown(object component, PropertyInfo propertyInfo) {
+			IDropdown value = (IDropdown)propertyInfo.GetValue(component);
+			int selectedIndex = value.SelectedIndex;
+			ImGui.Combo($"{propertyInfo.Name}##{propertyInfo.PropertyType}", ref selectedIndex, value.List, value.ListCount);
+			value.SelectedIndex = selectedIndex;
+			propertyInfo.SetValue(component, value);
 		}
 
 		#endregion

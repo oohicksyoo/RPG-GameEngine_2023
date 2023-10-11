@@ -152,6 +152,10 @@
 				this.CurrentAnimation.Reset();
 			}
 		}
+		
+		public string[] GetAnimationList() {
+			return this.Animations.Keys.ToArray();
+		}
 
 		public byte[] GetPixels() {
 			//TODO: Maybe double check loading the file went okay
@@ -563,5 +567,6 @@
 
 		#endregion
 
+		
 	}
 }
