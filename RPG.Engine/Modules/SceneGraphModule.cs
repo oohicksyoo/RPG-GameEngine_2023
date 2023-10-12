@@ -14,7 +14,7 @@
 	using Settings;
 	using Utility;
 
-	public class SceneGraphModule : IModule, IGraphicsClear, IRender {
+	public class SceneGraphModule : IModule, IRender {
 
 
 		#region Property
@@ -102,14 +102,7 @@
 		}
 
 		#endregion
-
-
-		#region IGraphicsClear
-
-		public Color ClearColor => Color.Black;
-
-		#endregion
-
+		
 
 		#region IRender
 

@@ -90,16 +90,8 @@ namespace Module.OpenGL {
 
 		public void PreRender(uint framebufferId, Color clearColor) {
 			GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.FILL);
-			
-			Color color = clearColor;
-			/*IGraphicsClear graphicsClear = Application.Instance.Get<IGraphicsClear>();
-			if (graphicsClear != null) {
-				color = Color.Aqua;// graphicsClear.ClearColor;
-			}*/
-			
 			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, framebufferId);
-			
-			GL.ClearColor(color.R / 255,color.G / 255,color.B / 255,color.A / 255);
+			GL.ClearColor((float)clearColor.R/255f, (float)clearColor.G/255f, (float)clearColor.B/255f, 1);
 			GL.Clear(GLEnum.COLOR_BUFFER_BIT | GLEnum.DEPTH_BUFFER_BIT);
 
 			//Enables

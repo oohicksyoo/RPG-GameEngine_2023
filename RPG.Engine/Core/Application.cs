@@ -212,7 +212,7 @@ namespace RPG.Engine.Core {
 					
 					//Editor Scene Rendering
 					if (this.IsEditor) {
-						this.GraphicsModule.PreRender(this.SceneFramebuffer.Id, Color.Blue);
+						this.GraphicsModule.PreRender(this.SceneFramebuffer.Id, Color.SlateGray);
 						this.ModuleList.Render();
 						this.ModuleList.PostProcess();
 						this.GraphicsModule.PostRender();
