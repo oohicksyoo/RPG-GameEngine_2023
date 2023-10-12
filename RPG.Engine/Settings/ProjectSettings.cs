@@ -1,4 +1,5 @@
 ﻿namespace RPG.Engine.Settings {
+	using System.Drawing;
 	using Core;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
@@ -15,6 +16,11 @@
 		}
 
 		public string StartingNode {
+			get;
+			set;
+		}
+
+		public Color BackgroundColor {
 			get;
 			set;
 		}
@@ -62,6 +68,7 @@
 
 			jsonObject[nameof(this.Name)] = this.Name;
 			jsonObject[nameof(this.StartingNode)] = this.StartingNode;
+			jsonObject[nameof(this.BackgroundColor)] = this.BackgroundColor.ToJObject();
 
 			return jsonObject;
 		}
@@ -70,6 +77,11 @@
 			this.Name = (string)jObject[nameof(this.Name)];
 			this.StartingNode = (string)jObject[nameof(this.StartingNode)];
 
+			if (jObject.ContainsKey(nameof(this.BackgroundColor))) {
+				this.BackgroundColor = ((JObject)jObject[nameof(this.BackgroundColor)]).FromJObjectColor();
+			} else {
+				this.BackgroundColor = Color.Black;
+			}
 		}
 
 		public void FileDoesntExist() {

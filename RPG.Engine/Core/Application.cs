@@ -7,6 +7,7 @@ using RPG.Engine.Utility;
 namespace RPG.Engine.Core {
 	using System.Drawing;
 	using Graphics;
+	using Settings;
 
 	public class Application : Singleton<Application> {
 
@@ -220,7 +221,7 @@ namespace RPG.Engine.Core {
 
 					//Game Scene Rendering
 					{
-						this.GraphicsModule.PreRender(this.GameFramebuffer.Id, Color.Aqua);
+						this.GraphicsModule.PreRender(this.GameFramebuffer.Id,ProjectSettings.Instance.BackgroundColor);
 						this.ModuleList.Render();
 						this.ModuleList.PostProcess();
 						this.GraphicsModule.PostRender();
