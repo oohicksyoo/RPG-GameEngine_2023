@@ -160,7 +160,7 @@
 			}
 
 			if (jsonObject.ContainsKey(nameof(this.Animation))) {
-				this.Animation.PresetValue((string)jsonObject[nameof(this.Animation)]);
+				SetAnimation((string)jsonObject[nameof(this.Animation)]);
 			}
 		}
 
