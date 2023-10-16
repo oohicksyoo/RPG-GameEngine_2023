@@ -55,7 +55,7 @@
 			
 			//Remove old node asset from disk
 			if (this.NameChanged) {
-				Serializer.Instance.Remove(new SimpleSerializedNode(this.OriginalName));
+				Serializer.Instance.Remove(new NodeProxy(this.OriginalName));
 			}
 
 			//Check if the Node we are renaming if the starting set node so we dont cause any errors during opening

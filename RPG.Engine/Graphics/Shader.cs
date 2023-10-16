@@ -1,17 +1,18 @@
 ﻿namespace RPG.Engine.Graphics {
 	using System.Numerics;
 	using Core;
+	using Platform;
 	using Utility;
 
 	public class Shader {
 
 		#region Presets
 
-		public static Shader DefaultAseprite => new Shader(ShaderLibrary.Aseprite);
+		public static Shader DefaultAseprite => new Shader(Application.Instance.PlatformType == PlatformType.Windows ? ShaderLibrary.Aseprite : ShaderLibrary.AsepriteMobile);
 		
-		public static Shader DefaultImGui => new Shader(ShaderLibrary.ImGui);
+		public static Shader DefaultImGui => new Shader(Application.Instance.PlatformType == PlatformType.Windows ? ShaderLibrary.ImGui : ShaderLibrary.ImGuiMobile);
 
-		public static Shader DefaultSample => new Shader(ShaderLibrary.DefaultSample);
+		public static Shader DefaultSample => new Shader(Application.Instance.PlatformType == PlatformType.Windows ? ShaderLibrary.DefaultSample : ShaderLibrary.DefaultSampleMobile);
 		
 		public uint Id {
 			get;

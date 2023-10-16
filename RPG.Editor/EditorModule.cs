@@ -236,6 +236,7 @@
 			Register<string>(InspectorRenderString);
 			Register<IComponent>(InspectorRenderIComponent);
 			Register<AsepriteFile>(InspectorRenderAsepriteAssetFile);
+			Register<NodeProxy>(InspectorRenderNodeProxy);
 			Register<IDropdown>(InspectorRenderDropdown);
 		}
 		
@@ -397,6 +398,39 @@
 				);
 				ImGui.EndGroup();
 			}
+		}
+
+		private void InspectorRenderNodeProxy(object component, PropertyInfo propertyInfo) {
+			object obj = propertyInfo.GetValue(component);
+			string value = "NULL";
+			bool isMissing = obj == null;
+			if (obj != null) {
+				NodeProxy nodeProxy = (NodeProxy)propertyInfo.GetValue(component);
+				if (nodeProxy != null) {
+					value = nodeProxy.AssetName;
+				}
+			}
+			
+			if (isMissing) {
+				Color color = Color.DarkRed;
+				Vector4 chosenColor = new Vector4(color.R, color.G, color.B, color.A);
+				ImGui.PushStyleColor(ImGuiCol.Text, chosenColor);
+			}
+			
+			ImGui.Text(value);
+
+			DropTarget nodeGuidDropTarget = ImGuiHelpers.DropTarget<NodeDragDropAsset>();
+			if (nodeGuidDropTarget.HasDragDropAsset) {
+				IDragDropAsset dragDropAsset = (IDragDropAsset)nodeGuidDropTarget.DragDropAsset;
+				propertyInfo.SetValue(component, new NodeProxy(dragDropAsset.Name));
+			}
+			
+			if (isMissing) {
+				ImGui.PopStyleColor();
+			}
+			
+			ImGui.SameLine();
+			ImGui.Text($"{propertyInfo.Name}");
 		}
 
 		private void InspectorRenderDropdown(object component, PropertyInfo propertyInfo) {

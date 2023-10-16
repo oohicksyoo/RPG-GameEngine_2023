@@ -6,6 +6,8 @@ using Module.OpenGL;
 using Application = RPG.Engine.Core.Application;
 
 namespace SampleGame.Android {
+	using RPG.Engine.Platform;
+
 	public static class Bootstrap {
 
 		delegate void Main();
@@ -21,7 +23,7 @@ namespace SampleGame.Android {
 			Application.Instance.Register<OpenGLModule>();
 			
 			//TODO: Find a way to make this project agnostic
-			Application.Instance.Start(Project.Instance);
+			Application.Instance.Start(Project.Instance, PlatformType.Android);
 		}
 
 		public static void SetupMain() {

@@ -10,6 +10,7 @@ namespace Module.OpenGL {
 	using RPG.Engine.Graphics;
 	using RPG.Engine.Graphics.Interfaces;
 	using RPG.Engine.Modules;
+	using RPG.Engine.Platform;
 
 	public class OpenGLModule : IModule, IGraphicsModule {
 
@@ -89,7 +90,9 @@ namespace Module.OpenGL {
 		}
 
 		public void PreRender(uint framebufferId, Color clearColor) {
-			GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.FILL);
+			if (Application.Instance.PlatformType != PlatformType.Android) {
+				GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.FILL);
+			}
 			GL.BindFramebuffer(GLEnum.FRAMEBUFFER, framebufferId);
 			GL.ClearColor((float)clearColor.R/255f, (float)clearColor.G/255f, (float)clearColor.B/255f, 1);
 			GL.Clear(GLEnum.COLOR_BUFFER_BIT | GLEnum.DEPTH_BUFFER_BIT);
@@ -115,7 +118,9 @@ namespace Module.OpenGL {
 			GL.Viewport(0, 0, (int)size.X, (int)size.Y);
 			GL.BlitFramebuffer(0, 0, (int)size.X, (int)size.Y, 0, 0, (int)size.X, (int)size.Y, GLEnum.COLOR_BUFFER_BIT, GLEnum.NEAREST);
 			
-			GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.FILL);
+			if (Application.Instance.PlatformType != PlatformType.Android) {
+				GL.PolygonMode(GLEnum.FRONT_AND_BACK, GLEnum.FILL);
+			}
 		}
 
 		public Framebuffer CreateFramebuffer(Vector2 size) {

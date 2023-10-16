@@ -6,6 +6,7 @@ using Module.OpenGL;
 
 namespace SampleGame.DesktopEditor {
 	using RPG.DearImGUI;
+	using RPG.Engine.Platform;
 
 	public class Entry {
 		
@@ -15,7 +16,7 @@ namespace SampleGame.DesktopEditor {
 			//Register Editor Modules
 			Application.Instance.Register<EditorModule>();
 			
-			Application.Instance.Start(Project.Instance, true);
+			Application.Instance.Start(Project.Instance, PlatformType.Windows, true);
 		}
 	}
 }

@@ -96,7 +96,7 @@
 		#region IGuidDatabase
 
 		public void AddToGuidDatabase() {
-			GuidDatabase.Instance.ComponentMap.Add(this.Guid, this);
+			GuidDatabase.Instance.Add(this.Guid, this);
 		}
 
 		public void RemoveFromGuidDatabase() {

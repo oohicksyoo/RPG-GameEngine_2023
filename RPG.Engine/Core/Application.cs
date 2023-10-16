@@ -7,6 +7,7 @@ using RPG.Engine.Utility;
 namespace RPG.Engine.Core {
 	using System.Drawing;
 	using Graphics;
+	using Platform;
 	using Settings;
 
 	public class Application : Singleton<Application> {
@@ -61,6 +62,11 @@ namespace RPG.Engine.Core {
 			get;
 			set;
 		}
+
+		public PlatformType PlatformType {
+			get;
+			private set;
+		}
 		
 		/// <summary>
 		/// Framebuffer containing the game scene rendering
@@ -103,7 +109,7 @@ namespace RPG.Engine.Core {
 		
 		#region Public Methods
 
-		public void Start(IProject project, bool isEditor = false) {
+		public void Start(IProject project, PlatformType platformType, bool isEditor = false) {
 			if (this.SystemModule == null) {
 				throw new Exception("Missing SystemModule which is needed to run");
 			}
@@ -118,6 +124,7 @@ namespace RPG.Engine.Core {
 
 			this.IsEditor = isEditor;
 			this.Project = project;
+			this.PlatformType = platformType;
 			
 			//Platform Starting Information
 			Debug.Log(this.Project.Name, $"Version {this.Project.Version}");
@@ -221,7 +228,7 @@ namespace RPG.Engine.Core {
 
 					//Game Scene Rendering
 					{
-						this.GraphicsModule.PreRender(this.GameFramebuffer.Id,ProjectSettings.Instance.BackgroundColor);
+						this.GraphicsModule.PreRender(this.GameFramebuffer.Id, Color.LightCoral);//ProjectSettings.Instance.BackgroundColor);
 						this.ModuleList.Render();
 						this.ModuleList.PostProcess();
 						this.GraphicsModule.PostRender();

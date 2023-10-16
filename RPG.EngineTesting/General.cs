@@ -4,6 +4,8 @@ using NUnit.Framework;
 using RPG.Engine.Core;
 
 namespace RPG.EngineTesting {
+	using Engine.Platform;
+
 	public class General {
 
 
@@ -33,7 +35,7 @@ namespace RPG.EngineTesting {
 			Application.Instance.Register<OpenGLModule>();
 			
 			//TODO: Find a way to make this project agnostic
-			new Thread(() => Application.Instance.Start(Project.Instance)).Start();
+			new Thread(() => Application.Instance.Start(Project.Instance, PlatformType.Windows)).Start();
 			
 			//Wait for the engine to fully start up before starting tests
 			while (!Application.Instance.IsApplicationRunning) { }

@@ -245,6 +245,13 @@
 			}
 			
 			//Hook up my serialized values
+			
+			
+			//Check if we are in game running
+			if (Application.Instance.IsGameRunning) {
+				Awake();
+				Start();
+			}
 		}
 		
 		public void FileDoesntExist() {
@@ -256,7 +263,7 @@
 		#region IGuidDatabase
 
 		public void AddToGuidDatabase() {
-			GuidDatabase.Instance.NodeMap.Add(this.Guid, this);
+			GuidDatabase.Instance.Add(this.Guid, this);
 		}
 
 		public void RemoveFromGuidDatabase() {

@@ -75,7 +75,7 @@
 			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, 0));
 			Matrix4x4 rotation = Matrix4x4.CreateFromYawPitchRoll(0, 0, MathHelper.ToRadians(this.Rotation));
 			Matrix4x4 scale = Matrix4x4.CreateScale(new Vector3(this.Scale, 0));
-			return translation * rotation * scale;
+			return scale * rotation * translation;
 		}
 
 		public Matrix4x4 ParentToLocal() {

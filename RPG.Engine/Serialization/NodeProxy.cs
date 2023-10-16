@@ -6,12 +6,12 @@
 	/// <summary>
 	/// Dumb version of a Node used mainly for deleting a Node from disk without creating unneeded entries in the cache system
 	/// </summary>
-	public class SimpleSerializedNode : ISerialize {
+	public class NodeProxy : ISerialize {
 
 
 		#region Constructor
 
-		public SimpleSerializedNode(string name) {
+		public NodeProxy(string name) {
 			this.AssetName = name;
 		}
 
