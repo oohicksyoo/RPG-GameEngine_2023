@@ -19,6 +19,16 @@
 		#endregion
 
 
+		#region Types
+
+		private struct OrderedCel {
+			public Cel Cel;
+			public int Index;
+		}
+
+		#endregion
+
+
 		#region Non Serialized Fields
 
 		[NonSerialized]
@@ -171,10 +181,20 @@
 				int offsetX = this.Width * f;
 				int offsetY = this.Width * this.FrameCount;
 				
-				//TODO: Reorder cells based on their current position + zIndex of the cell
-
+				//Reorder cels based on their current position + zIndex of the cell
+				List<OrderedCel> orderedCels = new List<OrderedCel>();
 				for (int c = 0; c < frame.Cels.Count; c++) {
-					Cel cel = frame.Cels[c];
+					Debug.Log(GetType().Name, $"{c} + {frame.Cels[c].ZIndex}");
+					orderedCels.Add(new OrderedCel() {
+						Cel = frame.Cels[c],
+						Index = frame.Cels[c].ZIndex
+					});
+				}
+				
+				orderedCels = orderedCels.OrderBy(x => x.Index).ToList();
+
+				foreach (OrderedCel orderedCel in orderedCels) {
+					Cel cel = orderedCel.Cel;
 					
 					//If Layer is marked as invisible skip the rendering on it
 					if (!cel.Layer.IsVisible) {
