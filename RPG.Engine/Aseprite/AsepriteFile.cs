@@ -462,9 +462,20 @@
 			
 			//TODO: Animations
 			ProcessAnimations();
-			//TODO: Process Slices: Remove below and set it if the slices are there
+			ProcessSlices();
+		}
+
+		private void ProcessSlices() {
 			this.PivotX = 0;
 			this.PivotY = 0;
+
+			foreach (Slice slice in this.Slices) {
+				if (slice.Name == "Pivot") {
+					this.PivotX = (this.SingleFrameWidth * 0.5f) - (slice.OriginX + (slice.Width * 0.5f));
+					this.PivotY = -1 * ((this.SingleFrameHeight * 0.5f) - (slice.OriginY + (slice.Height * 0.5f)));
+				}
+				//TODO: Hitbox implementation here for per frame hitboxes
+			}
 		}
 
 		private void ProcessAnimations() {
