@@ -35,6 +35,11 @@
 		Num7 = 55,
 		Num8 = 56,
 		Num9 = 57,
+		
+		Colon = 58,
+		SemiColon = 59,
+		
+		
 		A = 65,
 		B = 66,
 		C = 67,
@@ -63,7 +68,7 @@
 		Z = 90,
 		LeftSuper = 91,
 		RightSuper = 92,
-		
+		Underscore = 95,
 		
 		a = 97,
 		b = 98,

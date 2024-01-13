@@ -205,6 +205,15 @@ namespace Module.SDL2 {
 				case SDL.SDL_Keycode.SDLK_z:
 					return KeyboardKeys.z;
 				
+				//Missing keys
+				case SDL.SDL_Keycode.SDLK_COLON:
+					return KeyboardKeys.Colon;
+				case SDL.SDL_Keycode.SDLK_SEMICOLON:
+					return KeyboardKeys.SemiColon;
+				case SDL.SDL_Keycode.SDLK_MINUS:
+					return KeyboardKeys.Underscore;
+					
+				
 				//Super Keys
 				case SDL.SDL_Keycode.SDLK_LCTRL:
 					return KeyboardKeys.Control;
