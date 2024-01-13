@@ -41,6 +41,11 @@
 			set;
 		}
 
+		public int ZIndex {
+			get;
+			set;
+		}
+
 		public string UserDataText {
 			get;
 			set;

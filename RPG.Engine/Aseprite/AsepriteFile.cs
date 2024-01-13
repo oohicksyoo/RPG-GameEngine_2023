@@ -170,6 +170,8 @@
 				Frame frame = this.Frames[f];
 				int offsetX = this.Width * f;
 				int offsetY = this.Width * this.FrameCount;
+				
+				//TODO: Reorder cells based on their current position + zIndex of the cell
 
 				for (int c = 0; c < frame.Cels.Count; c++) {
 					Cel cel = frame.Cels[c];
@@ -322,8 +324,13 @@
 							cel.Opactiy = BYTE() / 255f;
 							CelType celType = (CelType)WORD();
 							
+							//Z Index
+							cel.ZIndex = SHORT();
+							//0 = default layer ordering
+							//+N = show this cel N layers later
+							//-N = show this cel N layers back
 							
-							SEEK(7);
+							SEEK(5);
 
 							if (celType == CelType.RawCel || celType == CelType.CompressedImage) {
 								cel.Width = WORD();
