@@ -95,6 +95,16 @@
 			dragDropGuid.Guid = node.Guid.ToString();
 			ImGuiHelpers.DragSource(dragDropGuid);
 			
+			//Drop Target
+			DropTarget dropTarget = ImGuiHelpers.DropTarget<NodeDragDropAsset>();
+			if (dropTarget.HasDragDropAsset) {
+				//Clear out root node to avoid filling cache with GUIDs that may exist
+				IDragDropAsset dragDropAsset = (IDragDropAsset)dropTarget.DragDropAsset;
+				Node dragDropNode = new Node(dragDropAsset.Name);
+				Serializer.Instance.Deserialize(dragDropNode);
+				node.Add(dragDropNode);
+			}
+			
 			if (isOpen) {
 				foreach (Node nodeChild in node.Children) {
 					RenderSingleNode(nodeChild);
