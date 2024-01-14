@@ -203,7 +203,6 @@ namespace RPG.Engine.Core {
 			this.GraphicsModule.ResizeFramebuffer(this.GameFramebuffer, this.Project.WindowSize);
 			this.GraphicsModule.ResizeFramebuffer(this.SceneFramebuffer, this.Project.WindowSize);
 			this.GraphicsModule.ResizeFramebuffer(this.EditorFramebuffer, this.Project.WindowSize);
-			this.GraphicsModule.ResizeWindowEvent(width, height);
 			this.EditorModule?.ResizeWindowEvent(width, height);
 		}
 

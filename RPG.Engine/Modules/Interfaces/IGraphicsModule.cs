@@ -17,8 +17,6 @@
 		public void PreRender(uint framebufferId, Color clearColor);
 		
 		public void PostRender();
-		
-		public void ResizeWindowEvent(int width, int height);
 
 		public Framebuffer CreateFramebuffer(Vector2 size);
 
