@@ -123,6 +123,10 @@ namespace Module.OpenGL {
 			}
 		}
 
+		public void ResizeWindowEvent(int width, int height) {
+			
+		}
+
 		public Framebuffer CreateFramebuffer(Vector2 size) {
 
 			//Setup uint references for the Framebuffer

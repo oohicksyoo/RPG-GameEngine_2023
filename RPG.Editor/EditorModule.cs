@@ -137,6 +137,10 @@
 			this.OpenedPopupsMap.TryAdd(this.OpenPopupKey, (AbstractPopup)popup);
 		}
 
+		public void ResizeWindowEvent(int width, int height) {
+			ImGUISystem.ResizeWindowEvent(width, height);
+		}
+
 		#endregion
 		
 		

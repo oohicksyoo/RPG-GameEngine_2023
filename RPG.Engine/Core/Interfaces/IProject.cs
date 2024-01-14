@@ -31,5 +31,7 @@
 		}
 
 		public void InitializeBasicModules();
+
+		public void ResizeWindowEvent(int width, int height);
 	}
 }

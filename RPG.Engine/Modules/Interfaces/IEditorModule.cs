@@ -16,5 +16,7 @@
 		//TODO: Allow people to subscribe their own AbstractWindows to the editor for use
 
 		public void OpenPopup(IEditorPopup popup);
+
+		public void ResizeWindowEvent(int width, int height);
 	}
 }

@@ -146,6 +146,10 @@ namespace RPG.DearImGUI {
 			ImGui.NewFrame();
 		}
 
+		public static void ResizeWindowEvent(int width, int height) {
+			DisplaySize = Application.Instance.Project.WindowSize;
+		}
+
 		private static void SetPerFrameImGuiData() {
 			ImGuiIOPtr io = ImGui.GetIO();
 			io.DisplaySize = DisplaySize;

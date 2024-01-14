@@ -38,6 +38,10 @@ namespace SampleGame.Core {
 			
 			Application.Instance.Register<SceneGraphModule>();
 		}
+		
+		public void ResizeWindowEvent(int width, int height) {
+			
+		}
 
 		#endregion
 

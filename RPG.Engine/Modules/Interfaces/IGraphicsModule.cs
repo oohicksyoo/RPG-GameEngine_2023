@@ -17,6 +17,8 @@
 		public void PreRender(uint framebufferId, Color clearColor);
 		
 		public void PostRender();
+		
+		public void ResizeWindowEvent(int width, int height);
 
 		public Framebuffer CreateFramebuffer(Vector2 size);
 
@@ -49,6 +51,5 @@
 		public void BindTexture(uint textureID, int textureUnitOffset);
 		
 		public void DeleteTexture(uint textureID);
-
 	}
 }

@@ -3,6 +3,7 @@ using RPG.Engine.Utility;
 
 namespace Module.SDL2 {
 	using System.Numerics;
+	using RPG.Engine.Core;
 	using RPG.Engine.Input;
 
 	public class SDL2InputModule : AbstractInputModule {
@@ -55,7 +56,7 @@ namespace Module.SDL2 {
 					case SDL.SDL_EventType.SDL_WINDOWEVENT:
 						switch (e.window.windowEvent) {
 							case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESIZED:
-								//Application.OnResize(e.window.data1, e.window.data2);
+								Application.Instance.OnResizeWindowEvent(e.window.data1, e.window.data2);
 								break;
 						}
 						break;
