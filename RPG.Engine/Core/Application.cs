@@ -228,7 +228,7 @@ namespace RPG.Engine.Core {
 
 					//Game Scene Rendering
 					{
-						this.GraphicsModule.PreRender(this.GameFramebuffer.Id, Color.LightCoral);//ProjectSettings.Instance.BackgroundColor);
+						this.GraphicsModule.PreRender(this.GameFramebuffer.Id, ProjectSettings.Instance.BackgroundColor);
 						this.ModuleList.Render();
 						this.ModuleList.PostProcess();
 						this.GraphicsModule.PostRender();
