@@ -7,6 +7,10 @@
 			get;
 		}
 
+		public Transform Transform {
+			get;
+		}
+
 		public Mesh Mesh {
 			get;
 		}
@@ -24,6 +28,10 @@
 		}
 
 		public int TotalFrameCount {
+			get;
+		}
+
+		public int ZIndex {
 			get;
 		}
 		

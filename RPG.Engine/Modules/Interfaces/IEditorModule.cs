@@ -4,7 +4,7 @@
 	using Input;
 	using Utility;
 
-	public interface IEditorModule : IModule, IRender {
+	public interface IEditorModule : IModule, IModuleRender {
 		
 		public Node SelectedNode {
 			get;

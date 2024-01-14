@@ -184,7 +184,6 @@
 				//Reorder cels based on their current position + zIndex of the cell
 				List<OrderedCel> orderedCels = new List<OrderedCel>();
 				for (int c = 0; c < frame.Cels.Count; c++) {
-					Debug.Log(GetType().Name, $"{c} + {frame.Cels[c].ZIndex}");
 					orderedCels.Add(new OrderedCel() {
 						Cel = frame.Cels[c],
 						Index = frame.Cels[c].ZIndex

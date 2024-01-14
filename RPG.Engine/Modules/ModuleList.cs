@@ -112,7 +112,7 @@ namespace RPG.Engine.Modules {
 
 		public void Render() {
 			foreach (var module in this.Modules) {
-				if (!(module is IApplicationModule) && !(module is IEditorModule) && module is IRender renderModule) {
+				if (!(module is IApplicationModule) && !(module is IEditorModule) && module is IModuleRender renderModule) {
 					renderModule.Render();
 				}
 			}

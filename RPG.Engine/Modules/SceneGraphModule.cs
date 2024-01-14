@@ -14,7 +14,7 @@
 	using Settings;
 	using Utility;
 
-	public class SceneGraphModule : IModule, IRender {
+	public class SceneGraphModule : IModule, IModuleRender {
 
 
 		#region Property
@@ -104,12 +104,15 @@
 		#endregion
 		
 
-		#region IRender
+		#region IModuleRender
 
 		public void Render() {
 			if (this.RootNode == null) {
 				return;
 			}
+			
+			List<IComponentRenderable> renderables = ((IRender)this.RootNode).Render();
+			renderables = renderables.OrderBy(x => x.ZIndex).ToList();
 			
 			//TODO: Maybe these can move to the Module Pre and Post render?
 			IBatcher batcher = Application.Instance.GraphicsModule.Batcher;
@@ -127,7 +130,9 @@
 
 			//Run Batcher
 			batcher.Begin();
-			((IRender)this.RootNode).Render();
+			foreach (IComponentRenderable componentRenderable in renderables) {
+				batcher.Draw(componentRenderable);
+			}
 			batcher.End();
 
 			//End Shader

@@ -7,6 +7,7 @@
 	using Graphics;
 	using Inspector;
 	using Interfaces;
+	using Modules;
 	using Newtonsoft.Json.Linq;
 	using Serialization;
 	using Settings;
@@ -95,6 +96,8 @@
 
 		public bool CanRender => this.AsepriteFile != null;
 
+		public Transform Transform => this.Node.GetComponent<Transform>();
+
 		public Mesh Mesh {
 			get;
 			private set;
@@ -129,6 +132,8 @@
 			get;
 			private set;
 		}
+
+		public int ZIndex => this.Layer;
 
 		#endregion
 		

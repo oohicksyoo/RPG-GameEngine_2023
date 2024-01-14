@@ -318,18 +318,15 @@
 
 		#region IRender
 
-		public void Render() {
-			IBatcher batcher = Application.Instance.GraphicsModule.Batcher;
-			Transform transform = GetComponent<Transform>();
-
-			var collection = this.Components.Where(x => x is IComponentRenderable).Select(x => (IComponentRenderable)x);
-			foreach (IComponentRenderable renderable in collection) {
-				batcher.Draw(transform, renderable);
-			}
-
+		//TODO: FIX
+		public List<IComponentRenderable> Render() {
+			List<IComponentRenderable> list = this.Components.Where(x => x is IComponentRenderable).Select(x => (IComponentRenderable)x).ToList();
+			
 			foreach (IRender child in this.Children) {
-				child.Render();
+				list.AddRange(child.Render());
 			}
+
+			return list;
 		}
 
 		#endregion

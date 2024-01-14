@@ -20,6 +20,6 @@
 		public void Shutdown();
 		public void Begin();
 		public void End();
-		public void Draw(Transform transform, IComponentRenderable renderable);
+		public void Draw(IComponentRenderable renderable);
 	}
 }

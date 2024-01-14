@@ -72,7 +72,14 @@
 		/// Model Matrix
 		/// </summary>
 		public Matrix4x4 LocalToParent() {
-			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, 0));
+
+			float z = 0;
+			AsepriteComponent asepriteComponent = this.Node.GetComponent<AsepriteComponent>();
+			if (asepriteComponent != null) {
+				z = asepriteComponent.Layer;
+			}
+			
+			Matrix4x4 translation = Matrix4x4.CreateTranslation(new Vector3(this.Position, z));
 			Matrix4x4 rotation = Matrix4x4.CreateFromYawPitchRoll(0, 0, MathHelper.ToRadians(this.Rotation));
 			Matrix4x4 scale = Matrix4x4.CreateScale(new Vector3(this.Scale, 0));
 			return scale * rotation * translation;
