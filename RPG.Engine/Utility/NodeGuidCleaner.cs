@@ -73,9 +73,6 @@
 							child.Value = mappedGuids[value];
 						}
 						break;
-					default:
-						Debug.Log("NodeGuidCleaner", $"Missing type ({child.Value.Type}) for ({child.Value})");
-						break;
 				}
 			}
 
