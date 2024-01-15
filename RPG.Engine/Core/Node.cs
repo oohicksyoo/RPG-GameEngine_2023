@@ -50,11 +50,6 @@
 			set;
 		}
 
-		public bool IsSerializedRoot {
-			get;
-			private set;
-		}
-
 		public Guid Guid {
 			get;
 			private set;

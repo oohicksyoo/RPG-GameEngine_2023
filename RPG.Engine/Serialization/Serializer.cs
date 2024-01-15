@@ -26,7 +26,7 @@
 			}
 		}
 
-		public void Deserialize(ISerialize serializableAsset) {
+		public void Deserialize(ISerialize serializableAsset, bool cleanGuids = false) {
 			string specialFolders = string.IsNullOrEmpty(serializableAsset.SpecialFolder) ? String.Empty : $"{serializableAsset.SpecialFolder}/";
 			string directoryLocation = Application.Instance.PlatformType != PlatformType.Android ?
 				$"{Directory.GetCurrentDirectory()}/{specialFolders}" :
@@ -41,6 +41,10 @@
 
 			//Only deserialize if the jObject was properly loaded from disk, otherwise it might not exist and ISerialize classes should self handle
 			if (jObject != null) {
+				//Run the guid cleaner as there may be a conflict with this guid already in the scene
+				if (cleanGuids) {
+					jObject = NodeGuidCleaner.CleanNode(jObject);
+				}
 				serializableAsset.Deserialize(jObject);
 			} else {
 				Debug.Log(GetType().Name, $"Failed to find path: ({path})");

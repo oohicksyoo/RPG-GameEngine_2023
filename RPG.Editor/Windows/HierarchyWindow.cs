@@ -101,7 +101,7 @@
 				//Clear out root node to avoid filling cache with GUIDs that may exist
 				IDragDropAsset dragDropAsset = (IDragDropAsset)dropTarget.DragDropAsset;
 				Node dragDropNode = new Node(dragDropAsset.Name);
-				Serializer.Instance.Deserialize(dragDropNode);
+				Serializer.Instance.Deserialize(dragDropNode, true);
 				node.Add(dragDropNode);
 			}
 			
@@ -135,6 +135,17 @@
 				if (ImGui.Button("Create Node")) {
 					node.Add(new Node());
 					//TODO: Mark sceneGraph as dirty
+				}
+
+				if (ImGui.Button("Duplicate")) {
+					if (node.Parent != null) {
+						Node newNode = new Node();
+						newNode.Deserialize(NodeGuidCleaner.CleanNode(node.Serialize()));
+						node.Parent.Add(newNode); 
+						
+						//Collection was modified and we can no longer render the rest of the list this frame
+						this.CollectionModified = true;
+					}
 				}
 
 				if (!isRoot && ImGui.Button("Delete")) {
