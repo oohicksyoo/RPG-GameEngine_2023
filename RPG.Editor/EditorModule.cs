@@ -74,7 +74,7 @@
 			set;
 		}
 
-		private HierarchyWindow HierarchyWindow {
+		private NodeWindow NodeWindow {
 			get;
 			set;
 		}
@@ -187,10 +187,10 @@
 
 		private void InitializeWindows() {
 			this.MenuBarWindow = new MenuBarWindow();
-			this.HierarchyWindow = new HierarchyWindow();
+			this.NodeWindow = new NodeWindow();
 			
 			this.Windows.Add(this.MenuBarWindow);
-			this.Windows.Add(this.HierarchyWindow );
+			this.Windows.Add(this.NodeWindow );
 			this.Windows.Add(new ConsoleWindow());
 			this.Windows.Add(new RenderTargetWindow("Game", Application.Instance.GameFramebuffer.RenderTextureId));
 			this.Windows.Add(new RenderTargetWindow("Scene", Application.Instance.SceneFramebuffer.RenderTextureId));

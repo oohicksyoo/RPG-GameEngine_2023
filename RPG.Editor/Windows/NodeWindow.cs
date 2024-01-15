@@ -15,13 +15,13 @@
 	/// <summary>
 	/// Shows the Hierarchy starting at a specific Node, most times is the SceneGraphModule root Node but could be others if editing a Copy
 	/// </summary>
-	public class HierarchyWindow : AbstractWindow {
+	public class NodeWindow : AbstractWindow {
 		
-		public HierarchyWindow(bool isOpen = true) : base(isOpen) {
+		public NodeWindow(bool isOpen = true) : base(isOpen) {
 			
 		}
 
-		public override string Name => "Hierarchy";
+		public override string Name => "Node";
 
 		private bool CollectionModified {
 			get;
