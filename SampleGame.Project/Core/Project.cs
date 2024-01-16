@@ -42,6 +42,10 @@ namespace SampleGame.Core {
 		public void ResizeWindowEvent(int width, int height) {
 			
 		}
+		
+		public void LoadFonts() {
+			
+		}
 
 		#endregion
 

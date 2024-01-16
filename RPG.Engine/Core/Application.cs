@@ -1,11 +1,12 @@
-﻿using System.Runtime.InteropServices;
-using RPG.Engine.Core.Interfaces;
-using RPG.Engine.Modules;
-using RPG.Engine.Modules.Interfaces;
-using RPG.Engine.Utility;
-
-namespace RPG.Engine.Core {
+﻿namespace RPG.Engine.Core {
+	
+	using System.Runtime.InteropServices;
+	using RPG.Engine.Core.Interfaces;
+	using RPG.Engine.Modules;
+	using RPG.Engine.Modules.Interfaces;
+	using RPG.Engine.Utility;
 	using System.Drawing;
+	using Font;
 	using Graphics;
 	using Platform;
 	using Settings;
@@ -138,6 +139,10 @@ namespace RPG.Engine.Core {
 			this.InputModule.Initialize();
 			this.GraphicsModule.Initialize();
 			
+			//Fonts
+			FontLibrary.Instance.Initialize();
+			this.Project.LoadFonts();
+			
 			//Create Rendering Framebuffer
 			this.GameFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
 			this.SceneFramebuffer = this.GraphicsModule.CreateFramebuffer(this.Project.WindowSize);
@@ -265,6 +270,8 @@ namespace RPG.Engine.Core {
 
 		private void ModulesShutdown() {
 			this.ModuleList.Shutdown();
+			
+			FontLibrary.Instance.Shutdown();
 			
 			this.EditorModule?.Shutdown();
 			

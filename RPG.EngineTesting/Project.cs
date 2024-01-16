@@ -27,6 +27,10 @@ namespace RPG.EngineTesting {
 		public void ResizeWindowEvent(int width, int height) {
 			
 		}
+		
+		public void LoadFonts() {
+			
+		}
 
 		#endregion
 
