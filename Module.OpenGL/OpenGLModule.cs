@@ -7,6 +7,7 @@ namespace Module.OpenGL {
 	using System.Drawing;
 	using System.Numerics;
 	using System.Runtime.InteropServices;
+	using FreeTypeSharp;
 	using RPG.Engine.Graphics;
 	using RPG.Engine.Graphics.Interfaces;
 	using RPG.Engine.Modules;
@@ -85,8 +86,6 @@ namespace Module.OpenGL {
 			this.Batcher.Initialize();
 			
 			this.DefaultShader = Shader.DefaultSample;
-
-			//TODO: Setup window resizing
 		}
 
 		public void PreRender(uint framebufferId, Color clearColor) {
@@ -300,6 +299,11 @@ namespace Module.OpenGL {
 
 		public void DeleteTexture(uint textureID) {
 			GL.DeleteTexture(textureID);
+		}
+
+		public void LoadFreeTypeFont(FreeTypeFaceFacade face) {
+			GL.PixelStorei(GLEnum.UNPACK_ALIGNMENT, 1);
+			
 		}
 
 		#endregion

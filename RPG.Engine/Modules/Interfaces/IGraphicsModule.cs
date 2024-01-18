@@ -1,6 +1,7 @@
 ﻿namespace RPG.Engine.Modules.Interfaces {
 	using System.Drawing;
 	using System.Numerics;
+	using FreeTypeSharp;
 	using Graphics;
 	using Graphics.Interfaces;
 
@@ -49,5 +50,7 @@
 		public void BindTexture(uint textureID, int textureUnitOffset);
 		
 		public void DeleteTexture(uint textureID);
+
+		public void LoadFreeTypeFont(FreeTypeFaceFacade face);
 	}
 }

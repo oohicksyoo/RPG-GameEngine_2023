@@ -28,6 +28,11 @@
 			set;
 		}
 
+		private FreeTypeFaceFacade FreeTypeFace {
+			get;
+			set;
+		}
+
 		#endregion
 
 
@@ -40,11 +45,13 @@
 				throw new FreeTypeException(error);
 			} else {
 				Debug.Log(GetType().Name, $"({font}) font loaded");
+				this.FreeTypeFace = new FreeTypeFaceFacade(this.FreeTypeLibrary, face);
 			}
 
 			FT_Set_Pixel_Sizes(face, 0, 48);
 			
 			//TODO: Using GraphicsModule aid in fully loading everything into a texture atlas
+			//Application.Instance.GraphicsModule?.LoadFreeTypeFont(this.FreeTypeFace);
 			
 			//Free Everything
 			FT_Done_Face(face);

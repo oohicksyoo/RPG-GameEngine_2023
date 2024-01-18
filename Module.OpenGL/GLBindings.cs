@@ -568,6 +568,10 @@ namespace Module.OpenGL {
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         public delegate void BlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, GLEnum mask, GLEnum filter);
         public BlitFramebuffer glBlitFramebuffer;
-
+        
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate void PixelStorei(GLEnum target, uint id);
+        public PixelStorei glPixelStorei;
+        
     }
 }

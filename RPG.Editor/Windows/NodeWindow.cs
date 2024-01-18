@@ -21,7 +21,7 @@
 			
 		}
 
-		public override string Name => "Node";
+		public override string Name => "Hierarchy";
 
 		private bool CollectionModified {
 			get;

@@ -308,6 +308,7 @@ namespace Module.OpenGL {
 
 		public static void UniformMatrix4x3fv(int location, int count, bool transpose, IntPtr value) => bindings.glUniformMatrix4x3fv(location, count, transpose, value);
 
+		public static void PixelStorei(GLEnum target, uint id) => bindings.glPixelStorei(target, id);
 
 		#endregion
 
