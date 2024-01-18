@@ -112,7 +112,6 @@
 			}
 			
 			List<IComponentRenderable> renderables = ((IRender)this.RootNode).Render();
-			renderables = renderables.OrderBy(x => x.ZIndex).ToList();
 			
 			//TODO: Maybe these can move to the Module Pre and Post render?
 			IBatcher batcher = Application.Instance.GraphicsModule.Batcher;

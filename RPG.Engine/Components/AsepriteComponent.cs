@@ -96,7 +96,7 @@
 
 		public bool CanRender => this.AsepriteFile != null;
 
-		public Transform Transform => this.Node.GetComponent<Transform>();
+		public Transform Transform => this.Node.Transform;
 
 		public Mesh Mesh {
 			get;

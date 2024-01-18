@@ -219,12 +219,15 @@
 				string assemblyType = (string)componentObject["Type"];
 				Type type = types.SingleOrDefault(x => x.AssemblyQualifiedName == assemblyType);
 				if (type != null) {
-					IComponent component = (IComponent)Activator.CreateInstance(type);
-					component.Deserialize(componentObject);
-					component.Node = this;
-					this.Components.Add(component);
 					if (type == typeof(Transform)) {
-						this.Transform = (Transform)component;
+						IComponent component = this.Transform;
+						component.Deserialize(componentObject);
+						this.Components.Add(component); //Readd to component list because we ran a .Clear() above
+					} else {
+						IComponent component = (IComponent)Activator.CreateInstance(type);
+						component.Deserialize(componentObject);
+						component.Node = this;
+						this.Components.Add(component);
 					}
 				} else {
 					Debug.Warning(GetType().Name, $"Could not find type of ({assemblyType}) to add to component.");
@@ -239,10 +242,8 @@
 				Add(childNode);
 			}
 			
-			//Hook up my serialized values
-			
-			
 			//Check if we are in game running
+			//TODO: So this is being called and ran through the heirarhcy and then the child does the same, should only happen once the original node spawn
 			if (Application.Instance.IsGameRunning) {
 				Awake();
 				Start();
@@ -289,6 +290,7 @@
 		}
 
 		public void Start() {
+			
 			foreach (IRunnable child in this.Children) {
 				child.Start();
 			}
@@ -313,15 +315,16 @@
 
 		#region IRender
 
-		//TODO: FIX
 		public List<IComponentRenderable> Render() {
-			List<IComponentRenderable> list = this.Components.Where(x => x is IComponentRenderable).Select(x => (IComponentRenderable)x).ToList();
+			List<IComponentRenderable> list = this.Components.Where(x => x is IComponentRenderable)
+				.Select(x => (IComponentRenderable)x)
+				.ToList();
 			
 			foreach (IRender child in this.Children) {
 				list.AddRange(child.Render());
 			}
 
-			return list;
+			return list.OrderBy(x => x.ZIndex).ToList();
 		}
 
 		#endregion
